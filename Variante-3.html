@@ -144,8 +144,10 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 .col-ti .dz-hint { border-color: var(--acc-ti-br); color: var(--acc-ti-br); }
 .col-do .dz-hint { border-color: var(--acc-do-br); color: var(--acc-do-br); }
 
-.pc { background: var(--bg-default); border-radius: var(--r-md); border: var(--bw-s) solid var(--border-subtle); cursor: grab; user-select: none; transition: opacity .15s, box-shadow .15s; }
+.pc { background: var(--bg-default); border-radius: var(--r-md); border: var(--bw-s) solid var(--border-subtle); cursor: grab; user-select: none; touch-action: none; transition: opacity .15s, box-shadow .15s; }
 .pc:active { cursor: grabbing; }
+.pc[data-locked] { cursor: default; opacity: .55; }
+.pc[data-locked] .drag-h { cursor: default; color: var(--text-disabled); font-size: 13px; }
 .col-ti .pc { border-color: var(--acc-ti-br); }
 .col-do .pc { border-color: var(--acc-do-br); }
 .pc.is-neg  { border-color: var(--acc-ng-br); }
@@ -237,10 +239,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 
     <div class="cols2">
 
-      <div class="col col-ti" id="v3col-ti"
-        ondragover="v3over(event,'ti')"
-        ondragleave="v3leave(event,'ti')"
-        ondrop="v3drop(event,'ti')">
+      <div class="col col-ti" id="v3col-ti">
         <div class="col-head">
           <div class="col-title-wrap">🏪 <span>Entrega en tienda</span></div>
           <span class="col-cnt" id="v3cnt-ti">2</span>
@@ -248,9 +247,6 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
         <div class="dz" id="v3z-ti">
 
           <div class="pc" id="v3c-alm-ti"
-            draggable="true"
-            ondragstart="v3startLocked(event,'alm')"
-            ondragend="v3end(event)"
             data-key="alm" data-qty="2" data-locked="ti">
             <div class="pc-body"><div class="pc-top">
               <div class="pc-img"><img src="Asignaciones/almohada-grid-tech-d-4.jpg" alt="Almohada Grid Tech" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
@@ -260,7 +256,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
                 <div class="pc-attrs">Estándar · Suave · Cooling · 2 piezas</div>
                 <div class="pc-avail av-bo">Disp.: 24 en tienda 🏪 · No disponible 🚚</div>
               </div>
-              <div class="drag-h" title="Solo tienda">⠿</div>
+              <div class="drag-h" style="visibility:hidden">⠿</div>
             </div></div>
             <div class="pc-foot">
               <span class="pc-foot-lbl">En tienda</span>
@@ -273,9 +269,6 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
           </div>
 
           <div class="pc" id="v3c-col-ti"
-            draggable="true"
-            ondragstart="v3start(event,'col','ti')"
-            ondragend="v3end(event)"
             data-key="col" data-qty="2" data-col="ti">
             <div class="pc-body"><div class="pc-top">
               <div class="pc-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
@@ -301,10 +294,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
         </div>
       </div>
 
-      <div class="col col-do" id="v3col-do"
-        ondragover="v3over(event,'do')"
-        ondragleave="v3leave(event,'do')"
-        ondrop="v3drop(event,'do')">
+      <div class="col col-do" id="v3col-do">
         <div class="col-head">
           <div class="col-title-wrap">🚚 <span>Envío a domicilio</span></div>
           <span class="col-cnt" id="v3cnt-do">1</span>
@@ -312,9 +302,6 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
         <div class="dz" id="v3z-do">
 
           <div class="pc" id="v3c-base-do"
-            draggable="true"
-            ondragstart="v3start(event,'base','do')"
-            ondragend="v3end(event)"
             data-key="base" data-qty="2" data-col="do">
             <div class="pc-body"><div class="pc-top">
               <div class="pc-img"><img src="Asignaciones/base-de-bambu.jpeg" alt="Base de Bambú" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
@@ -408,13 +395,8 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 <script>
 const v3q = { 'alm-ti': 2, 'col-ti': 2, 'col-do': 0, 'base-do': 2, 'base-ti': 0 };
 let v3dragging = null;
-let v3lockedDrag = false;
 
 const ghostEl = document.getElementById('ghost');
-document.addEventListener('dragover', e => {
-  ghostEl.style.left = (e.clientX + 16) + 'px';
-  ghostEl.style.top  = (e.clientY + 8) + 'px';
-});
 
 const CARD_META = {
   alm:  { img:'Asignaciones/almohada-grid-tech-d-4.jpg',    name:'Almohada Grid Tech',    sku:'SKU: ALTP1001',  attrs:'Estándar · Suave · Cooling · 2 piezas',    avail:'Disp.: 24 en tienda 🏪 · No disponible 🚚',    avClass:'av-bo', locked:'ti' },
@@ -422,54 +404,63 @@ const CARD_META = {
   base: { img:'Asignaciones/base-de-bambu.jpeg',            name:'Base de Bambú',          sku:'SKU: NB1301',    attrs:'Individual · 2 piezas',                   avail:'Disp.: 0 en tienda 🏪 · Envío a domicilio 🚚', avClass:'av-bo', locked:null },
 };
 
-function v3start(e, key, col) {
-  v3dragging = { key, col };
-  v3lockedDrag = false;
-  const card = document.getElementById('v3c-'+key+'-'+col);
-  if (card) card.classList.add('dragging');
-  ghostEl.textContent = CARD_META[key].name;
-  ghostEl.style.display = 'block';
-}
-
-function v3startLocked(e, key) {
-  v3dragging = { key, col: 'ti' };
-  v3lockedDrag = true;
-  const card = document.getElementById('v3c-'+key+'-ti');
-  if (card) card.classList.add('dragging');
-  ghostEl.textContent = '🔒 ' + CARD_META[key].name + ' · solo tienda';
-  ghostEl.style.display = 'block';
-}
-
-function v3end(e) {
-  if (v3dragging) {
-    const { key, col } = v3dragging;
-    const card = document.getElementById('v3c-'+key+'-'+col);
-    if (card) card.classList.remove('dragging');
-  }
-  ghostEl.style.display = 'none';
-  v3dragging = null;
-  v3lockedDrag = false;
-  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
-}
-
-function v3over(e, col) {
+// ── Pointer Events drag — funciona en mouse y touch sin librería ──
+document.addEventListener('pointerdown', function(e) {
+  if (e.target.closest('button')) return;
+  const card = e.target.closest('.pc[data-key]');
+  if (!card) return;
+  if (card.dataset.locked) return;
   e.preventDefault();
-  document.getElementById('v3col-'+col).classList.add('dov-'+col);
-}
+  const key = card.dataset.key;
+  const locked = null;
+  const m = card.id.match(/^v3c-[a-z]+-([a-z]+)$/);
+  if (!m) return;
+  const col = m[1];
+  v3dragging = { key, col, locked };
+  ghostEl.textContent = locked
+    ? '🔒 ' + CARD_META[key].name + ' · solo tienda'
+    : CARD_META[key].name;
+  ghostEl.style.left = (e.clientX + 16) + 'px';
+  ghostEl.style.top  = (e.clientY +  8) + 'px';
+  ghostEl.style.display = 'block';
+}, { passive: false });
 
-function v3leave(e, col) {
-  const el = document.getElementById('v3col-'+col);
-  if (!el.contains(e.relatedTarget)) el.classList.remove('dov-'+col);
-}
-
-function v3drop(e, tgtCol) {
-  e.preventDefault();
-  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+document.addEventListener('pointermove', function(e) {
   if (!v3dragging) return;
-  const { key, col: srcCol } = v3dragging;
-  if (v3lockedDrag && tgtCol !== 'ti') { v3end(e); return; }
-  if (srcCol === tgtCol) return;
+  ghostEl.style.left = (e.clientX + 16) + 'px';
+  ghostEl.style.top  = (e.clientY +  8) + 'px';
+  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+  const col = v3colAt(e.clientX, e.clientY);
+  if (col) document.getElementById('v3col-'+col).classList.add('dov-'+col);
+});
 
+document.addEventListener('pointerup', function(e) {
+  if (!v3dragging) return;
+  ghostEl.style.display = 'none';
+  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+  const tgtCol = v3colAt(e.clientX, e.clientY);
+  if (tgtCol && tgtCol !== v3dragging.col && (!v3dragging.locked || tgtCol === 'ti')) {
+    v3doDrop(v3dragging.key, v3dragging.col, tgtCol);
+  }
+  v3dragging = null;
+});
+
+document.addEventListener('pointercancel', function() {
+  ghostEl.style.display = 'none';
+  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+  v3dragging = null;
+});
+
+function v3colAt(x, y) {
+  for (const col of ['ti','do']) {
+    const r = document.getElementById('v3col-'+col).getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return col;
+  }
+  return null;
+}
+// ─────────────────────────────────────────────────────────────────
+
+function v3doDrop(key, srcCol, tgtCol) {
   const srcCard = document.getElementById('v3c-'+key+'-'+srcCol);
   if (!srcCard) return;
   const srcQty = parseInt(srcCard.dataset.qty || 1);
@@ -494,11 +485,10 @@ function v3drop(e, tgtCol) {
     tgtZone.insertBefore(srcCard, hint);
     srcCard.id = 'v3c-'+key+'-'+tgtCol;
     srcCard.dataset.col = tgtCol;
-    srcCard.ondragstart = v3lockedDrag ? null : (ev) => v3start(ev, key, tgtCol);
     const lbl = srcCard.querySelector('.pc-foot-lbl');
     if (lbl) lbl.textContent = tgtCol === 'ti' ? 'En tienda' : 'A domicilio';
     const oldQEl = srcCard.querySelector('.qv');
-    if (oldQEl) { oldQEl.id = 'v3q-'+key+'-'+tgtCol; }
+    if (oldQEl) oldQEl.id = 'v3q-'+key+'-'+tgtCol;
     const isNeg = (key === 'base' && tgtCol === 'ti');
     if (isNeg) {
       srcCard.classList.add('is-neg');
@@ -571,7 +561,6 @@ function v3moveCard(key, srcCol, tgtCol, qty, isNeg) {
     srcCard.id = 'v3c-'+key+'-'+tgtCol;
     srcCard.dataset.col = tgtCol;
     srcCard.dataset.qty = qty;
-    srcCard.ondragstart = (ev) => v3start(ev, key, tgtCol);
     const lbl = srcCard.querySelector('.pc-foot-lbl');
     if (lbl) lbl.textContent = tgtCol === 'ti' ? 'En tienda' : 'A domicilio';
     const qEl = srcCard.querySelector('.qv');
@@ -604,12 +593,9 @@ function v3createCard(key, col, qty, isNeg) {
   const card = document.createElement('div');
   card.className = 'pc' + (isNeg ? ' is-neg' : '');
   card.id = 'v3c-'+key+'-'+col;
-  card.draggable = true;
   card.dataset.key = key;
   card.dataset.qty = qty;
   card.dataset.col = col;
-  card.ondragstart = (e) => v3start(e, key, col);
-  card.ondragend   = (e) => v3end(e);
   card.innerHTML = `
     <div class="pc-body"><div class="pc-top">
       <div class="pc-img"><img src="${m.img}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
@@ -653,6 +639,5 @@ function v3updateHints() {
   });
 }
 </script>
-<script src="https://cdn.jsdelivr.net/gh/Bernardo-Castilho/DragDropTouch@master/DragDropTouch.js"></script>
 </body>
 </html>
