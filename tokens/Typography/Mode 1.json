@@ -1,0 +1,164 @@
+{
+  "fontfamily": {
+    "primary": {
+      "value": "GT America",
+      "type": "text"
+    }
+  },
+  "fontweight": {
+    "semibold": {
+      "value": "Medium",
+      "type": "text"
+    },
+    "regular": {
+      "value": "Regular",
+      "type": "text"
+    },
+    "thin": {
+      "value": "Thin",
+      "type": "text"
+    }
+  },
+  "fontsize": {
+    "bodys": {
+      "value": 12,
+      "type": "number"
+    },
+    "headings": {
+      "value": 24,
+      "type": "number"
+    },
+    "headingm": {
+      "value": 28,
+      "type": "number"
+    },
+    "bodym": {
+      "value": 14,
+      "type": "number"
+    },
+    "displays": {
+      "value": 36,
+      "type": "number"
+    },
+    "bodyl": {
+      "value": 16,
+      "type": "number"
+    },
+    "headingl": {
+      "value": 32,
+      "type": "number"
+    },
+    "displaym": {
+      "value": 45,
+      "type": "number"
+    },
+    "displayl": {
+      "value": 57,
+      "type": "number"
+    },
+    "bodyxs": {
+      "value": 11,
+      "type": "number"
+    },
+    "subheadings": {
+      "value": 18,
+      "type": "number"
+    },
+    "subheadingm": {
+      "value": 20,
+      "type": "number"
+    }
+  },
+  "letterspacing": {
+    "bodyxs": {
+      "value": 0,
+      "type": "number"
+    },
+    "headingm": {
+      "value": -1.36,
+      "type": "number"
+    },
+    "headingl": {
+      "value": -1.53,
+      "type": "number"
+    },
+    "bodym": {
+      "value": 0,
+      "type": "number"
+    },
+    "displaym": {
+      "value": -2.16,
+      "type": "number"
+    },
+    "displayl": {
+      "value": -2.72,
+      "type": "number"
+    },
+    "headings": {
+      "value": -1.12,
+      "type": "number"
+    },
+    "bodys": {
+      "value": 0,
+      "type": "number"
+    },
+    "displays": {
+      "value": -1.76,
+      "type": "number"
+    },
+    "bodyl": {
+      "value": 0,
+      "type": "number"
+    }
+  },
+  "lineheight": {
+    "displays": {
+      "value": 44,
+      "type": "number"
+    },
+    "headingm": {
+      "value": 34,
+      "type": "number"
+    },
+    "bodym": {
+      "value": 16,
+      "type": "number"
+    },
+    "bodyxs": {
+      "value": 12,
+      "type": "number"
+    },
+    "displaym": {
+      "value": 54,
+      "type": "number"
+    },
+    "bodys": {
+      "value": 14,
+      "type": "number"
+    },
+    "bodyl": {
+      "value": 20,
+      "type": "number"
+    },
+    "headingl": {
+      "value": 38,
+      "type": "number"
+    },
+    "headings": {
+      "value": 28,
+      "type": "number"
+    },
+    "displayl": {
+      "value": 68,
+      "type": "number"
+    },
+    "subheadings": {
+      "value": 22,
+      "type": "number"
+    },
+    "subheadingm": {
+      "value": 24,
+      "type": "number"
+    }
+  }
+}

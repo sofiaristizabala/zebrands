@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variante 3 · Drag & drop · DS POS</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root {
+  --font:            var(--ds-font-family);
+  --bg-default:      var(--ds-bg-primary);
+  --bg-subtle:       var(--ds-bg-secondary);
+  --bg-brand:        var(--ds-blue-600);
+  --bg-brand-strong: var(--ds-blue-900);
+  --bg-disabled:     var(--ds-bg-secondary);
+  --text-primary:    var(--ds-fg-primary);
+  --text-secondary:  var(--ds-grey-dark-500);
+  --text-disabled:   var(--ds-fg-disabled);
+  --text-inverted:   var(--ds-grey-light-50);
+  --text-brand:      var(--ds-blue-500);
+  --text-link:       var(--ds-blue-600);
+  --text-success:    var(--ds-fg-success);
+  --text-warning:    var(--ds-fg-warning);
+  --text-error:      var(--ds-fg-error);
+  --border-subtle:   var(--ds-grey-light-200);
+  --border-default:  var(--ds-grey-light-500);
+  --border-strong:   var(--ds-fg-primary);
+  --suc-bg: var(--ds-bg-success-subtle);      --suc-br: var(--ds-border-success-subtle);
+  --war-bg: var(--ds-bg-warning-subtle);      --war-br: var(--ds-border-warning-subtle);
+  --err-bg: var(--ds-bg-error-subtle);        --err-br: var(--ds-border-error-subtle);
+  --inf-bg: var(--ds-bg-info-subtle);         --inf-br: var(--ds-border-info-subtle);
+  --inf-tx: var(--ds-fg-info-strong);
+  --acc-ti: var(--ds-bg-success-subtle);      --acc-ti-br: var(--ds-border-success-subtle);
+  --acc-do: var(--ds-bg-info-subtle);         --acc-do-br: var(--ds-border-info-subtle);
+  --acc-ng: var(--ds-bg-warning-subtle);      --acc-ng-br: var(--ds-border-warning-subtle);
+  --r-sm:   var(--ds-br-soft);
+  --r-md:   var(--ds-br-medium);
+  --r-full: var(--ds-br-full);
+  --bw-s:   var(--ds-bw-s);
+  --bw-m:   var(--ds-bw-m);
+  --s-050: var(--ds-space-050);
+  --s-100: var(--ds-space-100);
+  --s-150: var(--ds-space-150);
+  --s-200: var(--ds-space-200);
+  --s-300: var(--ds-space-300);
+  --s-400: var(--ds-space-400);
+  --s-800: var(--ds-space-800);
+  --fs-xs: var(--ds-font-size-body-xs);
+  --fs-s:  var(--ds-font-size-body-s);
+  --fs-m:  var(--ds-font-size-body-m);
+  --fs-l:  var(--ds-font-size-body-l);
+  --fs-hl: var(--ds-font-size-heading-s);
+  --fs-hs: 18px;
+  --fs-hm: 20px;
+  --lh-s:  var(--ds-line-height-body-s);
+  --lh-m:  var(--ds-line-height-body-m);
+  --lh-l:  var(--ds-line-height-body-l);
+  --lh-hl: var(--ds-line-height-heading-s);
+  --lh-hs: 22px;
+  --lh-hm: 24px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg-subtle); color: var(--text-primary); }
+
+.topbar { background: var(--bg-brand-strong); color: var(--text-inverted); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 56px; }
+.tb-brand { font-size: var(--fs-hs); font-weight: 400; }
+.tb-store { font-size: var(--fs-l); color: var(--text-inverted); background: none; border: none; cursor: pointer; }
+.tb-user  { display: flex; align-items: center; gap: var(--s-300); font-size: var(--fs-l); font-weight: 500; }
+.tb-av    { width: 40px; height: 40px; border-radius: var(--r-full); background: #2D5FA6; display: flex; align-items: center; justify-content: center; font-size: var(--fs-s); font-weight: 700; }
+
+.subbar { background: var(--bg-default); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 80px; box-shadow: 0 4px 5px rgba(0,0,0,.07); }
+.subbar-title { font-size: var(--fs-hl); font-weight: 500; }
+.subbar-right { display: flex; gap: var(--s-300); align-items: center; }
+.btn-outline { display: flex; align-items: center; gap: var(--s-150); height: 44px; padding: var(--s-200) var(--s-400); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); color: var(--text-primary); cursor: pointer; white-space: nowrap; }
+.btn-outline:hover { background: var(--bg-subtle); }
+
+.page { padding: var(--s-400) var(--s-800); max-width: 1280px; margin: 0 auto; }
+.page-cols { display: grid; grid-template-columns: 1fr 300px; gap: var(--s-400); align-items: start; }
+
+.order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); position: sticky; top: var(--s-400); }
+.os-title { font-size: var(--fs-hs); font-weight: 500; margin-bottom: var(--s-100); }
+.os-id    { font-size: var(--fs-s); color: var(--text-secondary); margin-bottom: var(--s-300); }
+
+.os-items { border-top: var(--bw-s) solid var(--border-subtle); }
+.os-item  { padding: var(--s-300) 0; border-bottom: var(--bw-s) solid var(--border-subtle); display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-200); }
+.os-item-name  { font-size: var(--fs-m); font-weight: 500; grid-column: 1; }
+.os-item-price { font-size: var(--fs-m); font-weight: 500; grid-column: 2; grid-row: 1; text-align: right; }
+.os-item-attrs { font-size: var(--fs-s); color: var(--text-secondary); grid-column: 1 / -1; }
+.os-item-pend  { font-size: var(--fs-s); grid-column: 1 / -1; }
+.os-item-pend.alert { color: var(--text-error); }
+.os-item-pend.ok    { color: var(--text-secondary); }
+
+.os-coupon { display: flex; gap: var(--s-100); margin: var(--s-300) 0; }
+.os-coupon input { flex: 1; height: 40px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-secondary); background: var(--bg-default); outline: none; }
+.os-coupon-btn { height: 40px; padding: 0 var(--s-300); border: none; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-disabled); background: none; cursor: default; white-space: nowrap; }
+
+.os-rows { display: flex; flex-direction: column; gap: var(--s-200); padding-bottom: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.os-row  { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-m); }
+.os-row-lbl { color: var(--text-primary); }
+.os-row-val { font-weight: 500; }
+.os-row-val.saving { color: #B45309; }
+.os-row-val.free   { color: var(--text-secondary); }
+.os-credit-btn { height: 32px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-s); font-weight: 500; background: var(--bg-default); cursor: pointer; }
+
+.os-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: var(--s-300); margin-top: var(--s-100); }
+.os-total-lbl { font-size: var(--fs-m); font-weight: 500; }
+.os-total-val { font-size: var(--fs-hm); font-weight: 700; color: var(--ds-blue-500); }
+.os-monthly   { font-size: var(--fs-xs); color: var(--text-secondary); margin-top: var(--s-100); line-height: 1.5; }
+.breadcrumb { font-size: var(--fs-m); margin-bottom: var(--s-400); padding: var(--s-200) 0; display: flex; align-items: center; gap: var(--s-200); color: var(--text-primary); }
+.breadcrumb a { color: var(--text-link); text-decoration: none; }
+
+.variant { margin-bottom: 48px; }
+.variant-badge { font-size: var(--fs-s); font-weight: 500; text-transform: uppercase; letter-spacing:.06em; color: var(--text-disabled); margin-bottom: var(--s-100); display: block; }
+.variant-title { font-size: var(--fs-hm); font-weight: 500; margin-bottom: var(--s-100); }
+.variant-desc  { font-size: var(--fs-m); color: var(--text-secondary); margin-bottom: var(--s-400); line-height: 1.6; }
+.variant-body  { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); }
+
+.ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-400); gap: var(--s-300); flex-wrap: wrap; }
+.ph-title { font-size: var(--fs-hm); font-weight: 500; }
+.ph-sub   { font-size: var(--fs-m); color: var(--text-secondary); margin-top: var(--s-050); }
+
+.confirm-btn { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-l); font-weight: 400; border: none; cursor: not-allowed; margin-top: var(--s-400); background: var(--bg-disabled); color: var(--text-disabled); transition: background .2s; }
+.confirm-btn.active { background: var(--bg-brand); color: var(--text-inverted); cursor: pointer; }
+.confirm-btn.active:hover { background: #002d7a; }
+
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-300); align-items: start; }
+
+.col { border-radius: var(--r-md); border: var(--bw-m) solid transparent; min-height: 240px; display: flex; flex-direction: column; transition: border-color .15s, background .15s; }
+.col-ti { background: var(--acc-ti); border-color: var(--acc-ti-br); }
+.col-do { background: var(--acc-do); border-color: var(--acc-do-br); }
+.col.dov-ti { border-style: dashed; border-color: var(--suc-br); background: #E4EDE8; }
+.col.dov-do { border-style: dashed; border-color: var(--inf-br); background: #E4EBF3; }
+
+.col-head { padding: var(--s-300) var(--s-400) var(--s-200); display: flex; align-items: center; justify-content: space-between; border-bottom: var(--bw-s) solid transparent; }
+.col-ti .col-head { border-color: var(--acc-ti-br); }
+.col-do .col-head { border-color: var(--acc-do-br); }
+.col-title-wrap { display: flex; align-items: center; gap: var(--s-150); font-size: var(--fs-m); font-weight: 500; }
+.col-cnt { font-size: var(--fs-s); font-weight: 500; padding: 2px var(--s-200); border-radius: var(--r-sm); }
+.col-ti .col-cnt { background: var(--acc-ti-br); color: var(--text-success); }
+.col-do .col-cnt { background: var(--acc-do-br); color: var(--inf-tx); }
+
+.dz { flex: 1; padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-200); min-height: 160px; }
+.dz-hint { display: flex; align-items: center; justify-content: center; height: 60px; border: var(--bw-m) dashed var(--border-subtle); border-radius: var(--r-md); font-size: var(--fs-m); color: var(--text-disabled); }
+.col-ti .dz-hint { border-color: var(--acc-ti-br); color: var(--acc-ti-br); }
+.col-do .dz-hint { border-color: var(--acc-do-br); color: var(--acc-do-br); }
+
+.pc { background: var(--bg-default); border-radius: var(--r-md); border: var(--bw-s) solid var(--border-subtle); cursor: grab; user-select: none; transition: opacity .15s, box-shadow .15s; }
+.pc:active { cursor: grabbing; }
+.col-ti .pc { border-color: var(--acc-ti-br); }
+.col-do .pc { border-color: var(--acc-do-br); }
+.pc.is-neg  { border-color: var(--acc-ng-br); }
+
+.pc-body { padding: var(--s-200) var(--s-300); }
+.pc-top  { display: flex; align-items: flex-start; gap: var(--s-200); }
+.pc-img  { width: 36px; height: 36px; border-radius: var(--r-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; overflow: hidden; }
+.col-ti .pc-img { background: var(--acc-ti); }
+.col-do .pc-img { background: var(--acc-do); }
+.pc.is-neg .pc-img { background: var(--acc-ng); }
+.pc-info { flex: 1; min-width: 0; }
+.pc-name  { font-size: var(--fs-m); font-weight: 500; line-height: var(--lh-m); }
+.pc-sku   { font-size: var(--fs-s); color: var(--text-secondary); }
+.pc-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
+.pc-avail { font-size: var(--fs-xs); margin-top: 3px; font-weight: 500; }
+.av-ti { color: var(--text-success); }
+.av-do { color: var(--inf-tx); }
+.av-bo { color: var(--text-secondary); }
+.drag-h { color: var(--border-default); font-size: 14px; flex-shrink: 0; cursor: grab; padding-top: 2px; }
+
+.pc-foot { display: flex; align-items: center; justify-content: space-between; padding: var(--s-150) var(--s-300); border-top: var(--bw-s) solid var(--border-subtle); background: var(--bg-subtle); border-radius: 0 0 var(--r-md) var(--r-md); }
+.col-ti .pc-foot { border-top-color: var(--acc-ti-br); background: var(--acc-ti); }
+.col-do .pc-foot { border-top-color: var(--acc-do-br); background: var(--acc-do); }
+.pc.is-neg .pc-foot { border-top-color: var(--acc-ng-br); background: var(--acc-ng); }
+.pc-foot-lbl { font-size: var(--fs-s); color: var(--text-secondary); }
+
+.pc-qty { display: flex; align-items: center; height: 36px; border: var(--bw-s) solid var(--border-default); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.col-ti .pc-qty { border-color: var(--acc-ti-br); }
+.col-do .pc-qty { border-color: var(--acc-do-br); }
+.pc.is-neg .pc-qty { border-color: var(--acc-ng-br); }
+.qb { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 16px; color: var(--text-primary); font-weight: 300; transition: background .12s; }
+.qb:hover:not(.off) { background: var(--border-subtle); }
+.qb.off { opacity: .2; cursor: default; pointer-events: none; }
+.qv { width: 32px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: var(--bg-default); color: var(--text-primary); }
+.col-ti .qv { color: var(--text-success); }
+.col-do .qv { color: var(--inf-tx); }
+.pc.is-neg .qv { color: var(--text-warning); }
+
+.pc-neg-note { font-size: var(--fs-xs); padding: var(--s-100) var(--s-300); background: var(--war-bg); color: var(--text-warning); border-top: 1px solid var(--war-br); border-radius: 0 0 var(--r-md) var(--r-md); font-weight: 500; }
+
+.col-action { padding: var(--s-200); border-top: var(--bw-s) solid transparent; }
+.col-ti .col-action { border-top-color: var(--acc-ti-br); }
+.col-do .col-action { border-top-color: var(--acc-do-br); }
+.col-btn { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); font-weight: 500; border: none; cursor: pointer; }
+.col-ti .col-btn { background: var(--ds-green-700, #166534); color: #fff; }
+.col-ti .col-btn:hover { background: var(--ds-green-800, #14532d); }
+.col-do .col-btn { background: var(--bg-brand); color: var(--text-inverted); }
+.col-do .col-btn:hover { background: #002d7a; }
+
+#ghost { position: fixed; pointer-events: none; z-index: 9999; display: none; background: var(--bg-default); border: var(--bw-s) solid #0047BB; border-radius: var(--r-md); padding: var(--s-200) var(--s-300); font-size: var(--fs-m); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); transform: rotate(1.5deg) scale(1.02); max-width: 220px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="ghost"></div>
+
+<div class="topbar">
+  <div class="tb-brand">V2 · ZePOS</div>
+  <button class="tb-store">🏪 Tienda Altavista ↻</button>
+  <div class="tb-user"><div class="tb-av">AP</div><span>Hola Andrea Pérez</span></div>
+</div>
+<div class="subbar">
+  <div class="subbar-title">Asignación de entrega</div>
+  <div class="subbar-right">
+    <button class="btn-outline">➕ Nueva venta</button>
+    <button class="btn-outline">Camila Cabello... ▾</button>
+    <button class="btn-outline">🛒</button>
+  </div>
+</div>
+
+<div class="page">
+<div class="breadcrumb"><a href="index.html">← Propuestas</a> <span style="color:var(--text-secondary)">›</span> Variante 3</div>
+
+<div class="page-cols">
+<div><!-- columna principal -->
+<div class="variant">
+  <span class="variant-badge">Variante 3</span>
+  <div class="variant-title">Drag & drop · 2 columnas · Todo pre-asignado</div>
+  <div class="variant-desc">
+    Almohada → tienda (fija, no se puede arrastrar a domicilio). Colchón → tienda por default, se mueve libremente. Base de bambú → domicilio por default. El (−) transfiere 1 pieza al destino contrario — si hay 2 en domicilio y das (−), queda 1 en domicilio y aparece 1 nueva card en tienda marcada como negativo. Arrastrar una card al mismo destino que su gemela las fusiona.
+  </div>
+  <div class="variant-body">
+
+    <div class="ph">
+      <div>
+        <div class="ph-title">¿Cómo entregamos cada producto?</div>
+        <div class="ph-sub">6 piezas · 3 productos · Pre-asignados</div>
+      </div>
+    </div>
+
+    <div class="cols2">
+
+      <div class="col col-ti" id="v3col-ti"
+        ondragover="v3over(event,'ti')"
+        ondragleave="v3leave(event,'ti')"
+        ondrop="v3drop(event,'ti')">
+        <div class="col-head">
+          <div class="col-title-wrap">🏪 <span>Entrega en tienda</span></div>
+          <span class="col-cnt" id="v3cnt-ti">2</span>
+        </div>
+        <div class="dz" id="v3z-ti">
+
+          <div class="pc" id="v3c-alm-ti"
+            draggable="true"
+            ondragstart="v3startLocked(event,'alm')"
+            ondragend="v3end(event)"
+            data-key="alm" data-qty="2" data-locked="ti">
+            <div class="pc-body"><div class="pc-top">
+              <div class="pc-img"><img src="Asignaciones/almohada-grid-tech-d-4.jpg" alt="Almohada Grid Tech" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+              <div class="pc-info">
+                <div class="pc-name">Almohada Grid Tech</div>
+                <div class="pc-sku">SKU: ALTP1001</div>
+                <div class="pc-attrs">Estándar · Suave · Cooling · 2 piezas</div>
+                <div class="pc-avail av-bo">Disp.: 24 en tienda 🏪 · No disponible 🚚</div>
+              </div>
+              <div class="drag-h" title="Solo tienda">⠿</div>
+            </div></div>
+            <div class="pc-foot">
+              <span class="pc-foot-lbl">En tienda</span>
+              <div class="pc-qty">
+                <button class="qb off">−</button>
+                <span class="qv" id="v3q-alm-ti">2</span>
+                <button class="qb off">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc" id="v3c-col-ti"
+            draggable="true"
+            ondragstart="v3start(event,'col','ti')"
+            ondragend="v3end(event)"
+            data-key="col" data-qty="2" data-col="ti">
+            <div class="pc-body"><div class="pc-top">
+              <div class="pc-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+              <div class="pc-info">
+                <div class="pc-name">Colchón Luuna Original</div>
+                <div class="pc-sku">SKU: LU2002SC</div>
+                <div class="pc-attrs">Matrimonial · Suave · Cooling · 2 piezas</div>
+                <div class="pc-avail av-bo">Disp.: 4 en tienda 🏪 · Envío a domicilio 🚚</div>
+              </div>
+              <div class="drag-h">⠿</div>
+            </div></div>
+            <div class="pc-foot">
+              <span class="pc-foot-lbl">En tienda</span>
+              <div class="pc-qty">
+                <button class="qb" onclick="v3minus(event,'col','ti')">−</button>
+                <span class="qv" id="v3q-col-ti">2</span>
+                <button class="qb off">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dz-hint" id="v3h-ti" style="display:none">Arrastra aquí · entrega en tienda</div>
+        </div>
+      </div>
+
+      <div class="col col-do" id="v3col-do"
+        ondragover="v3over(event,'do')"
+        ondragleave="v3leave(event,'do')"
+        ondrop="v3drop(event,'do')">
+        <div class="col-head">
+          <div class="col-title-wrap">🚚 <span>Envío a domicilio</span></div>
+          <span class="col-cnt" id="v3cnt-do">1</span>
+        </div>
+        <div class="dz" id="v3z-do">
+
+          <div class="pc" id="v3c-base-do"
+            draggable="true"
+            ondragstart="v3start(event,'base','do')"
+            ondragend="v3end(event)"
+            data-key="base" data-qty="2" data-col="do">
+            <div class="pc-body"><div class="pc-top">
+              <div class="pc-img"><img src="Asignaciones/base-de-bambu.jpeg" alt="Base de Bambú" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+              <div class="pc-info">
+                <div class="pc-name">Base de Bambú</div>
+                <div class="pc-sku">SKU: NB1301</div>
+                <div class="pc-attrs">Individual · 2 piezas</div>
+                <div class="pc-avail av-bo">Disp.: 0 en tienda 🏪 · Envío a domicilio 🚚</div>
+              </div>
+              <div class="drag-h">⠿</div>
+            </div></div>
+            <div class="pc-foot">
+              <span class="pc-foot-lbl">A domicilio</span>
+              <div class="pc-qty">
+                <button class="qb" onclick="v3minus(event,'base','do')">−</button>
+                <span class="qv" id="v3q-base-do">2</span>
+                <button class="qb off">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dz-hint" id="v3h-do">Arrastra aquí · envío a domicilio</div>
+        </div>
+      </div>
+
+    </div>
+    <button class="confirm-btn active" id="v3-confirm">Confirmar asignación</button>
+  </div>
+</div>
+</div><!-- /columna principal -->
+
+<!-- ── RESUMEN DE ORDEN ── -->
+<aside class="order-summary">
+  <div class="os-title">Resumen de la orden</div>
+  <div class="os-id">QTN-2404149648bf42</div>
+
+  <div class="os-items">
+    <div class="os-item">
+      <div class="os-item-name">Colchón Luuna Original</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Matrimonial | Suave | Cooling</div>
+      <div class="os-item-pend alert">Productos por asignar: 2</div>
+    </div>
+    <div class="os-item">
+      <div class="os-item-name">Base de bambú</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Individual</div>
+      <div class="os-item-pend ok">Productos por asignar: 1</div>
+    </div>
+    <div class="os-item">
+      <div class="os-item-name">Almohada Grid Tech</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Estándar</div>
+      <div class="os-item-pend ok">Productos por asignar: 1</div>
+    </div>
+  </div>
+
+  <div class="os-coupon">
+    <input placeholder="Ingresa tu cupón o código">
+    <button class="os-coupon-btn">Aplicar</button>
+  </div>
+
+  <div class="os-rows">
+    <div class="os-row">
+      <span class="os-row-lbl">Subtotal</span>
+      <span class="os-row-val">$41,037</span>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Ahorro</span>
+      <span class="os-row-val saving">-$20,860</span>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Créditos de regalo</span>
+      <button class="os-credit-btn">Aplicar $500</button>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Envío</span>
+      <span class="os-row-val free">GRATIS</span>
+    </div>
+  </div>
+
+  <div class="os-total">
+    <span class="os-total-lbl">Total</span>
+    <span class="os-total-val">$19,677</span>
+  </div>
+  <div class="os-monthly">Pago mensual disponible &nbsp; $1,638.75/mes por 24 MSI<br>*Exclusivo Citibanamex</div>
+</aside>
+
+</div><!-- /page-cols -->
+
+<script>
+const v3q = { 'alm-ti': 2, 'col-ti': 2, 'col-do': 0, 'base-do': 2, 'base-ti': 0 };
+let v3dragging = null;
+let v3lockedDrag = false;
+
+const ghostEl = document.getElementById('ghost');
+document.addEventListener('dragover', e => {
+  ghostEl.style.left = (e.clientX + 16) + 'px';
+  ghostEl.style.top  = (e.clientY + 8) + 'px';
+});
+
+const CARD_META = {
+  alm:  { img:'Asignaciones/almohada-grid-tech-d-4.jpg',    name:'Almohada Grid Tech',    sku:'SKU: ALTP1001',  attrs:'Estándar · Suave · Cooling · 2 piezas',    avail:'Disp.: 24 en tienda 🏪 · No disponible 🚚',    avClass:'av-bo', locked:'ti' },
+  col:  { img:'Asignaciones/colchon-luuna-original.webp',   name:'Colchón Luuna Original', sku:'SKU: LU2002SC',  attrs:'Matrimonial · Suave · Cooling · 2 piezas', avail:'Disp.: 4 en tienda 🏪 · Envío a domicilio 🚚', avClass:'av-bo', locked:null },
+  base: { img:'Asignaciones/base-de-bambu.jpeg',            name:'Base de Bambú',          sku:'SKU: NB1301',    attrs:'Individual · 2 piezas',                   avail:'Disp.: 0 en tienda 🏪 · Envío a domicilio 🚚', avClass:'av-bo', locked:null },
+};
+
+function v3start(e, key, col) {
+  v3dragging = { key, col };
+  v3lockedDrag = false;
+  const card = document.getElementById('v3c-'+key+'-'+col);
+  if (card) card.classList.add('dragging');
+  ghostEl.textContent = CARD_META[key].name;
+  ghostEl.style.display = 'block';
+}
+
+function v3startLocked(e, key) {
+  v3dragging = { key, col: 'ti' };
+  v3lockedDrag = true;
+  const card = document.getElementById('v3c-'+key+'-ti');
+  if (card) card.classList.add('dragging');
+  ghostEl.textContent = '🔒 ' + CARD_META[key].name + ' · solo tienda';
+  ghostEl.style.display = 'block';
+}
+
+function v3end(e) {
+  if (v3dragging) {
+    const { key, col } = v3dragging;
+    const card = document.getElementById('v3c-'+key+'-'+col);
+    if (card) card.classList.remove('dragging');
+  }
+  ghostEl.style.display = 'none';
+  v3dragging = null;
+  v3lockedDrag = false;
+  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+}
+
+function v3over(e, col) {
+  e.preventDefault();
+  document.getElementById('v3col-'+col).classList.add('dov-'+col);
+}
+
+function v3leave(e, col) {
+  const el = document.getElementById('v3col-'+col);
+  if (!el.contains(e.relatedTarget)) el.classList.remove('dov-'+col);
+}
+
+function v3drop(e, tgtCol) {
+  e.preventDefault();
+  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+  if (!v3dragging) return;
+  const { key, col: srcCol } = v3dragging;
+  if (v3lockedDrag && tgtCol !== 'ti') { v3end(e); return; }
+  if (srcCol === tgtCol) return;
+
+  const srcCard = document.getElementById('v3c-'+key+'-'+srcCol);
+  if (!srcCard) return;
+  const srcQty = parseInt(srcCard.dataset.qty || 1);
+  const tgtZone = document.getElementById('v3z-'+tgtCol);
+  const existingTgt = document.getElementById('v3c-'+key+'-'+tgtCol);
+
+  if (existingTgt) {
+    const newQty = parseInt(existingTgt.dataset.qty || 1) + srcQty;
+    existingTgt.dataset.qty = newQty;
+    v3q[key+'-'+tgtCol] = newQty;
+    const qEl = document.getElementById('v3q-'+key+'-'+tgtCol);
+    if (qEl) qEl.textContent = newQty;
+    srcCard.remove();
+    v3q[key+'-'+srcCol] = 0;
+    if (tgtCol === 'do') {
+      const neg = existingTgt.querySelector('.pc-neg-note');
+      if (neg) neg.remove();
+      existingTgt.classList.remove('is-neg');
+    }
+  } else {
+    const hint = document.getElementById('v3h-'+tgtCol);
+    tgtZone.insertBefore(srcCard, hint);
+    srcCard.id = 'v3c-'+key+'-'+tgtCol;
+    srcCard.dataset.col = tgtCol;
+    srcCard.ondragstart = v3lockedDrag ? null : (ev) => v3start(ev, key, tgtCol);
+    const lbl = srcCard.querySelector('.pc-foot-lbl');
+    if (lbl) lbl.textContent = tgtCol === 'ti' ? 'En tienda' : 'A domicilio';
+    const oldQEl = srcCard.querySelector('.qv');
+    if (oldQEl) { oldQEl.id = 'v3q-'+key+'-'+tgtCol; }
+    const isNeg = (key === 'base' && tgtCol === 'ti');
+    if (isNeg) {
+      srcCard.classList.add('is-neg');
+      let neg = srcCard.querySelector('.pc-neg-note');
+      if (!neg) { neg = document.createElement('div'); neg.className = 'pc-neg-note'; neg.textContent = '⚠ Venta en negativo — préstamo desde otra tienda'; srcCard.appendChild(neg); }
+      neg.style.display = 'block';
+    } else {
+      srcCard.classList.remove('is-neg');
+      const neg = srcCard.querySelector('.pc-neg-note');
+      if (neg) neg.style.display = 'none';
+    }
+    v3q[key+'-'+tgtCol] = srcQty;
+    v3q[key+'-'+srcCol] = 0;
+    const minusBtn = srcCard.querySelector('.qb');
+    if (minusBtn) {
+      if (key === 'alm') { minusBtn.classList.add('off'); }
+      else { minusBtn.classList.remove('off'); minusBtn.onclick = (ev) => v3minus(ev, key, tgtCol); }
+    }
+  }
+  v3updateCounts();
+  v3updateHints();
+}
+
+function v3minus(e, key, col) {
+  e.stopPropagation();
+  const card = document.getElementById('v3c-'+key+'-'+col);
+  if (!card) return;
+  const qty = parseInt(card.dataset.qty || 1);
+  if (qty <= 0) return;
+  const otherCol = col === 'ti' ? 'do' : 'ti';
+  const isNegMove = (key === 'base' && otherCol === 'ti');
+  if (qty === 1) {
+    v3moveCard(key, col, otherCol, 1, isNegMove);
+  } else {
+    const newQty = qty - 1;
+    card.dataset.qty = newQty;
+    v3q[key+'-'+col] = newQty;
+    const qEl = document.getElementById('v3q-'+key+'-'+col);
+    if (qEl) qEl.textContent = newQty;
+    const existingOther = document.getElementById('v3c-'+key+'-'+otherCol);
+    if (existingOther) {
+      const oQty = parseInt(existingOther.dataset.qty || 0) + 1;
+      existingOther.dataset.qty = oQty;
+      v3q[key+'-'+otherCol] = oQty;
+      const oQEl = document.getElementById('v3q-'+key+'-'+otherCol);
+      if (oQEl) oQEl.textContent = oQty;
+    } else {
+      v3createCard(key, otherCol, 1, isNegMove);
+    }
+    v3updateCounts();
+    v3updateHints();
+  }
+}
+
+function v3moveCard(key, srcCol, tgtCol, qty, isNeg) {
+  const srcCard = document.getElementById('v3c-'+key+'-'+srcCol);
+  if (!srcCard) return;
+  const existingTgt = document.getElementById('v3c-'+key+'-'+tgtCol);
+  const tgtZone = document.getElementById('v3z-'+tgtCol);
+  const hint = document.getElementById('v3h-'+tgtCol);
+  if (existingTgt) {
+    const newQty = parseInt(existingTgt.dataset.qty || 0) + qty;
+    existingTgt.dataset.qty = newQty;
+    v3q[key+'-'+tgtCol] = newQty;
+    const qEl = document.getElementById('v3q-'+key+'-'+tgtCol);
+    if (qEl) qEl.textContent = newQty;
+    srcCard.remove();
+  } else {
+    tgtZone.insertBefore(srcCard, hint);
+    srcCard.id = 'v3c-'+key+'-'+tgtCol;
+    srcCard.dataset.col = tgtCol;
+    srcCard.dataset.qty = qty;
+    srcCard.ondragstart = (ev) => v3start(ev, key, tgtCol);
+    const lbl = srcCard.querySelector('.pc-foot-lbl');
+    if (lbl) lbl.textContent = tgtCol === 'ti' ? 'En tienda' : 'A domicilio';
+    const qEl = srcCard.querySelector('.qv');
+    if (qEl) { qEl.id = 'v3q-'+key+'-'+tgtCol; qEl.textContent = qty; }
+    if (isNeg) {
+      srcCard.classList.add('is-neg');
+      let neg = srcCard.querySelector('.pc-neg-note');
+      if (!neg) { neg = document.createElement('div'); neg.className='pc-neg-note'; neg.textContent='⚠ Venta en negativo — préstamo desde otra tienda'; srcCard.appendChild(neg); }
+      neg.style.display = 'block';
+    } else {
+      srcCard.classList.remove('is-neg');
+      const neg = srcCard.querySelector('.pc-neg-note');
+      if (neg) neg.style.display = 'none';
+    }
+    const minusBtn = srcCard.querySelector('.qb');
+    if (minusBtn && key !== 'alm') {
+      minusBtn.classList.remove('off');
+      minusBtn.onclick = (ev) => v3minus(ev, key, tgtCol);
+    }
+    v3q[key+'-'+tgtCol] = qty;
+  }
+  v3q[key+'-'+srcCol] = 0;
+  v3updateCounts();
+  v3updateHints();
+}
+
+function v3createCard(key, col, qty, isNeg) {
+  const m = CARD_META[key];
+  const lbl = col === 'ti' ? 'En tienda' : 'A domicilio';
+  const card = document.createElement('div');
+  card.className = 'pc' + (isNeg ? ' is-neg' : '');
+  card.id = 'v3c-'+key+'-'+col;
+  card.draggable = true;
+  card.dataset.key = key;
+  card.dataset.qty = qty;
+  card.dataset.col = col;
+  card.ondragstart = (e) => v3start(e, key, col);
+  card.ondragend   = (e) => v3end(e);
+  card.innerHTML = `
+    <div class="pc-body"><div class="pc-top">
+      <div class="pc-img"><img src="${m.img}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+      <div class="pc-info">
+        <div class="pc-name">${m.name}</div>
+        <div class="pc-sku">${m.sku}</div>
+        <div class="pc-attrs">${m.attrs}</div>
+        <div class="pc-avail ${isNeg ? 'av-do' : m.avClass}">${isNeg ? 'Venta en negativo' : m.avail}</div>
+      </div>
+      <div class="drag-h">⠿</div>
+    </div></div>
+    <div class="pc-foot">
+      <span class="pc-foot-lbl">${lbl}</span>
+      <div class="pc-qty">
+        <button class="qb" onclick="v3minus(event,'${key}','${col}')">−</button>
+        <span class="qv" id="v3q-${key}-${col}">${qty}</span>
+        <button class="qb off">+</button>
+      </div>
+    </div>
+    ${isNeg ? '<div class="pc-neg-note">⚠ Venta en negativo — préstamo desde otra tienda</div>' : ''}
+  `;
+  const hint = document.getElementById('v3h-'+col);
+  document.getElementById('v3z-'+col).insertBefore(card, hint);
+  v3q[key+'-'+col] = qty;
+  v3updateCounts();
+  v3updateHints();
+}
+
+function v3updateCounts() {
+  ['ti','do'].forEach(col => {
+    const cards = document.getElementById('v3z-'+col).querySelectorAll('.pc');
+    document.getElementById('v3cnt-'+col).textContent = cards.length;
+  });
+}
+
+function v3updateHints() {
+  ['ti','do'].forEach(col => {
+    const cards = document.getElementById('v3z-'+col).querySelectorAll('.pc');
+    const hint  = document.getElementById('v3h-'+col);
+    if (hint) hint.style.display = cards.length === 0 ? 'flex' : 'none';
+  });
+}
+</script>
+</body>
+</html>

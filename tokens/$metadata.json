@@ -1,0 +1,8 @@
+{
+  "tokenSetOrder": [
+    "global",
+    "Primitives/Value",
+    "Tokens/Mode 1",
+    "Typography/Mode 1"
+  ]
+}

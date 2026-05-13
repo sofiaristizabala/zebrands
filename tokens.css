@@ -1,0 +1,240 @@
+/* DS POS — Design Tokens
+   Source: tokens/Primitives/Value.json · tokens/Tokens/Mode 1.json · tokens/Typography/Mode 1.json
+   Generated: 2026-05-12 */
+
+
+/* ─── PRIMITIVES ─────────────────────────────────────────── */
+:root {
+
+  /* Blue */
+  --ds-blue-50:  #e4eeff;
+  --ds-blue-100: #b6cdf1;
+  --ds-blue-200: #89abe4;
+  --ds-blue-300: #5b8ad6;
+  --ds-blue-400: #2e68c9;
+  --ds-blue-500: #0047bb;
+  --ds-blue-600: #003996;
+  --ds-blue-700: #002b70;
+  --ds-blue-800: #001c4b;
+  --ds-blue-900: #000e25;
+
+  /* Light grey */
+  --ds-grey-light-50:  #ffffff;
+  --ds-grey-light-100: #f5f5f5;
+  --ds-grey-light-200: #eaeaeb;
+  --ds-grey-light-300: #e0e0e1;
+  --ds-grey-light-400: #d5d5d6;
+  --ds-grey-light-500: #c0c0c3;
+  --ds-grey-light-600: #acacaf;
+  --ds-grey-light-700: #97979b;
+  --ds-grey-light-800: #828286;
+  --ds-grey-light-900: #6d6d71;
+
+  /* Dark grey */
+  --ds-grey-dark-50:  #969696;
+  --ds-grey-dark-100: #8e8e8e;
+  --ds-grey-dark-200: #868686;
+  --ds-grey-dark-300: #7e7e7e;
+  --ds-grey-dark-400: #5d5d5d;
+  --ds-grey-dark-500: #4d4d4d;
+  --ds-grey-dark-600: #3e3e3e;
+  --ds-grey-dark-700: #2e2e2e;
+  --ds-grey-dark-800: #1f1f1f;
+  --ds-grey-dark-900: #000000;
+
+  /* Lila */
+  --ds-lila-50:  #fafaff;
+  --ds-lila-100: #f5f5ff;
+  --ds-lila-200: #ebebff;
+  --ds-lila-300: #e0e0ff;
+  --ds-lila-400: #ccccff;
+  --ds-lila-500: #a3a3da;
+  --ds-lila-600: #7a7ab5;
+  --ds-lila-700: #525291;
+  --ds-lila-800: #29296c;
+  --ds-lila-900: #000047;
+
+  /* Red */
+  --ds-red-25:  #F5EEEE;
+  --ds-red-50:  #fee9e8;
+  --ds-red-75:  #D4AAAA;
+  --ds-red-100: #fedad9;
+  --ds-red-300: #fec3c1;
+  --ds-red-700: #e51c00;
+  --ds-red-900: #8e1f0b;
+
+  /* Yellow */
+  --ds-yellow-25:  #F5F0EA;
+  --ds-yellow-50:  #ffebd5;
+  --ds-yellow-75:  #C9B89A;
+  --ds-yellow-100: #ffddb6;
+  --ds-yellow-300: #ffc879;
+  --ds-yellow-700: #956f00;
+  --ds-yellow-900: #5e4200;
+
+  /* Green */
+  --ds-green-25:  #EEF4F1;
+  --ds-green-50:  #b4fed2;
+  --ds-green-75:  #B0CCBF;
+  --ds-green-100: #63fdb0;
+  --ds-green-300: #35ee9b;
+  --ds-green-700: #29845a;
+  --ds-green-900: #0c5132;
+
+  /* Azure */
+  --ds-azure-25:  #EEF2F8;
+  --ds-azure-50:  #e0f0ff;
+  --ds-azure-75:  #AABDD6;
+  --ds-azure-100: #cae6ff;
+  --ds-azure-300: #a8d8ff;
+  --ds-azure-700: #007cb4;
+  --ds-azure-800: #1E3A5F;
+  --ds-azure-900: #00527c;
+
+  /* Alpha dark */
+  --ds-alpha-dark-50:  #0000001a;
+  --ds-alpha-dark-100: #00000040;
+  --ds-alpha-dark-300: #00000066;
+  --ds-alpha-dark-700: #00000099;
+  --ds-alpha-dark-900: #000000d9;
+
+  /* Spacing scale (px) */
+  --ds-space-0:    0px;
+  --ds-space-025:  1px;
+  --ds-space-050:  2px;
+  --ds-space-100:  4px;
+  --ds-space-150:  6px;
+  --ds-space-200:  8px;
+  --ds-space-300:  12px;
+  --ds-space-350:  14px;
+  --ds-space-400:  16px;
+  --ds-space-500:  20px;
+  --ds-space-600:  24px;
+  --ds-space-700:  28px;
+  --ds-space-800:  32px;
+  --ds-space-900:  36px;
+  --ds-space-1000: 40px;
+  --ds-space-1200: 48px;
+  --ds-space-1600: 64px;
+  --ds-space-2000: 80px;
+  --ds-space-2400: 96px;
+
+  /* Radius */
+  --ds-radius-none: 0px;
+  --ds-radius-sm:   4px;
+  --ds-radius-md:   8px;
+  --ds-radius-lg:   16px;
+  --ds-radius-xl:   32px;
+  --ds-radius-full: 999px;
+
+  /* Typography */
+  --ds-font-family: "GT America", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --ds-font-weight-thin:    100;
+  --ds-font-weight-regular: 400;
+  --ds-font-weight-medium:  500;
+
+  --ds-font-size-body-xs:      11px;
+  --ds-font-size-body-s:       12px;
+  --ds-font-size-body-m:       14px;
+  --ds-font-size-body-l:       16px;
+  --ds-font-size-subheading-s: 18px;
+  --ds-font-size-subheading-m: 20px;
+  --ds-font-size-heading-s:    24px;
+  --ds-font-size-heading-m: 28px;
+  --ds-font-size-heading-l: 32px;
+  --ds-font-size-display-s: 36px;
+  --ds-font-size-display-m: 45px;
+  --ds-font-size-display-l: 57px;
+
+  --ds-line-height-body-xs:      12px;
+  --ds-line-height-body-s:       14px;
+  --ds-line-height-body-m:       16px;
+  --ds-line-height-body-l:       20px;
+  --ds-line-height-subheading-s: 22px;
+  --ds-line-height-subheading-m: 24px;
+  --ds-line-height-heading-s:    28px;
+  --ds-line-height-heading-m: 34px;
+  --ds-line-height-heading-l: 38px;
+  --ds-line-height-display-s: 44px;
+  --ds-line-height-display-m: 54px;
+  --ds-line-height-display-l: 68px;
+
+  --ds-letter-spacing-body-xs:   0px;
+  --ds-letter-spacing-body-s:    0px;
+  --ds-letter-spacing-body-m:    0px;
+  --ds-letter-spacing-body-l:    0px;
+  --ds-letter-spacing-heading-s: -1.12px;
+  --ds-letter-spacing-heading-m: -1.36px;
+  --ds-letter-spacing-heading-l: -1.53px;
+  --ds-letter-spacing-display-s: -1.76px;
+  --ds-letter-spacing-display-m: -2.16px;
+  --ds-letter-spacing-display-l: -2.72px;
+}
+
+
+/* ─── SEMANTIC TOKENS ────────────────────────────────────── */
+:root {
+
+  /* Background */
+  --ds-bg-primary:   var(--ds-grey-light-50);
+  --ds-bg-secondary: var(--ds-grey-light-100);
+  --ds-bg-disabled:  var(--ds-grey-light-200);
+  --ds-bg-inverted:  var(--ds-grey-dark-900);
+  --ds-bg-brand:     var(--ds-blue-50);
+  --ds-bg-error:          var(--ds-red-50);
+  --ds-bg-warning:        var(--ds-yellow-50);
+  --ds-bg-success:        var(--ds-green-50);
+  --ds-bg-info:           var(--ds-azure-50);
+  --ds-bg-success-subtle: var(--ds-green-25);
+  --ds-bg-warning-subtle: var(--ds-yellow-25);
+  --ds-bg-error-subtle:   var(--ds-red-25);
+  --ds-bg-info-subtle:    var(--ds-azure-25);
+
+  /* Foreground / Text */
+  --ds-fg-primary:   var(--ds-grey-dark-900);
+  --ds-fg-secondary: var(--ds-grey-dark-400);
+  --ds-fg-disabled:  var(--ds-grey-dark-300);
+  --ds-fg-brand:     var(--ds-blue-600);
+  --ds-fg-error:     var(--ds-red-900);
+  --ds-fg-warning:   var(--ds-yellow-900);
+  --ds-fg-success:   var(--ds-green-900);
+  --ds-fg-info:       var(--ds-azure-900);
+  --ds-fg-info-strong: var(--ds-azure-800);
+  --ds-fg-promo:      var(--ds-red-700);
+
+  /* Border */
+  --ds-border-primary:   var(--ds-grey-dark-900);
+  --ds-border-secondary: var(--ds-grey-dark-400);
+  --ds-border-disabled:  var(--ds-grey-dark-300);
+  --ds-border-brand:     var(--ds-blue-600);
+  --ds-border-error:     var(--ds-red-900);
+  --ds-border-warning:   var(--ds-yellow-900);
+  --ds-border-success:        var(--ds-green-900);
+  --ds-border-info:           var(--ds-azure-900);
+  --ds-border-success-subtle: var(--ds-green-75);
+  --ds-border-warning-subtle: var(--ds-yellow-75);
+  --ds-border-error-subtle:   var(--ds-red-75);
+  --ds-border-info-subtle:    var(--ds-azure-75);
+
+  /* Border radius */
+  --ds-br-sharp:   var(--ds-radius-none);
+  --ds-br-soft:    var(--ds-radius-sm);
+  --ds-br-medium:  var(--ds-radius-md);
+  --ds-br-rounded: var(--ds-radius-lg);
+  --ds-br-full:    var(--ds-radius-full);
+
+  /* Border width */
+  --ds-bw-s: var(--ds-space-025);
+  --ds-bw-m: var(--ds-space-050);
+  --ds-bw-l: var(--ds-space-100);
+
+  /* Spacing aliases */
+  --ds-spacing-none: var(--ds-space-0);
+  --ds-spacing-xs:   var(--ds-space-100);
+  --ds-spacing-s:    var(--ds-space-200);
+  --ds-spacing-m:    var(--ds-space-300);
+  --ds-spacing-l:    var(--ds-space-400);
+  --ds-spacing-xl:   var(--ds-space-600);
+  --ds-spacing-2xl:  var(--ds-space-800);
+}

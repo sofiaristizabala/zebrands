@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variante 1 · Distribución expandida · DS POS</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root {
+  --font:            var(--ds-font-family);
+  --bg-default:      var(--ds-bg-primary);
+  --bg-subtle:       var(--ds-bg-secondary);
+  --bg-brand:        var(--ds-blue-600);
+  --bg-brand-strong: var(--ds-blue-900);
+  --bg-disabled:     var(--ds-bg-secondary);
+  --text-primary:    var(--ds-fg-primary);
+  --text-secondary:  var(--ds-grey-dark-500);
+  --text-disabled:   var(--ds-fg-disabled);
+  --text-inverted:   var(--ds-grey-light-50);
+  --text-brand:      var(--ds-blue-500);
+  --text-link:       var(--ds-blue-600);
+  --text-success:    var(--ds-fg-success);
+  --text-warning:    var(--ds-fg-warning);
+  --text-error:      var(--ds-fg-error);
+  --border-subtle:   var(--ds-grey-light-200);
+  --border-default:  var(--ds-grey-light-500);
+  --border-strong:   var(--ds-fg-primary);
+  --suc-bg: var(--ds-bg-success-subtle);      --suc-br: var(--ds-border-success-subtle);
+  --war-bg: var(--ds-bg-warning-subtle);      --war-br: var(--ds-border-warning-subtle);
+  --err-bg: var(--ds-bg-error-subtle);        --err-br: var(--ds-border-error-subtle);
+  --inf-bg: var(--ds-bg-info-subtle);         --inf-br: var(--ds-border-info-subtle);
+  --inf-tx: var(--ds-fg-info-strong);
+  --acc-ti: var(--ds-bg-success-subtle);      --acc-ti-br: var(--ds-border-success-subtle);
+  --acc-do: var(--ds-bg-info-subtle);         --acc-do-br: var(--ds-border-info-subtle);
+  --acc-ng: var(--ds-bg-warning-subtle);      --acc-ng-br: var(--ds-border-warning-subtle);
+  --r-sm:   var(--ds-br-soft);
+  --r-md:   var(--ds-br-medium);
+  --r-full: var(--ds-br-full);
+  --bw-s:   var(--ds-bw-s);
+  --bw-m:   var(--ds-bw-m);
+  --s-050: var(--ds-space-050);
+  --s-100: var(--ds-space-100);
+  --s-150: var(--ds-space-150);
+  --s-200: var(--ds-space-200);
+  --s-300: var(--ds-space-300);
+  --s-400: var(--ds-space-400);
+  --s-800: var(--ds-space-800);
+  --fs-xs: var(--ds-font-size-body-xs);
+  --fs-s:  var(--ds-font-size-body-s);
+  --fs-m:  var(--ds-font-size-body-m);
+  --fs-l:  var(--ds-font-size-body-l);
+  --fs-hl: var(--ds-font-size-heading-s);
+  --fs-hs: 18px;
+  --fs-hm: 20px;
+  --lh-s:  var(--ds-line-height-body-s);
+  --lh-m:  var(--ds-line-height-body-m);
+  --lh-l:  var(--ds-line-height-body-l);
+  --lh-hl: var(--ds-line-height-heading-s);
+  --lh-hs: 22px;
+  --lh-hm: 24px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg-subtle); color: var(--text-primary); }
+
+.topbar { background: var(--bg-brand-strong); color: var(--text-inverted); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 56px; }
+.tb-brand { font-size: var(--fs-hs); font-weight: 400; }
+.tb-store { font-size: var(--fs-l); color: var(--text-inverted); background: none; border: none; cursor: pointer; }
+.tb-user  { display: flex; align-items: center; gap: var(--s-300); font-size: var(--fs-l); font-weight: 500; }
+.tb-av    { width: 40px; height: 40px; border-radius: var(--r-full); background: #2D5FA6; display: flex; align-items: center; justify-content: center; font-size: var(--fs-s); font-weight: 700; }
+
+.subbar { background: var(--bg-default); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 80px; box-shadow: 0 4px 5px rgba(0,0,0,.07); }
+.subbar-title { font-size: var(--fs-hl); font-weight: 500; }
+.subbar-right { display: flex; gap: var(--s-300); align-items: center; }
+.btn-outline { display: flex; align-items: center; gap: var(--s-150); height: 44px; padding: var(--s-200) var(--s-400); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); color: var(--text-primary); cursor: pointer; white-space: nowrap; }
+.btn-outline:hover { background: var(--bg-subtle); }
+
+.page { padding: var(--s-400) var(--s-800); max-width: 1280px; margin: 0 auto; }
+.page-cols { display: grid; grid-template-columns: 1fr 300px; gap: var(--s-400); align-items: start; }
+
+.order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); position: sticky; top: var(--s-400); }
+.os-title { font-size: var(--fs-hs); font-weight: 500; margin-bottom: var(--s-100); }
+.os-id    { font-size: var(--fs-s); color: var(--text-secondary); margin-bottom: var(--s-300); }
+
+.os-items { border-top: var(--bw-s) solid var(--border-subtle); }
+.os-item  { padding: var(--s-300) 0; border-bottom: var(--bw-s) solid var(--border-subtle); display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-200); }
+.os-item-name  { font-size: var(--fs-m); font-weight: 500; grid-column: 1; }
+.os-item-price { font-size: var(--fs-m); font-weight: 500; grid-column: 2; grid-row: 1; text-align: right; }
+.os-item-attrs { font-size: var(--fs-s); color: var(--text-secondary); grid-column: 1 / -1; }
+.os-item-pend  { font-size: var(--fs-s); grid-column: 1 / -1; }
+.os-item-pend.alert { color: var(--text-error); }
+.os-item-pend.ok    { color: var(--text-secondary); }
+
+.os-coupon { display: flex; gap: var(--s-100); margin: var(--s-300) 0; }
+.os-coupon input { flex: 1; height: 40px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-secondary); background: var(--bg-default); outline: none; }
+.os-coupon-btn { height: 40px; padding: 0 var(--s-300); border: none; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-disabled); background: none; cursor: default; white-space: nowrap; }
+
+.os-rows { display: flex; flex-direction: column; gap: var(--s-200); padding-bottom: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.os-row  { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-m); }
+.os-row-lbl { color: var(--text-primary); }
+.os-row-val { font-weight: 500; }
+.os-row-val.saving { color: #B45309; }
+.os-row-val.free   { color: var(--text-secondary); }
+.os-credit-btn { height: 32px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-s); font-weight: 500; background: var(--bg-default); cursor: pointer; }
+
+.os-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: var(--s-300); margin-top: var(--s-100); }
+.os-total-lbl { font-size: var(--fs-m); font-weight: 500; }
+.os-total-val { font-size: var(--fs-hm); font-weight: 700; color: var(--ds-blue-500); }
+.os-monthly   { font-size: var(--fs-xs); color: var(--text-secondary); margin-top: var(--s-100); line-height: 1.5; }
+.breadcrumb { font-size: var(--fs-m); margin-bottom: var(--s-400); padding: var(--s-200) 0; display: flex; align-items: center; gap: var(--s-200); color: var(--text-primary); }
+.breadcrumb a { color: var(--text-link); text-decoration: none; }
+
+.variant { margin-bottom: 48px; }
+.variant-badge { font-size: var(--fs-s); font-weight: 500; text-transform: uppercase; letter-spacing:.06em; color: var(--text-disabled); margin-bottom: var(--s-100); display: block; }
+.variant-title { font-size: var(--fs-hm); font-weight: 500; margin-bottom: var(--s-100); }
+.variant-desc  { font-size: var(--fs-m); color: var(--text-secondary); margin-bottom: var(--s-400); line-height: 1.6; }
+.variant-body  { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); }
+
+.ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-400); gap: var(--s-300); flex-wrap: wrap; }
+.ph-title { font-size: var(--fs-hm); font-weight: 500; }
+.ph-sub   { font-size: var(--fs-m); color: var(--text-secondary); margin-top: var(--s-050); }
+
+.pill { display: inline-flex; align-items: center; gap: var(--s-100); padding: var(--s-100) var(--s-300); border-radius: var(--r-sm); font-size: var(--fs-s); font-weight: 500; white-space: nowrap; }
+.pill-warn { background: var(--war-bg); color: var(--text-warning); border: var(--bw-s) solid var(--war-br); }
+.pill-ok   { background: var(--suc-bg); color: var(--text-success); border: var(--bw-s) solid var(--suc-br); }
+
+.confirm-btn { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-l); font-weight: 400; border: none; cursor: not-allowed; margin-top: var(--s-400); background: var(--bg-disabled); color: var(--text-disabled); transition: background .2s; }
+.confirm-btn.active { background: var(--bg-brand); color: var(--text-inverted); cursor: pointer; }
+.confirm-btn.active:hover { background: #002d7a; }
+
+.qty-sel { display: flex; align-items: center; height: 40px; border: var(--bw-s) solid var(--border-default); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.qty-sel.ti  { border-color: var(--acc-ti-br); }
+.qty-sel.do  { border-color: var(--acc-do-br); }
+.qty-sel.neg { border-color: var(--acc-ng-br); }
+.qs-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 18px; color: var(--text-primary); font-weight: 300; transition: background .12s; }
+.qs-btn:hover:not(.off) { background: var(--border-subtle); }
+.qs-btn.off { opacity: .25; cursor: default; pointer-events: none; }
+.qs-val { width: 36px; text-align: center; font-size: var(--fs-l); background: var(--bg-default); }
+.qs-val.ti  { color: var(--text-success); }
+.qs-val.do  { color: var(--inf-tx); }
+.qs-val.neg { color: var(--text-warning); }
+
+.ab { font-size: var(--fs-s); font-weight: 500; padding: var(--s-050) var(--s-200); border-radius: var(--r-sm); white-space: nowrap; display: inline-flex; align-items: center; }
+.ab-ti   { background: var(--acc-ti);  color: var(--text-success);  border: var(--bw-s) solid var(--acc-ti-br); }
+.ab-do   { background: var(--acc-do);  color: var(--inf-tx);        border: var(--bw-s) solid var(--acc-do-br); }
+.ab-sp   { background: #F0EEF5;        color: #4A3980;              border: var(--bw-s) solid #B8AECE; }
+.ab-ng   { background: var(--acc-ng);  color: var(--text-warning);  border: var(--bw-s) solid var(--acc-ng-br); }
+.ab-pend { background: var(--war-bg);  color: var(--text-warning);  border: var(--bw-s) solid var(--war-br); }
+
+.note { font-size: var(--fs-xs); padding: var(--s-100) var(--s-300); border-radius: var(--r-sm); margin-top: var(--s-200); line-height: 1.5; }
+.note-warn { background: var(--war-bg); color: var(--text-warning); border: var(--bw-s) solid var(--war-br); }
+.note-err  { background: var(--err-bg); color: var(--text-error);   border: var(--bw-s) solid var(--err-br); }
+
+.v1-list { display: flex; flex-direction: column; gap: var(--s-200); }
+.v1-card { border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.v1-card-head { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-300) var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.v1-img  { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; overflow: hidden; }
+.v1-info { flex: 1; min-width: 0; }
+.v1-name  { font-size: var(--fs-m); font-weight: 500; }
+.v1-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
+.v1-avail { font-size: var(--fs-s); margin-top: 3px; font-weight: 500; }
+.av-ti { color: var(--text-success); }
+.av-do { color: var(--inf-tx); }
+.av-bo { color: var(--text-secondary); }
+.v1-expand { padding: var(--s-300) var(--s-400); background: var(--bg-subtle); }
+.v1-expand-title { font-size: var(--fs-s); font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing:.05em; margin-bottom: var(--s-300); }
+.v1-row { display: flex; align-items: center; gap: var(--s-300); margin-bottom: var(--s-150); }
+.v1-lbl { font-size: var(--fs-m); color: var(--text-primary); width: 140px; flex-shrink: 0; }
+.v1-of  { font-size: var(--fs-s); color: var(--text-disabled); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-brand">V2 · ZePOS</div>
+  <button class="tb-store">🏪 Tienda Altavista ↻</button>
+  <div class="tb-user"><div class="tb-av">AP</div><span>Hola Andrea Pérez</span></div>
+</div>
+<div class="subbar">
+  <div class="subbar-title">Asignación de entrega</div>
+  <div class="subbar-right">
+    <button class="btn-outline">➕ Nueva venta</button>
+    <button class="btn-outline">Camila Cabello... ▾</button>
+    <button class="btn-outline">🛒</button>
+  </div>
+</div>
+
+<div class="page">
+<div class="breadcrumb"><a href="index.html">← Propuestas</a> <span style="color:var(--text-secondary)">›</span> Variante 1</div>
+
+<div class="page-cols">
+<div><!-- columna principal -->
+<div class="variant">
+  <span class="variant-badge">Variante 1</span>
+  <div class="variant-title">Distribución siempre visible por producto</div>
+  <div class="variant-desc">
+    Cada producto muestra sus controles de distribución desplegados. El (+) en un destino descuenta automáticamente del otro. Reglas: Almohada solo puede ir a tienda · Colchón se mueve libremente · Base de bambú solo a domicilio, y si se mueve a tienda aparece alerta de venta en negativo.
+  </div>
+  <div class="variant-body">
+
+    <div class="ph">
+      <div>
+        <div class="ph-title">¿Cómo entregamos cada producto?</div>
+        <div class="ph-sub">6 piezas · 3 productos</div>
+      </div>
+    </div>
+
+    <div class="v1-list">
+
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/almohada-grid-tech-d-4.jpg" alt="Almohada Grid Tech" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Almohada Grid Tech · SKU: ALTP1001</div>
+            <div class="v1-attrs">Estándar · Suave · Cooling · 2 piezas</div>
+            <div class="v1-avail av-bo">Disponibilidad: 24 en tienda 🏪 · No disponible 🚚</div>
+          </div>
+          <span class="ab ab-ti" id="v1b-alm">🏪 2 en tienda</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 2 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl">🏪 En tienda</span>
+            <div class="qty-sel ti">
+              <button class="qs-btn off">−</button>
+              <span class="qs-val ti" id="v1-alm-ti">2</span>
+              <button class="qs-btn off">+</button>
+            </div>
+            <span class="v1-of">Solo tienda disponible</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Colchón Luuna Original · SKU: LU2002SC</div>
+            <div class="v1-attrs">Matrimonial · Suave · Cooling · 2 piezas</div>
+            <div class="v1-avail av-bo">Disponibilidad: 4 en tienda 🏪 · Envío a domicilio 🚚</div>
+          </div>
+          <span class="ab ab-ti" id="v1b-col">🏪 2 en tienda</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 2 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl">🏪 En tienda</span>
+            <div class="qty-sel ti">
+              <button id="v1-col-ti-dec" class="qs-btn" onclick="v1move('col','ti','do')">−</button>
+              <span class="qs-val ti" id="v1-col-ti">2</span>
+              <button id="v1-col-ti-inc" class="qs-btn off" onclick="v1move('col','do','ti')">+</button>
+            </div>
+            <span class="v1-of">de 2 piezas</span>
+          </div>
+          <div class="v1-row">
+            <span class="v1-lbl">🚚 A domicilio</span>
+            <div class="qty-sel do">
+              <button id="v1-col-do-dec" class="qs-btn off" onclick="v1move('col','do','ti')">−</button>
+              <span class="qs-val do" id="v1-col-do">0</span>
+              <button id="v1-col-do-inc" class="qs-btn" onclick="v1move('col','ti','do')">+</button>
+            </div>
+          </div>
+          <div class="note note-err" id="v1-col-pend" style="display:none">⚠ Asigna al menos 1 pieza para continuar</div>
+        </div>
+      </div>
+
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/base-de-bambu.jpeg" alt="Base de Bambú" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Base de Bambú · SKU: NB1301</div>
+            <div class="v1-attrs">Individual · 2 piezas</div>
+            <div class="v1-avail av-bo">Disponibilidad: 0 en tienda 🏪 · Envío a domicilio 🚚</div>
+          </div>
+          <span class="ab ab-do" id="v1b-base">🚚 2 a domicilio</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 2 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl">🏪 En tienda</span>
+            <div class="qty-sel neg">
+              <button id="v1-base-ti-dec" class="qs-btn off" onclick="v1move('base','ti','do')">−</button>
+              <span class="qs-val neg" id="v1-base-ti">0</span>
+              <button id="v1-base-ti-inc" class="qs-btn" onclick="v1move('base','do','ti')">+</button>
+            </div>
+            <span class="v1-of">venta en negativo</span>
+          </div>
+          <div class="v1-row">
+            <span class="v1-lbl">🚚 A domicilio</span>
+            <div class="qty-sel do">
+              <button id="v1-base-do-dec" class="qs-btn" onclick="v1move('base','do','ti')">−</button>
+              <span class="qs-val do" id="v1-base-do">2</span>
+              <button id="v1-base-do-inc" class="qs-btn off" onclick="v1move('base','ti','do')">+</button>
+            </div>
+          </div>
+          <div class="note note-warn" id="v1-base-neg" style="display:none">
+            ⚠ Venta en negativo — esta pieza se gestionará como préstamo desde otra tienda
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <button class="confirm-btn active" id="v1-confirm">Confirmar asignación</button>
+  </div>
+</div>
+</div><!-- /columna principal -->
+
+<!-- ── RESUMEN DE ORDEN ── -->
+<aside class="order-summary">
+  <div class="os-title">Resumen de la orden</div>
+  <div class="os-id">QTN-2404149648bf42</div>
+
+  <div class="os-items">
+    <div class="os-item">
+      <div class="os-item-name">Colchón Luuna Original</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Matrimonial | Suave | Cooling</div>
+      <div class="os-item-pend alert">Productos por asignar: 2</div>
+    </div>
+    <div class="os-item">
+      <div class="os-item-name">Base de bambú</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Individual</div>
+      <div class="os-item-pend ok">Productos por asignar: 1</div>
+    </div>
+    <div class="os-item">
+      <div class="os-item-name">Almohada Grid Tech</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Estándar</div>
+      <div class="os-item-pend ok">Productos por asignar: 1</div>
+    </div>
+  </div>
+
+  <div class="os-coupon">
+    <input placeholder="Ingresa tu cupón o código">
+    <button class="os-coupon-btn">Aplicar</button>
+  </div>
+
+  <div class="os-rows">
+    <div class="os-row">
+      <span class="os-row-lbl">Subtotal</span>
+      <span class="os-row-val">$41,037</span>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Ahorro</span>
+      <span class="os-row-val saving">-$20,860</span>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Créditos de regalo</span>
+      <button class="os-credit-btn">Aplicar $500</button>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Envío</span>
+      <span class="os-row-val free">GRATIS</span>
+    </div>
+  </div>
+
+  <div class="os-total">
+    <span class="os-total-lbl">Total</span>
+    <span class="os-total-val">$19,677</span>
+  </div>
+  <div class="os-monthly">Pago mensual disponible &nbsp; $1,638.75/mes por 24 MSI<br>*Exclusivo Citibanamex</div>
+</aside>
+
+</div><!-- /page-cols -->
+
+<script>
+const v1s = {
+  alm:  { ti:2, do:0, total:2, onlyTi:true,  onlyDo:false },
+  col:  { ti:2, do:0, total:2, onlyTi:false, onlyDo:false },
+  base: { ti:0, do:2, total:2, onlyTi:false, onlyDo:true  },
+};
+
+function v1move(id, from, to) {
+  const s = v1s[id];
+  if (id === 'alm' && to === 'do') return;
+  if (s[from] <= 0) return;
+  s[from]--; s[to]++;
+  v1render(id);
+}
+
+function setOff(id, disabled) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('off', disabled);
+}
+
+function v1render(id) {
+  const s = v1s[id];
+  const tiEl = document.getElementById('v1-'+id+'-ti');
+  const doEl = document.getElementById('v1-'+id+'-do');
+  if (tiEl) tiEl.textContent = s.ti;
+  if (doEl) doEl.textContent = s.do;
+
+  const b = document.getElementById('v1b-'+id);
+  if (b) {
+    if (s.ti > 0 && s.do > 0) { b.className='ab ab-sp'; b.textContent='🏪 '+s.ti+' · 🚚 '+s.do; }
+    else if (s.ti > 0)         { b.className='ab ab-ti'; b.textContent='🏪 '+s.ti+' en tienda'; }
+    else if (s.do > 0)         { b.className='ab ab-do'; b.textContent='🚚 '+s.do+' a domicilio'; }
+    else                        { b.className='ab ab-pend'; b.textContent='? Sin asignar'; }
+  }
+
+  if (id === 'col') {
+    const pend = document.getElementById('v1-col-pend');
+    if (pend) pend.style.display = (s.ti===0 && s.do===0) ? 'block' : 'none';
+    setOff('v1-col-ti-dec', s.ti === 0);
+    setOff('v1-col-ti-inc', s.do === 0);
+    setOff('v1-col-do-dec', s.do === 0);
+    setOff('v1-col-do-inc', s.ti === 0);
+  }
+  if (id === 'base') {
+    const warn = document.getElementById('v1-base-neg');
+    if (warn) warn.style.display = s.ti > 0 ? 'block' : 'none';
+    setOff('v1-base-ti-dec', s.ti === 0);
+    setOff('v1-base-ti-inc', s.do === 0);
+    setOff('v1-base-do-dec', s.do === 0);
+    setOff('v1-base-do-inc', s.ti === 0);
+  }
+  v1updateStatus();
+}
+
+function v1updateStatus() {
+  const s = v1s.col;
+  const pending = (s.ti === 0 && s.do === 0) ? 1 : 0;
+  const pill = document.getElementById('v1-pill');
+  const btn  = document.getElementById('v1-confirm');
+  if (pending === 0) {
+    if (pill) { pill.className = 'pill pill-ok'; pill.textContent = '✓ Todos asignados'; }
+    btn.className = 'confirm-btn active'; btn.textContent = 'Confirmar asignación';
+  } else {
+    if (pill) { pill.className = 'pill pill-warn'; pill.textContent = '⚠ 1 sin asignar'; }
+    btn.className = 'confirm-btn'; btn.textContent = 'Confirmar asignación · 1 sin asignar';
+  }
+}
+</script>
+</body>
+</html>

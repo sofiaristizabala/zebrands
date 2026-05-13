@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asignación · 2 Variantes · DS POS</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root {
+  /* ── DS token bridge ── */
+  --font:            var(--ds-font-family);
+  --bg-default:      var(--ds-bg-primary);       /* #ffffff */
+  --bg-subtle:       var(--ds-bg-secondary);     /* #f5f5f5 */
+  --bg-brand:        var(--ds-blue-600);          /* #003996 */
+  --bg-brand-strong: var(--ds-blue-900);          /* #000e25 */
+  --bg-disabled:     var(--ds-bg-secondary);     /* #f5f5f5 */
+  --text-primary:    var(--ds-fg-primary);        /* #000000 */
+  --text-secondary:  var(--ds-grey-dark-500);     /* #4d4d4d */
+  --text-disabled:   var(--ds-fg-disabled);       /* #7e7e7e */
+  --text-inverted:   var(--ds-grey-light-50);     /* #ffffff */
+  --text-brand:      var(--ds-blue-500);          /* #0047bb */
+  --text-link:       var(--ds-blue-600);          /* #003996 */
+  --text-success:    var(--ds-fg-success);        /* #0c5132 */
+  --text-warning:    var(--ds-fg-warning);        /* #5e4200 — token; prototype usaba #78350F */
+  --text-error:      var(--ds-fg-error);          /* #8e1f0b — token; prototype usaba #991B1B */
+  --border-subtle:   var(--ds-grey-light-200);    /* #eaeaeb */
+  --border-default:  var(--ds-grey-light-500);    /* #c0c0c3 */
+  --border-strong:   var(--ds-fg-primary);        /* #000000 */
+
+  /* ── State tokens ── */
+  --suc-bg: var(--ds-bg-success-subtle);      --suc-br: var(--ds-border-success-subtle);
+  --war-bg: var(--ds-bg-warning-subtle);      --war-br: var(--ds-border-warning-subtle);
+  --err-bg: var(--ds-bg-error-subtle);        --err-br: var(--ds-border-error-subtle);
+  --inf-bg: var(--ds-bg-info-subtle);         --inf-br: var(--ds-border-info-subtle);
+  --inf-tx: var(--ds-fg-info-strong);
+  --acc-ti: var(--ds-bg-success-subtle);      --acc-ti-br: var(--ds-border-success-subtle);
+  --acc-do: var(--ds-bg-info-subtle);         --acc-do-br: var(--ds-border-info-subtle);
+  --acc-ng: var(--ds-bg-warning-subtle);      --acc-ng-br: var(--ds-border-warning-subtle);
+
+  /* ── Radius · Border width ── */
+  --r-sm:   var(--ds-br-soft);    /* 4px */
+  --r-md:   var(--ds-br-medium);  /* 8px */
+  --r-full: var(--ds-br-full);    /* 999px */
+  --bw-s:   var(--ds-bw-s);       /* 1px */
+  --bw-m:   var(--ds-bw-m);       /* 2px */
+
+  /* ── Spacing ── */
+  --s-050: var(--ds-space-050);  /* 2px */
+  --s-100: var(--ds-space-100);  /* 4px */
+  --s-150: var(--ds-space-150);  /* 6px */
+  --s-200: var(--ds-space-200);  /* 8px */
+  --s-300: var(--ds-space-300);  /* 12px */
+  --s-400: var(--ds-space-400);  /* 16px */
+  --s-800: var(--ds-space-800);  /* 32px */
+
+  /* ── Typography ── */
+  --fs-xs: var(--ds-font-size-body-xs);    /* 11px */
+  --fs-s:  var(--ds-font-size-body-s);     /* 12px */
+  --fs-m:  var(--ds-font-size-body-m);     /* 14px */
+  --fs-l:  var(--ds-font-size-body-l);     /* 16px */
+  --fs-hl: var(--ds-font-size-heading-s);  /* 24px */
+  --fs-hs: 18px;  /* pendiente en token file */
+  --fs-hm: 20px;  /* pendiente en token file */
+  --lh-s:  var(--ds-line-height-body-s);   /* 14px */
+  --lh-m:  var(--ds-line-height-body-m);   /* 16px */
+  --lh-l:  var(--ds-line-height-body-l);   /* 20px */
+  --lh-hl: var(--ds-line-height-heading-s); /* 28px */
+  --lh-hs: 22px;  /* pendiente en token file */
+  --lh-hm: 24px;  /* pendiente en token file */
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg-subtle); color: var(--text-primary); }
+
+/* TOPBAR */
+.topbar { background: var(--bg-brand-strong); color: var(--text-inverted); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 56px; }
+.tb-brand { font-size: var(--fs-hs); font-weight: 400; }
+.tb-store { font-size: var(--fs-l); color: var(--text-inverted); background: none; border: none; cursor: pointer; }
+.tb-user  { display: flex; align-items: center; gap: var(--s-300); font-size: var(--fs-l); font-weight: 500; }
+.tb-av    { width: 40px; height: 40px; border-radius: var(--r-full); background: #2D5FA6; display: flex; align-items: center; justify-content: center; font-size: var(--fs-s); font-weight: 700; }
+
+/* SUBBAR */
+.subbar { background: var(--bg-default); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 80px; box-shadow: 0 4px 5px rgba(0,0,0,.07); }
+.subbar-title { font-size: var(--fs-hl); font-weight: 500; }
+.subbar-right { display: flex; gap: var(--s-300); align-items: center; }
+.btn-outline { display: flex; align-items: center; gap: var(--s-150); height: 44px; padding: var(--s-200) var(--s-400); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); color: var(--text-primary); cursor: pointer; white-space: nowrap; }
+.btn-outline:hover { background: var(--bg-subtle); }
+
+/* PAGE */
+.page { padding: var(--s-400) var(--s-800); max-width: 1280px; margin: 0 auto; }
+.page-cols { display: grid; grid-template-columns: 1fr 300px; gap: var(--s-400); align-items: start; }
+
+.order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); position: sticky; top: var(--s-400); }
+.os-title { font-size: var(--fs-hs); font-weight: 500; margin-bottom: var(--s-100); }
+.os-id    { font-size: var(--fs-s); color: var(--text-secondary); margin-bottom: var(--s-300); }
+
+.os-items { border-top: var(--bw-s) solid var(--border-subtle); }
+.os-item  { padding: var(--s-300) 0; border-bottom: var(--bw-s) solid var(--border-subtle); display: grid; grid-template-columns: 1fr auto; gap: 2px var(--s-200); }
+.os-item-name  { font-size: var(--fs-m); font-weight: 500; grid-column: 1; }
+.os-item-price { font-size: var(--fs-m); font-weight: 500; grid-column: 2; grid-row: 1; text-align: right; }
+.os-item-attrs { font-size: var(--fs-s); color: var(--text-secondary); grid-column: 1 / -1; }
+.os-item-pend  { font-size: var(--fs-s); grid-column: 1 / -1; }
+.os-item-pend.alert { color: var(--text-error); }
+.os-item-pend.ok    { color: var(--text-secondary); }
+
+.os-coupon { display: flex; gap: var(--s-100); margin: var(--s-300) 0; }
+.os-coupon input { flex: 1; height: 40px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-secondary); background: var(--bg-default); outline: none; }
+.os-coupon-btn { height: 40px; padding: 0 var(--s-300); border: none; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-disabled); background: none; cursor: default; white-space: nowrap; }
+
+.os-rows { display: flex; flex-direction: column; gap: var(--s-200); padding-bottom: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.os-row  { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-m); }
+.os-row-lbl { color: var(--text-primary); }
+.os-row-val { font-weight: 500; }
+.os-row-val.saving { color: #B45309; }
+.os-row-val.free   { color: var(--text-secondary); }
+.os-credit-btn { height: 32px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-s); font-weight: 500; background: var(--bg-default); cursor: pointer; }
+
+.os-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: var(--s-300); margin-top: var(--s-100); }
+.os-total-lbl { font-size: var(--fs-m); font-weight: 500; }
+.os-total-val { font-size: var(--fs-hm); font-weight: 700; color: var(--ds-blue-500); }
+.os-monthly   { font-size: var(--fs-xs); color: var(--text-secondary); margin-top: var(--s-100); line-height: 1.5; }
+.breadcrumb { font-size: var(--fs-m); margin-bottom: var(--s-400); padding: var(--s-200) 0; display: flex; align-items: center; gap: var(--s-200); color: var(--text-primary); }
+.breadcrumb a { color: var(--text-link); text-decoration: none; }
+
+/* VARIANT */
+.variant { margin-bottom: 48px; }
+.variant-badge { font-size: var(--fs-s); font-weight: 500; text-transform: uppercase; letter-spacing:.06em; color: var(--text-disabled); margin-bottom: var(--s-100); display: block; }
+.variant-title { font-size: var(--fs-hm); font-weight: 500; margin-bottom: var(--s-100); }
+.variant-desc  { font-size: var(--fs-m); color: var(--text-secondary); margin-bottom: var(--s-400); line-height: 1.6; }
+.variant-body  { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); }
+
+/* PANEL HEADER */
+.ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-400); gap: var(--s-300); flex-wrap: wrap; }
+.ph-title { font-size: var(--fs-hm); font-weight: 500; }
+.ph-sub   { font-size: var(--fs-m); color: var(--text-secondary); margin-top: var(--s-050); }
+
+/* PILL */
+.pill { display: inline-flex; align-items: center; gap: var(--s-100); padding: var(--s-100) var(--s-300); border-radius: var(--r-sm); font-size: var(--fs-s); font-weight: 500; white-space: nowrap; }
+.pill-warn { background: var(--war-bg); color: var(--text-warning); border: var(--bw-s) solid var(--war-br); }
+.pill-ok   { background: var(--suc-bg); color: var(--text-success); border: var(--bw-s) solid var(--suc-br); }
+
+/* CONFIRM BTN */
+.confirm-btn { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-l); font-weight: 400; border: none; cursor: not-allowed; margin-top: var(--s-400); background: var(--bg-disabled); color: var(--text-disabled); transition: background .2s; }
+.confirm-btn.active { background: var(--bg-brand); color: var(--text-inverted); cursor: pointer; }
+.confirm-btn.active:hover { background: #002d7a; }
+
+/* QTY SELECTOR */
+.qty-sel { display: flex; align-items: center; height: 40px; border: var(--bw-s) solid var(--border-default); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.qty-sel.ti  { border-color: var(--acc-ti-br); }
+.qty-sel.do  { border-color: var(--acc-do-br); }
+.qty-sel.neg { border-color: var(--acc-ng-br); }
+.qs-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 18px; color: var(--text-primary); font-weight: 300; transition: background .12s; }
+.qs-btn:hover:not(.off) { background: var(--border-subtle); }
+.qs-btn.off { opacity: .25; cursor: default; pointer-events: none; }
+.qs-val { width: 36px; text-align: center; font-size: var(--fs-l); background: var(--bg-default); }
+.qs-val.ti  { color: var(--text-success); }
+.qs-val.do  { color: var(--inf-tx); }
+.qs-val.neg { color: var(--text-warning); }
+
+/* ASSIGN BADGE */
+.ab { font-size: var(--fs-s); font-weight: 500; padding: var(--s-050) var(--s-200); border-radius: var(--r-sm); white-space: nowrap; display: inline-flex; align-items: center; }
+.ab-ti   { background: var(--acc-ti);  color: var(--text-success);  border: var(--bw-s) solid var(--acc-ti-br); }
+.ab-do   { background: var(--acc-do);  color: var(--inf-tx);        border: var(--bw-s) solid var(--acc-do-br); }
+.ab-sp   { background: #F0EEF5;        color: #4A3980;              border: var(--bw-s) solid #B8AECE; }
+.ab-ng   { background: var(--acc-ng);  color: var(--text-warning);  border: var(--bw-s) solid var(--acc-ng-br); }
+.ab-pend { background: var(--war-bg);  color: var(--text-warning);  border: var(--bw-s) solid var(--war-br); }
+
+/* NOTES */
+.note { font-size: var(--fs-xs); padding: var(--s-100) var(--s-300); border-radius: var(--r-sm); margin-top: var(--s-200); line-height: 1.5; }
+.note-warn { background: var(--war-bg); color: var(--text-warning); border: var(--bw-s) solid var(--war-br); }
+.note-err  { background: var(--err-bg); color: var(--text-error);   border: var(--bw-s) solid var(--err-br); }
+
+/* ════════════════════════
+   VARIANTE 1 · EXPANDIBLE
+════════════════════════ */
+.v1-list { display: flex; flex-direction: column; gap: var(--s-200); }
+
+.v1-card { border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.v1-card-head { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-300) var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.v1-img  { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; overflow: hidden; }
+.v1-info { flex: 1; min-width: 0; }
+.v1-name  { font-size: var(--fs-m); font-weight: 500; }
+.v1-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
+.v1-avail { font-size: var(--fs-s); margin-top: 3px; font-weight: 500; }
+.av-ti { color: var(--text-success); }
+.av-do { color: var(--inf-tx); }
+.av-bo { color: var(--text-secondary); }
+
+.v1-expand { padding: var(--s-300) var(--s-400); background: var(--bg-subtle); }
+.v1-expand-title { font-size: var(--fs-s); font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing:.05em; margin-bottom: var(--s-300); }
+.v1-row { display: flex; align-items: center; gap: var(--s-300); margin-bottom: var(--s-150); }
+.v1-lbl { font-size: var(--fs-m); color: var(--text-primary); width: 140px; flex-shrink: 0; }
+.v1-of  { font-size: var(--fs-s); color: var(--text-disabled); }
+
+/* ════════════════════════
+   VARIANTE 3 · DnD 2 cols
+════════════════════════ */
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-300); align-items: start; }
+
+.col { border-radius: var(--r-md); border: var(--bw-m) solid transparent; min-height: 240px; display: flex; flex-direction: column; transition: border-color .15s, background .15s; }
+.col-ti { background: var(--acc-ti); border-color: var(--acc-ti-br); }
+.col-do { background: var(--acc-do); border-color: var(--acc-do-br); }
+.col.dov-ti { border-style: dashed; border-color: var(--suc-br); background: #E4EDE8; }
+.col.dov-do { border-style: dashed; border-color: var(--inf-br); background: #E4EBF3; }
+
+.col-head { padding: var(--s-300) var(--s-400) var(--s-200); display: flex; align-items: center; justify-content: space-between; border-bottom: var(--bw-s) solid transparent; }
+.col-ti .col-head { border-color: var(--acc-ti-br); }
+.col-do .col-head { border-color: var(--acc-do-br); }
+.col-title-wrap { display: flex; align-items: center; gap: var(--s-150); font-size: var(--fs-m); font-weight: 500; }
+.col-cnt { font-size: var(--fs-s); font-weight: 500; padding: 2px var(--s-200); border-radius: var(--r-sm); }
+.col-ti .col-cnt { background: var(--acc-ti-br); color: var(--text-success); }
+.col-do .col-cnt { background: var(--acc-do-br); color: var(--inf-tx); }
+
+.dz { flex: 1; padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-200); min-height: 160px; }
+.dz-hint { display: flex; align-items: center; justify-content: center; height: 60px; border: var(--bw-m) dashed var(--border-subtle); border-radius: var(--r-md); font-size: var(--fs-m); color: var(--text-disabled); }
+.col-ti .dz-hint { border-color: var(--acc-ti-br); color: var(--acc-ti-br); }
+.col-do .dz-hint { border-color: var(--acc-do-br); color: var(--acc-do-br); }
+
+/* DnD PRODUCT CARD */
+.pc { background: var(--bg-default); border-radius: var(--r-md); border: var(--bw-s) solid var(--border-subtle); cursor: grab; user-select: none; transition: opacity .15s, box-shadow .15s; }
+.pc:active { cursor: grabbing; }
+.col-ti .pc { border-color: var(--acc-ti-br); }
+.col-do .pc { border-color: var(--acc-do-br); }
+.pc.is-neg  { border-color: var(--acc-ng-br); }
+
+.pc-body { padding: var(--s-200) var(--s-300); }
+.pc-top  { display: flex; align-items: flex-start; gap: var(--s-200); }
+.pc-img  { width: 36px; height: 36px; border-radius: var(--r-sm); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.col-ti .pc-img { background: var(--acc-ti); }
+.col-do .pc-img { background: var(--acc-do); }
+.pc.is-neg .pc-img { background: var(--acc-ng); }
+.pc-info { flex: 1; min-width: 0; }
+.pc-name  { font-size: var(--fs-m); font-weight: 500; line-height: var(--lh-m); }
+.pc-sku   { font-size: var(--fs-s); color: var(--text-secondary); }
+.pc-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
+.pc-avail { font-size: var(--fs-xs); margin-top: 3px; font-weight: 500; }
+.drag-h { color: var(--border-default); font-size: 14px; flex-shrink: 0; cursor: grab; padding-top: 2px; }
+
+.pc-foot { display: flex; align-items: center; justify-content: space-between; padding: var(--s-150) var(--s-300); border-top: var(--bw-s) solid var(--border-subtle); background: var(--bg-subtle); border-radius: 0 0 var(--r-md) var(--r-md); }
+.col-ti .pc-foot { border-top-color: var(--acc-ti-br); background: var(--acc-ti); }
+.col-do .pc-foot { border-top-color: var(--acc-do-br); background: var(--acc-do); }
+.pc.is-neg .pc-foot { border-top-color: var(--acc-ng-br); background: var(--acc-ng); }
+.pc-foot-lbl { font-size: var(--fs-s); color: var(--text-secondary); }
+
+.pc-qty { display: flex; align-items: center; height: 36px; border: var(--bw-s) solid var(--border-default); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.col-ti .pc-qty { border-color: var(--acc-ti-br); }
+.col-do .pc-qty { border-color: var(--acc-do-br); }
+.pc.is-neg .pc-qty { border-color: var(--acc-ng-br); }
+.qb { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 16px; color: var(--text-primary); font-weight: 300; transition: background .12s; }
+.qb:hover:not(.off) { background: var(--border-subtle); }
+.qb.off { opacity: .2; cursor: default; pointer-events: none; }
+.qv { width: 32px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: var(--bg-default); color: var(--text-primary); }
+.col-ti .qv { color: var(--text-success); }
+.col-do .qv { color: var(--inf-tx); }
+.pc.is-neg .qv { color: var(--text-warning); }
+
+.pc-neg-note { font-size: var(--fs-xs); padding: var(--s-100) var(--s-300); background: var(--war-bg); color: var(--text-warning); border-top: 1px solid var(--war-br); border-radius: 0 0 var(--r-md) var(--r-md); font-weight: 500; }
+
+.col-action { padding: var(--s-200); border-top: var(--bw-s) solid transparent; }
+.col-ti .col-action { border-top-color: var(--acc-ti-br); }
+.col-do .col-action { border-top-color: var(--acc-do-br); }
+.col-btn { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); font-weight: 500; border: none; cursor: pointer; }
+.col-ti .col-btn { background: var(--ds-green-700, #166534); color: #fff; }
+.col-ti .col-btn:hover { background: var(--ds-green-800, #14532d); }
+.col-do .col-btn { background: var(--bg-brand); color: var(--text-inverted); }
+.col-do .col-btn:hover { background: #002d7a; }
+
+/* GHOST */
+#ghost { position: fixed; pointer-events: none; z-index: 9999; display: none; background: var(--bg-default); border: var(--bw-s) solid #0047BB; border-radius: var(--r-md); padding: var(--s-200) var(--s-300); font-size: var(--fs-m); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); transform: rotate(1.5deg) scale(1.02); max-width: 220px; white-space: nowrap; }
+
+/* ══════════════════════════════════════════════════
+   VARIANTES 4-6 · ENVÍO A VARIAS DIRECCIONES
+══════════════════════════════════════════════════ */
+.two-screens { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-400); }
+.scr { border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); background: var(--bg-default); overflow: hidden; }
+.scr-lbl { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing:.06em; color: var(--text-disabled); padding: var(--s-150) var(--s-400); background: var(--bg-subtle); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.scr-body { padding: var(--s-400); display: flex; flex-direction: column; gap: var(--s-300); }
+
+/* toggle switch */
+.toggle-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-300); }
+.sw-wrap { display: flex; align-items: center; gap: var(--s-200); flex-shrink: 0; }
+.sw { width: 42px; height: 24px; background: var(--bg-brand); border-radius: 12px; position: relative; flex-shrink: 0; }
+.sw::after { content:''; width: 18px; height: 18px; background: #fff; border-radius: 50%; position: absolute; top: 3px; right: 3px; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.sw-label { font-size: var(--fs-m); font-weight: 500; white-space: nowrap; }
+
+/* info banner */
+.i-banner { background: var(--inf-bg); border: var(--bw-s) solid var(--inf-br); border-radius: var(--r-md); padding: var(--s-300) var(--s-400); display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-300); }
+.ib-main { font-size: var(--fs-m); color: var(--inf-tx); font-weight: 500; line-height: 1.45; }
+.ib-link { font-size: var(--fs-s); color: var(--text-link); white-space: nowrap; cursor: pointer; text-decoration: underline; }
+
+/* address selector list */
+.addr-list { display: flex; flex-direction: column; gap: var(--s-200); }
+.a-item { display: flex; align-items: flex-start; gap: var(--s-300); padding: var(--s-300) var(--s-400); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); cursor: pointer; }
+.a-item.on { border-color: var(--bg-brand); background: #EEF3FF; }
+.a-cb { width: 18px; height: 18px; border-radius: 3px; border: 2px solid var(--border-default); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent; }
+.a-item.on .a-cb { background: var(--bg-brand); border-color: var(--bg-brand); color: #fff; }
+.a-info { flex: 1; min-width: 0; }
+.a-name { font-size: var(--fs-m); font-weight: 500; margin-bottom: 2px; }
+.a-street { font-size: var(--fs-s); color: var(--text-secondary); }
+.a-badge-r { font-size: var(--fs-xs); background: var(--bg-subtle); color: var(--text-secondary); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-sm); padding: 1px var(--s-200); display: inline-block; margin-left: var(--s-200); vertical-align: middle; }
+
+/* add address link */
+.a-add { display: flex; align-items: center; gap: var(--s-200); font-size: var(--fs-m); color: var(--text-link); cursor: pointer; }
+
+/* screen action bar */
+.scr-actions { display: flex; gap: var(--s-300); margin-top: var(--s-100); }
+.btn-back { height: 44px; padding: 0 var(--s-400); border: var(--bw-s) solid var(--border-default); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-l); background: var(--bg-default); cursor: pointer; flex: 1; }
+.btn-cta  { height: 44px; padding: 0 var(--s-400); border: none; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-l); background: var(--bg-brand); color: var(--text-inverted); cursor: pointer; flex: 2; white-space: nowrap; }
+.btn-cta.off { background: var(--bg-disabled); color: var(--text-disabled); cursor: not-allowed; }
+
+/* error strip */
+.dist-err { font-size: var(--fs-s); color: var(--text-error); background: var(--err-bg); border: var(--bw-s) solid var(--err-br); border-radius: var(--r-md); padding: var(--s-200) var(--s-300); line-height: 1.5; text-align: center; }
+
+/* distribution step heading */
+.dist-title { font-size: var(--fs-hm); font-weight: 500; }
+.dist-sub { font-size: var(--fs-m); color: var(--text-secondary); margin-top: 2px; }
+
+/* mini stepper (shared) */
+.st { display: flex; align-items: center; height: 36px; border: var(--bw-s) solid var(--border-default); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); flex-shrink: 0; }
+.st-b { width: 32px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 16px; font-weight: 300; transition: background .1s; }
+.st-b:hover:not(.off) { background: var(--border-subtle); }
+.st-b.off { opacity: .25; cursor: not-allowed; pointer-events: none; }
+.st-v { width: 32px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: var(--bg-default); }
+
+/* ─── V4 · Accordion por dirección ─── */
+.da-list { display: flex; flex-direction: column; gap: var(--s-300); }
+.da { border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; }
+.da-head { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-300) var(--s-400); background: var(--bg-default); }
+.da-info { flex: 1; min-width: 0; }
+.da-num { font-size: var(--fs-m); font-weight: 600; }
+.da-st  { font-size: var(--fs-xs); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.da-badge { font-size: var(--fs-s); font-weight: 500; padding: 2px var(--s-200); border-radius: var(--r-sm); white-space: nowrap; }
+.da-badge.ok   { background: var(--suc-bg); color: var(--text-success); border: var(--bw-s) solid var(--suc-br); }
+.da-badge.zero { background: var(--war-bg); color: var(--text-warning); border: var(--bw-s) solid var(--war-br); }
+.da-del { width: 32px; height: 32px; border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-sm); background: none; cursor: pointer; font-size: 14px; color: var(--text-secondary); flex-shrink: 0; }
+.da-del:hover { background: var(--err-bg); color: var(--text-error); border-color: var(--err-br); }
+.da-prods { background: var(--bg-subtle); border-top: var(--bw-s) solid var(--border-subtle); }
+.dp-row { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-300) var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.dp-row:last-child { border-bottom: none; }
+.dp-img { width: 40px; height: 40px; border-radius: var(--r-sm); object-fit: cover; flex-shrink: 0; }
+.dp-info { flex: 1; min-width: 0; }
+.dp-name { font-size: var(--fs-m); font-weight: 500; }
+.dp-sub  { font-size: var(--fs-xs); color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
+
+/* ─── V5 · Por producto ─── */
+.pf-list { display: flex; flex-direction: column; gap: var(--s-300); }
+.pf-card { border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.pf-ph { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-300) var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.pf-ph-info { flex: 1; min-width: 0; }
+.pf-ph-name { font-size: var(--fs-m); font-weight: 500; }
+.pf-ph-sku  { font-size: var(--fs-s); color: var(--text-secondary); }
+.pf-ph-tot  { font-size: var(--fs-s); color: var(--text-secondary); white-space: nowrap; }
+.pf-addr-rows { background: var(--bg-subtle); }
+.pf-ar { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-200) var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.pf-ar:last-child { border-bottom: none; }
+.pf-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.pf-dot.d1 { background: var(--bg-brand); }
+.pf-dot.d2 { background: #7C3AED; }
+.pf-dot.d3 { background: #0891B2; }
+.pf-ar-name { font-size: var(--fs-s); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); }
+
+/* ─── V6 · Matriz ─── */
+.mx { display: grid; border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; grid-template-columns: 1fr repeat(3, auto); }
+.mc { padding: var(--s-300) var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); border-right: var(--bw-s) solid var(--border-subtle); }
+.mc:nth-child(4n) { border-right: none; }
+.mc.head { background: var(--bg-subtle); text-align: center; }
+.mc.head .mx-addr-num { font-size: var(--fs-s); font-weight: 600; }
+.mc.head .mx-addr-st  { font-size: var(--fs-xs); color: var(--text-secondary); margin-top: 2px; white-space: nowrap; }
+.mc.prod { background: var(--bg-default); }
+.mc.cell { background: var(--bg-default); display: flex; align-items: center; justify-content: center; }
+.mc.tot  { background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: var(--fs-m); font-weight: 700; }
+.mc.tot.zero { color: var(--text-warning); }
+.mc.tot.ok   { color: var(--text-success); }
+.mc.tot-lbl  { background: var(--bg-subtle); display: flex; align-items: center; font-size: var(--fs-s); font-weight: 500; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div id="ghost"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-brand">V2 · ZePOS</div>
+  <button class="tb-store">🏪 Tienda Altavista ↻</button>
+  <div class="tb-user"><div class="tb-av">AP</div><span>Hola Andrea Pérez</span></div>
+</div>
+<div class="subbar">
+  <div class="subbar-title">Asignación de entrega</div>
+  <div class="subbar-right">
+    <button class="btn-outline">➕ Nueva venta</button>
+    <button class="btn-outline">Camila Cabello... ▾</button>
+    <button class="btn-outline">🛒</button>
+  </div>
+</div>
+
+<div class="page">
+<div class="breadcrumb">Catálogo <span style="color:var(--text-secondary)">›</span> <a href="#">Asignaciones</a></div>
+
+<div class="page-cols">
+<div><!-- columna principal -->
+
+<!-- ═══════════════════════════════════════
+     VARIANTE 1 · DISTRIBUCIÓN EXPANDIDA
+═══════════════════════════════════════ -->
+<div class="variant">
+  <span class="variant-badge">Variante 1</span>
+  <div class="variant-title">Distribución siempre visible por producto</div>
+  <div class="variant-desc">
+    Cada producto muestra sus controles de distribución desplegados. El (+) en un destino descuenta automáticamente del otro. Reglas: Almohada solo puede ir a tienda · Colchón se mueve libremente · Base de bambú solo a domicilio, y si se mueve a tienda aparece alerta de venta en negativo.
+  </div>
+  <div class="variant-body">
+
+    <div class="ph">
+      <div>
+        <div class="ph-title">¿Cómo entregamos cada producto?</div>
+        <div class="ph-sub">6 piezas · 3 productos</div>
+      </div>
+    </div>
+
+    <div class="v1-list">
+
+      <!-- ── ALMOHADA: solo tienda ── -->
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/almohada-grid-tech-d-4.jpg" alt="Almohada Grid Tech" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Almohada Grid Tech · SKU: ALTP1001 </div>
+            <div class="v1-attrs">Estándar · Suave · Cooling · 2 piezas</div>
+            <div class="v1-avail av-bo">Disp.: 24 en tienda 🏪 · No disponible 🚚 </div>
+          </div>
+          <span class="ab ab-ti" id="v1b-alm">🏪 2 en tienda</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 2 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl">🏪 En tienda</span>
+            <div class="qty-sel ti">
+              <button class="qs-btn off">−</button>
+              <span class="qs-val ti" id="v1-alm-ti">2</span>
+              <button class="qs-btn off">+</button>
+            </div>
+            <span class="v1-of">Solo tienda disponible</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COLCHÓN: ambos, sin asignar ── -->
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Colchón Luuna Original · SKU: LU2002SC</div>
+            <div class="v1-attrs">Matrimonial · Suave · Cooling · 2 piezas</div>
+            <div class="v1-avail av-bo">Disp.: 4 en tienda 🏪 · Envío a domicilio 🚚</div>
+          </div>
+          <span class="ab ab-ti" id="v1b-col">🏪 2 en tienda</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 2 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl">🏪 En tienda</span>
+            <div class="qty-sel ti">
+              <button id="v1-col-ti-dec" class="qs-btn" onclick="v1move('col','ti','do')">−</button>
+              <span class="qs-val ti" id="v1-col-ti">2</span>
+              <button id="v1-col-ti-inc" class="qs-btn off" onclick="v1move('col','do','ti')">+</button>
+            </div>
+            <span class="v1-of">de 2 piezas</span>
+          </div>
+          <div class="v1-row">
+            <span class="v1-lbl">🚚 A domicilio</span>
+            <div class="qty-sel do">
+              <button id="v1-col-do-dec" class="qs-btn off" onclick="v1move('col','do','ti')">−</button>
+              <span class="qs-val do" id="v1-col-do">0</span>
+              <button id="v1-col-do-inc" class="qs-btn" onclick="v1move('col','ti','do')">+</button>
+            </div>
+          </div>
+          <div class="note note-err" id="v1-col-pend" style="display:none">⚠ Asigna al menos 1 pieza para continuar</div>
+        </div>
+      </div>
+
+      <!-- ── BASE BAMBÚ: solo domicilio / negativo en tienda ── -->
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/base-de-bambu.jpeg" alt="Base de Bambú" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Base de Bambú · SKU: NB1301</div>
+            <div class="v1-attrs">Individual · 2 piezas</div>
+            <div class="v1-avail av-bo">Disp.: 0 en tienda 🏪 · Envío a domicilio 🚚</div>
+          </div>
+          <span class="ab ab-do" id="v1b-base">🚚 2 a domicilio</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 2 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl">🏪 En tienda</span>
+            <div class="qty-sel neg">
+              <button id="v1-base-ti-dec" class="qs-btn off" onclick="v1move('base','ti','do')">−</button>
+              <span class="qs-val neg" id="v1-base-ti">0</span>
+              <button id="v1-base-ti-inc" class="qs-btn" onclick="v1move('base','do','ti')">+</button>
+            </div>
+            <span class="v1-of">venta en negativo</span>
+          </div>
+          <div class="v1-row">
+            <span class="v1-lbl">🚚 A domicilio</span>
+            <div class="qty-sel do">
+              <button id="v1-base-do-dec" class="qs-btn" onclick="v1move('base','do','ti')">−</button>
+              <span class="qs-val do" id="v1-base-do">2</span>
+              <button id="v1-base-do-inc" class="qs-btn off" onclick="v1move('base','ti','do')">+</button>
+            </div>
+          </div>
+          <div class="note note-warn" id="v1-base-neg" style="display:none">
+            ⚠ Venta en negativo — esta pieza se gestionará como préstamo desde otra tienda
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /v1-list -->
+    <button class="confirm-btn active" id="v1-confirm">Confirmar asignación</button>
+  </div>
+</div>
+
+</div><!-- /columna principal -->
+
+<!-- ── RESUMEN DE ORDEN ── -->
+<aside class="order-summary">
+  <div class="os-title">Resumen de la orden</div>
+  <div class="os-id">QTN-2404149648bf42</div>
+
+  <div class="os-items">
+    <div class="os-item">
+      <div class="os-item-name">Colchón Luuna Original</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Matrimonial | Suave | Cooling</div>
+      <div class="os-item-pend alert">Productos por asignar: 2</div>
+    </div>
+    <div class="os-item">
+      <div class="os-item-name">Base de bambú</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Individual</div>
+      <div class="os-item-pend ok">Productos por asignar: 1</div>
+    </div>
+    <div class="os-item">
+      <div class="os-item-name">Almohada Grid Tech</div>
+      <div class="os-item-price">$1,834</div>
+      <div class="os-item-attrs">Estándar</div>
+      <div class="os-item-pend ok">Productos por asignar: 1</div>
+    </div>
+  </div>
+
+  <div class="os-coupon">
+    <input placeholder="Ingresa tu cupón o código">
+    <button class="os-coupon-btn">Aplicar</button>
+  </div>
+
+  <div class="os-rows">
+    <div class="os-row">
+      <span class="os-row-lbl">Subtotal</span>
+      <span class="os-row-val">$41,037</span>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Ahorro</span>
+      <span class="os-row-val saving">-$20,860</span>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Créditos de regalo</span>
+      <button class="os-credit-btn">Aplicar $500</button>
+    </div>
+    <div class="os-row">
+      <span class="os-row-lbl">Envío</span>
+      <span class="os-row-val free">GRATIS</span>
+    </div>
+  </div>
+
+  <div class="os-total">
+    <span class="os-total-lbl">Total</span>
+    <span class="os-total-val">$19,677</span>
+  </div>
+  <div class="os-monthly">Pago mensual disponible &nbsp; $1,638.75/mes por 24 MSI<br>*Exclusivo Citibanamex</div>
+</aside>
+
+</div><!-- /page-cols -->
+
+
+<!-- ═══════════════════════════════════════
+     VARIANTE 3 · DnD 2 COLUMNAS
+═══════════════════════════════════════ -->
+<div class="variant">
+  <span class="variant-badge">Variante 3</span>
+  <div class="variant-title">Drag & drop · 2 columnas · Todo pre-asignado</div>
+  <div class="variant-desc">
+    Almohada → tienda (fija, no se puede arrastrar a domicilio). Colchón → tienda por default, se mueve libremente. Base de bambú → domicilio por default. El (−) transfiere 1 pieza al destino contrario — si hay 2 en domicilio y das (−), queda 1 en domicilio y aparece 1 nueva card en tienda marcada como negativo. Arrastrar una card al mismo destino que su gemela las fusiona.
+  </div>
+  <div class="variant-body">
+
+    <div class="ph">
+      <div>
+        <div class="ph-title">¿Cómo entregamos cada producto?</div>
+        <div class="ph-sub">6 piezas · 3 productos · Pre-asignados</div>
+      </div>
+    </div>
+
+    <div class="cols2">
+
+      <!-- TIENDA -->
+      <div class="col col-ti" id="v3col-ti"
+        ondragover="v3over(event,'ti')"
+        ondragleave="v3leave(event,'ti')"
+        ondrop="v3drop(event,'ti')">
+        <div class="col-head">
+          <div class="col-title-wrap">🏪 <span>Entrega en tienda</span></div>
+          <span class="col-cnt" id="v3cnt-ti">2</span>
+        </div>
+        <div class="dz" id="v3z-ti">
+
+          <!-- Almohada: solo tienda, no draggable a domicilio -->
+          <div class="pc" id="v3c-alm-ti"
+            draggable="true"
+            ondragstart="v3startLocked(event,'alm')"
+            ondragend="v3end(event)"
+            data-key="alm" data-qty="2" data-locked="ti">
+            <div class="pc-body"><div class="pc-top">
+              <div class="pc-img"><img src="Asignaciones/almohada-grid-tech-d-4.jpg" alt="Almohada Grid Tech" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+              <div class="pc-info">
+                <div class="pc-name">Almohada Grid Tech</div>
+                <div class="pc-sku">SKU: ALTP1001</div>
+                <div class="pc-attrs">Estándar · Suave · Cooling · 2 piezas</div>
+                <div class="pc-avail av-bo">Disp.: 24 en tienda 🏪 · No disponible 🚚</div>
+              </div>
+              <div class="drag-h" title="Solo tienda">⠿</div>
+            </div></div>
+            <div class="pc-foot">
+              <span class="pc-foot-lbl">En tienda</span>
+              <div class="pc-qty">
+                <button class="qb off">−</button>
+                <span class="qv" id="v3q-alm-ti">2</span>
+                <button class="qb off">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colchón: ambos, default tienda -->
+          <div class="pc" id="v3c-col-ti"
+            draggable="true"
+            ondragstart="v3start(event,'col','ti')"
+            ondragend="v3end(event)"
+            data-key="col" data-qty="2" data-col="ti">
+            <div class="pc-body"><div class="pc-top">
+              <div class="pc-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+              <div class="pc-info">
+                <div class="pc-name">Colchón Luuna Original</div>
+                <div class="pc-sku">SKU: LU2002SC</div>
+                <div class="pc-attrs">Matrimonial · Suave · Cooling · 2 piezas</div>
+                <div class="pc-avail av-bo">Disp.: 4 en tienda 🏪 · Envío a domicilio 🚚</div>
+              </div>
+              <div class="drag-h">⠿</div>
+            </div></div>
+            <div class="pc-foot">
+              <span class="pc-foot-lbl">En tienda</span>
+              <div class="pc-qty">
+                <button class="qb" onclick="v3minus(event,'col','ti')">−</button>
+                <span class="qv" id="v3q-col-ti">2</span>
+                <button class="qb off">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dz-hint" id="v3h-ti" style="display:none">Arrastra aquí · entrega en tienda</div>
+        </div>
+      </div>
+
+      <!-- DOMICILIO -->
+      <div class="col col-do" id="v3col-do"
+        ondragover="v3over(event,'do')"
+        ondragleave="v3leave(event,'do')"
+        ondrop="v3drop(event,'do')">
+        <div class="col-head">
+          <div class="col-title-wrap">🚚 <span>Envío a domicilio</span></div>
+          <span class="col-cnt" id="v3cnt-do">1</span>
+        </div>
+        <div class="dz" id="v3z-do">
+
+          <!-- Base bambú: solo domicilio por default -->
+          <div class="pc" id="v3c-base-do"
+            draggable="true"
+            ondragstart="v3start(event,'base','do')"
+            ondragend="v3end(event)"
+            data-key="base" data-qty="2" data-col="do">
+            <div class="pc-body"><div class="pc-top">
+              <div class="pc-img"><img src="Asignaciones/base-de-bambu.jpeg" alt="Base de Bambú" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+              <div class="pc-info">
+                <div class="pc-name">Base de Bambú</div>
+                <div class="pc-sku">SKU: NB1301</div>
+                <div class="pc-attrs">Individual · 2 piezas</div>
+                <div class="pc-avail av-bo">Disp.: 0 en tienda 🏪 · Envío a domicilio 🚚</div>
+              </div>
+              <div class="drag-h">⠿</div>
+            </div></div>
+            <div class="pc-foot">
+              <span class="pc-foot-lbl">A domicilio</span>
+              <div class="pc-qty">
+                <button class="qb" onclick="v3minus(event,'base','do')">−</button>
+                <span class="qv" id="v3q-base-do">2</span>
+                <button class="qb off">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dz-hint" id="v3h-do">Arrastra aquí · envío a domicilio</div>
+        </div>
+      </div>
+
+    </div><!-- /cols2 -->
+    <button class="confirm-btn active" id="v3-confirm">Confirmar asignación</button>
+  </div>
+</div>
+
+
+
+<!-- ═══════════════════════════════════════════════════════
+     VARIANTE 4 · ENVÍO A VARIAS DIRS · Acordeón por dirección
+═══════════════════════════════════════════════════════ -->
+<div class="variant">
+  <span class="variant-badge">Variante 4</span>
+  <div class="variant-title">Acordeón por dirección · Propuesta base</div>
+  <div class="variant-desc">
+    Pantalla izquierda: el usuario activa "Varias direcciones" y selecciona 3 de 4 guardadas. Pantalla derecha: cada dirección es un panel con sus productos y controles (+/−). Por default todos los productos están en la primera dirección. El (+) en una dirección toma del stock de otra; el (−) devuelve a la primera. El botón "Confirmar" se activa cuando cada dirección tiene al menos 1 producto asignado.
+  </div>
+  <div class="variant-body">
+    <div class="two-screens">
+
+      <!-- ── PASO 1: Selección ── -->
+      <div class="scr">
+        <div class="scr-lbl">Paso 1 · Seleccionar direcciones</div>
+        <div class="scr-body">
+          <div class="toggle-row">
+            <div>
+              <div style="font-size:var(--fs-hm);font-weight:500">Seleccionar direcciones de envío</div>
+              <div style="font-size:var(--fs-m);color:var(--text-secondary);margin-top:4px">Elige varias direcciones para el envío de tus productos</div>
+            </div>
+            <div class="sw-wrap"><div class="sw"></div><span class="sw-label">Varias direcciones</span></div>
+          </div>
+          <div class="i-banner">
+            <div class="ib-main">Has activado el envío a múltiples direcciones.<br>Ahora podrás asignar productos a más de una dirección.</div>
+            <span class="ib-link">Ver cómo funciona</span>
+          </div>
+          <div class="addr-list">
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Balsamina lote 29 <span class="a-badge-r">Usada recientemente</span></div><div class="a-street">Calle Balsamina #29, Col. Obrera, 01740, CDMX</div></div></div>
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Dirección 2</div><div class="a-street">Av. Morelos 174, 01722, CDMX Area Metropolitana</div></div></div>
+            <div class="a-item"><div class="a-cb"></div><div class="a-info"><div class="a-name">Dirección 3</div><div class="a-street">Av. Morelos 174, 01722, CDMX Area Metropolitana</div></div></div>
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Dirección 4</div><div class="a-street">Xochicalco 2203 - Narvarte Poniente, Benito Juárez, Ciudad de México</div></div></div>
+          </div>
+          <div class="a-add">⊕ Agregar nueva dirección</div>
+          <div class="scr-actions">
+            <button class="btn-back">Regresar</button>
+            <button class="btn-cta">Confirmar direcciones</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PASO 2: Distribución V4 ── -->
+      <div class="scr">
+        <div class="scr-lbl">Paso 2 · Asignar productos por dirección</div>
+        <div class="scr-body">
+          <div><div class="dist-title">Asignación de productos a direcciones</div><div class="dist-sub">Distribuye tus productos entre las direcciones seleccionadas</div></div>
+          <div class="da-list">
+
+            <!-- Dir #1 -->
+            <div class="da">
+              <div class="da-head">
+                <div class="da-info"><div class="da-num">Dirección #1</div><div class="da-st">Calle Balsamina #29, Col. Obrera, 01740, CDMX</div></div>
+                <span class="da-badge ok" id="v4-badge-dir1">Productos: 3</span>
+                <button class="da-del" title="Eliminar dirección">🗑</button>
+              </div>
+              <div class="da-prods">
+                <div class="dp-row">
+                  <img class="dp-img" src="Asignaciones/base-de-bambu.jpeg" alt="">
+                  <div class="dp-info"><div class="dp-name">Juego de Sábanas de bambú <span style="font-weight:400;color:var(--text-secondary)">SKU: LUN2345</span></div><div class="dp-sub">Matrimonial | Verdes | 24 en tienda 🏪 | Extendida: 3 de ago.</div></div>
+                  <div class="st"><button class="st-b" onclick="maStep('v4','sab','dir1',-1)">−</button><span class="st-v" id="v4-sab-dir1">2</span><button class="st-b off" onclick="maStep('v4','sab','dir1',1)">+</button></div>
+                </div>
+                <div class="dp-row">
+                  <img class="dp-img" src="Asignaciones/base-de-bambu.jpeg" alt="">
+                  <div class="dp-info"><div class="dp-name">Base de bambú <span style="font-weight:400;color:var(--text-secondary)">SKU: NB1301</span></div><div class="dp-sub">Individual | 0 en tienda 🏪 | Envío a domicilio 🚚</div></div>
+                  <div class="st"><button class="st-b" onclick="maStep('v4','bas','dir1',-1)">−</button><span class="st-v" id="v4-bas-dir1">1</span><button class="st-b off" onclick="maStep('v4','bas','dir1',1)">+</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dir #2 -->
+            <div class="da">
+              <div class="da-head">
+                <div class="da-info"><div class="da-num">Dirección #2</div><div class="da-st">Av. Morelos 174, 01722, CDMX Area Metropolitana</div></div>
+                <span class="da-badge zero" id="v4-badge-dir2">Productos: 0</span>
+                <button class="da-del" title="Eliminar dirección">🗑</button>
+              </div>
+              <div class="da-prods">
+                <div class="dp-row">
+                  <img class="dp-img" src="Asignaciones/base-de-bambu.jpeg" alt="">
+                  <div class="dp-info"><div class="dp-name">Juego de Sábanas de bambú <span style="font-weight:400;color:var(--text-secondary)">SKU: LUN2345</span></div><div class="dp-sub">Matrimonial | Verdes | 24 en tienda 🏪 | Extendida: 3 de ago.</div></div>
+                  <div class="st"><button class="st-b off" onclick="maStep('v4','sab','dir2',-1)">−</button><span class="st-v" id="v4-sab-dir2">0</span><button class="st-b" onclick="maStep('v4','sab','dir2',1)">+</button></div>
+                </div>
+                <div class="dp-row">
+                  <img class="dp-img" src="Asignaciones/base-de-bambu.jpeg" alt="">
+                  <div class="dp-info"><div class="dp-name">Base de bambú <span style="font-weight:400;color:var(--text-secondary)">SKU: NB1301</span></div><div class="dp-sub">Individual | 0 en tienda 🏪 | Envío a domicilio 🚚</div></div>
+                  <div class="st"><button class="st-b off" onclick="maStep('v4','bas','dir2',-1)">−</button><span class="st-v" id="v4-bas-dir2">0</span><button class="st-b" onclick="maStep('v4','bas','dir2',1)">+</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dir #3 -->
+            <div class="da">
+              <div class="da-head">
+                <div class="da-info"><div class="da-num">Dirección #3</div><div class="da-st">Xochicalco 2203 - Narvarte Poniente, Benito Juárez, CDMX</div></div>
+                <span class="da-badge zero" id="v4-badge-dir3">Productos: 0</span>
+                <button class="da-del" title="Eliminar dirección">🗑</button>
+              </div>
+              <div class="da-prods">
+                <div class="dp-row">
+                  <img class="dp-img" src="Asignaciones/base-de-bambu.jpeg" alt="">
+                  <div class="dp-info"><div class="dp-name">Juego de Sábanas de bambú <span style="font-weight:400;color:var(--text-secondary)">SKU: LUN2345</span></div><div class="dp-sub">Matrimonial | Verdes | 24 en tienda 🏪 | Extendida: 3 de ago.</div></div>
+                  <div class="st"><button class="st-b off" onclick="maStep('v4','sab','dir3',-1)">−</button><span class="st-v" id="v4-sab-dir3">0</span><button class="st-b" onclick="maStep('v4','sab','dir3',1)">+</button></div>
+                </div>
+                <div class="dp-row">
+                  <img class="dp-img" src="Asignaciones/base-de-bambu.jpeg" alt="">
+                  <div class="dp-info"><div class="dp-name">Base de bambú <span style="font-weight:400;color:var(--text-secondary)">SKU: NB1301</span></div><div class="dp-sub">Individual | 0 en tienda 🏪 | Envío a domicilio 🚚</div></div>
+                  <div class="st"><button class="st-b off" onclick="maStep('v4','bas','dir3',-1)">−</button><span class="st-v" id="v4-bas-dir3">0</span><button class="st-b" onclick="maStep('v4','bas','dir3',1)">+</button></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="dist-err" id="v4-err">⚠ Debes asignar al menos 1 producto a cada dirección o eliminarla.</div>
+          <div class="scr-actions">
+            <button class="btn-back">Regresar</button>
+            <button class="btn-cta off" id="v4-confirm">Confirmar direcciones</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     VARIANTE 5 · ENVÍO A VARIAS DIRS · Vista por producto
+═══════════════════════════════════════════════════════ -->
+<div class="variant">
+  <span class="variant-badge">Variante 5</span>
+  <div class="variant-title">Vista por producto · Product-first</div>
+  <div class="variant-desc">
+    El foco está en el producto, no en la dirección. Cada card de producto muestra cuántas piezas van a cada dirección con sus propios controles (+/−). Permite ver y ajustar la distribución de un mismo SKU de un solo vistazo, sin tener que abrir distintos acordeones. Útil cuando hay pocos productos pero muchas direcciones, o cuando se quiere comparar el reparto entre direcciones para un mismo artículo.
+  </div>
+  <div class="variant-body">
+    <div class="two-screens">
+
+      <!-- PASO 1 (igual en V5) -->
+      <div class="scr">
+        <div class="scr-lbl">Paso 1 · Seleccionar direcciones</div>
+        <div class="scr-body">
+          <div class="toggle-row">
+            <div><div style="font-size:var(--fs-hm);font-weight:500">Seleccionar direcciones de envío</div><div style="font-size:var(--fs-m);color:var(--text-secondary);margin-top:4px">Elige varias direcciones para el envío de tus productos</div></div>
+            <div class="sw-wrap"><div class="sw"></div><span class="sw-label">Varias direcciones</span></div>
+          </div>
+          <div class="i-banner">
+            <div class="ib-main">Has activado el envío a múltiples direcciones.<br>Ahora podrás asignar productos a más de una dirección.</div>
+            <span class="ib-link">Ver cómo funciona</span>
+          </div>
+          <div class="addr-list">
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Balsamina lote 29 <span class="a-badge-r">Usada recientemente</span></div><div class="a-street">Calle Balsamina #29, Col. Obrera, 01740, CDMX</div></div></div>
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Dirección 2</div><div class="a-street">Av. Morelos 174, 01722, CDMX Area Metropolitana</div></div></div>
+            <div class="a-item"><div class="a-cb"></div><div class="a-info"><div class="a-name">Dirección 3</div><div class="a-street">Av. Morelos 174, 01722, CDMX Area Metropolitana</div></div></div>
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Dirección 4</div><div class="a-street">Xochicalco 2203 - Narvarte Poniente, Benito Juárez, Ciudad de México</div></div></div>
+          </div>
+          <div class="a-add">⊕ Agregar nueva dirección</div>
+          <div class="scr-actions"><button class="btn-back">Regresar</button><button class="btn-cta">Confirmar direcciones</button></div>
+        </div>
+      </div>
+
+      <!-- PASO 2: V5 product-first -->
+      <div class="scr">
+        <div class="scr-lbl">Paso 2 · Distribución por producto</div>
+        <div class="scr-body">
+          <div><div class="dist-title">Asignación de productos a direcciones</div><div class="dist-sub">Distribuye cada producto entre las direcciones</div></div>
+          <div class="pf-list">
+
+            <!-- Sábanas card -->
+            <div class="pf-card">
+              <div class="pf-ph">
+                <img src="Asignaciones/base-de-bambu.jpeg" style="width:40px;height:40px;border-radius:4px;object-fit:cover;flex-shrink:0">
+                <div class="pf-ph-info"><div class="pf-ph-name">Juego de Sábanas de bambú</div><div class="pf-ph-sku">SKU: LUN2345 · Matrimonial | Verdes</div></div>
+                <span class="pf-ph-tot">2 piezas</span>
+              </div>
+              <div class="pf-addr-rows">
+                <div class="pf-ar"><div class="pf-dot d1"></div><span class="pf-ar-name">Dir #1 · Balsamina #29, Obrera</span><div class="st"><button class="st-b" onclick="maStep('v5','sab','dir1',-1)">−</button><span class="st-v" id="v5-sab-dir1">2</span><button class="st-b off" onclick="maStep('v5','sab','dir1',1)">+</button></div></div>
+                <div class="pf-ar"><div class="pf-dot d2"></div><span class="pf-ar-name">Dir #2 · Av. Morelos 174</span><div class="st"><button class="st-b off" onclick="maStep('v5','sab','dir2',-1)">−</button><span class="st-v" id="v5-sab-dir2">0</span><button class="st-b" onclick="maStep('v5','sab','dir2',1)">+</button></div></div>
+                <div class="pf-ar"><div class="pf-dot d3"></div><span class="pf-ar-name">Dir #3 · Xochicalco 2203</span><div class="st"><button class="st-b off" onclick="maStep('v5','sab','dir3',-1)">−</button><span class="st-v" id="v5-sab-dir3">0</span><button class="st-b" onclick="maStep('v5','sab','dir3',1)">+</button></div></div>
+              </div>
+            </div>
+
+            <!-- Base bambú card -->
+            <div class="pf-card">
+              <div class="pf-ph">
+                <img src="Asignaciones/base-de-bambu.jpeg" style="width:40px;height:40px;border-radius:4px;object-fit:cover;flex-shrink:0">
+                <div class="pf-ph-info"><div class="pf-ph-name">Base de bambú</div><div class="pf-ph-sku">SKU: NB1301 · Individual</div></div>
+                <span class="pf-ph-tot">1 pieza</span>
+              </div>
+              <div class="pf-addr-rows">
+                <div class="pf-ar"><div class="pf-dot d1"></div><span class="pf-ar-name">Dir #1 · Balsamina #29, Obrera</span><div class="st"><button class="st-b" onclick="maStep('v5','bas','dir1',-1)">−</button><span class="st-v" id="v5-bas-dir1">1</span><button class="st-b off" onclick="maStep('v5','bas','dir1',1)">+</button></div></div>
+                <div class="pf-ar"><div class="pf-dot d2"></div><span class="pf-ar-name">Dir #2 · Av. Morelos 174</span><div class="st"><button class="st-b off" onclick="maStep('v5','bas','dir2',-1)">−</button><span class="st-v" id="v5-bas-dir2">0</span><button class="st-b" onclick="maStep('v5','bas','dir2',1)">+</button></div></div>
+                <div class="pf-ar"><div class="pf-dot d3"></div><span class="pf-ar-name">Dir #3 · Xochicalco 2203</span><div class="st"><button class="st-b off" onclick="maStep('v5','bas','dir3',-1)">−</button><span class="st-v" id="v5-bas-dir3">0</span><button class="st-b" onclick="maStep('v5','bas','dir3',1)">+</button></div></div>
+              </div>
+            </div>
+
+          </div>
+          <div class="dist-err" id="v5-err">⚠ Debes asignar al menos 1 producto a cada dirección o eliminarla.</div>
+          <div class="scr-actions"><button class="btn-back">Regresar</button><button class="btn-cta off" id="v5-confirm">Confirmar direcciones</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     VARIANTE 6 · ENVÍO A VARIAS DIRS · Tabla de distribución
+═══════════════════════════════════════════════════════ -->
+<div class="variant">
+  <span class="variant-badge">Variante 6</span>
+  <div class="variant-title">Tabla de distribución · Matriz</div>
+  <div class="variant-desc">
+    Vista compacta tipo hoja de cálculo: productos en filas, direcciones en columnas. Permite ver y ajustar la distribución completa en un solo vistazo. El totalizador inferior por columna indica cuántos productos van a cada dirección; se vuelve verde cuando la dirección tiene al menos 1 pieza. Ideal para órdenes con muchos productos y muchas direcciones; la densidad de información puede ser un reto en dispositivos pequeños.
+  </div>
+  <div class="variant-body">
+    <div class="two-screens">
+
+      <!-- PASO 1 (igual en V6) -->
+      <div class="scr">
+        <div class="scr-lbl">Paso 1 · Seleccionar direcciones</div>
+        <div class="scr-body">
+          <div class="toggle-row">
+            <div><div style="font-size:var(--fs-hm);font-weight:500">Seleccionar direcciones de envío</div><div style="font-size:var(--fs-m);color:var(--text-secondary);margin-top:4px">Elige varias direcciones para el envío de tus productos</div></div>
+            <div class="sw-wrap"><div class="sw"></div><span class="sw-label">Varias direcciones</span></div>
+          </div>
+          <div class="i-banner">
+            <div class="ib-main">Has activado el envío a múltiples direcciones.<br>Ahora podrás asignar productos a más de una dirección.</div>
+            <span class="ib-link">Ver cómo funciona</span>
+          </div>
+          <div class="addr-list">
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Balsamina lote 29 <span class="a-badge-r">Usada recientemente</span></div><div class="a-street">Calle Balsamina #29, Col. Obrera, 01740, CDMX</div></div></div>
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Dirección 2</div><div class="a-street">Av. Morelos 174, 01722, CDMX Area Metropolitana</div></div></div>
+            <div class="a-item"><div class="a-cb"></div><div class="a-info"><div class="a-name">Dirección 3</div><div class="a-street">Av. Morelos 174, 01722, CDMX Area Metropolitana</div></div></div>
+            <div class="a-item on"><div class="a-cb">✓</div><div class="a-info"><div class="a-name">Dirección 4</div><div class="a-street">Xochicalco 2203 - Narvarte Poniente, Benito Juárez, Ciudad de México</div></div></div>
+          </div>
+          <div class="a-add">⊕ Agregar nueva dirección</div>
+          <div class="scr-actions"><button class="btn-back">Regresar</button><button class="btn-cta">Confirmar direcciones</button></div>
+        </div>
+      </div>
+
+      <!-- PASO 2: V6 matriz -->
+      <div class="scr">
+        <div class="scr-lbl">Paso 2 · Tabla de distribución</div>
+        <div class="scr-body">
+          <div><div class="dist-title">Asignación de productos a direcciones</div><div class="dist-sub">Distribuye los productos en la tabla</div></div>
+
+          <div class="mx">
+            <!-- Header -->
+            <div class="mc head"></div>
+            <div class="mc head"><div class="mx-addr-num">Dirección #1</div><div class="mx-addr-st">Balsamina #29, Obrera</div></div>
+            <div class="mc head"><div class="mx-addr-num">Dirección #2</div><div class="mx-addr-st">Av. Morelos 174</div></div>
+            <div class="mc head"><div class="mx-addr-num">Dirección #3</div><div class="mx-addr-st">Xochicalco 2203</div></div>
+
+            <!-- Sábanas row -->
+            <div class="mc prod"><div class="dp-name">Juego de Sábanas de bambú</div><div class="dp-sub">SKU: LUN2345 · 2 piezas total</div></div>
+            <div class="mc cell"><div class="st"><button class="st-b" onclick="maStep('v6','sab','dir1',-1)">−</button><span class="st-v" id="v6-sab-dir1">2</span><button class="st-b off" onclick="maStep('v6','sab','dir1',1)">+</button></div></div>
+            <div class="mc cell"><div class="st"><button class="st-b off" onclick="maStep('v6','sab','dir2',-1)">−</button><span class="st-v" id="v6-sab-dir2">0</span><button class="st-b" onclick="maStep('v6','sab','dir2',1)">+</button></div></div>
+            <div class="mc cell"><div class="st"><button class="st-b off" onclick="maStep('v6','sab','dir3',-1)">−</button><span class="st-v" id="v6-sab-dir3">0</span><button class="st-b" onclick="maStep('v6','sab','dir3',1)">+</button></div></div>
+
+            <!-- Base bambú row -->
+            <div class="mc prod"><div class="dp-name">Base de bambú</div><div class="dp-sub">SKU: NB1301 · 1 pieza total</div></div>
+            <div class="mc cell"><div class="st"><button class="st-b" onclick="maStep('v6','bas','dir1',-1)">−</button><span class="st-v" id="v6-bas-dir1">1</span><button class="st-b off" onclick="maStep('v6','bas','dir1',1)">+</button></div></div>
+            <div class="mc cell"><div class="st"><button class="st-b off" onclick="maStep('v6','bas','dir2',-1)">−</button><span class="st-v" id="v6-bas-dir2">0</span><button class="st-b" onclick="maStep('v6','bas','dir2',1)">+</button></div></div>
+            <div class="mc cell"><div class="st"><button class="st-b off" onclick="maStep('v6','bas','dir3',-1)">−</button><span class="st-v" id="v6-bas-dir3">0</span><button class="st-b" onclick="maStep('v6','bas','dir3',1)">+</button></div></div>
+
+            <!-- Totals row -->
+            <div class="mc tot-lbl">Total por dirección</div>
+            <div class="mc tot ok"  id="v6-tot-dir1">3</div>
+            <div class="mc tot zero" id="v6-tot-dir2">0</div>
+            <div class="mc tot zero" id="v6-tot-dir3">0</div>
+          </div>
+
+          <div class="dist-err" id="v6-err">⚠ Debes asignar al menos 1 producto a cada dirección o eliminarla.</div>
+          <div class="scr-actions"><button class="btn-back">Regresar</button><button class="btn-cta off" id="v6-confirm">Confirmar direcciones</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+/* ════════════════════════════
+   VARIANTE 1
+════════════════════════════ */
+const v1s = {
+  alm:  { ti:2, do:0, total:2, onlyTi:true,  onlyDo:false },
+  col:  { ti:2, do:0, total:2, onlyTi:false, onlyDo:false },
+  base: { ti:0, do:2, total:2, onlyTi:false, onlyDo:true  },
+};
+
+function v1move(id, from, to) {
+  const s = v1s[id];
+  if (id === 'alm' && to === 'do') return;
+  if (s[from] <= 0) return;
+  s[from]--; s[to]++;
+  v1render(id);
+}
+
+function setOff(id, disabled) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('off', disabled);
+}
+
+function v1render(id) {
+  const s = v1s[id];
+  const tiEl = document.getElementById('v1-'+id+'-ti');
+  const doEl = document.getElementById('v1-'+id+'-do');
+  if (tiEl) tiEl.textContent = s.ti;
+  if (doEl) doEl.textContent = s.do;
+
+  // badge
+  const b = document.getElementById('v1b-'+id);
+  if (b) {
+    if (s.ti > 0 && s.do > 0) { b.className='ab ab-sp'; b.textContent='🏪 '+s.ti+' · 🚚 '+s.do; }
+    else if (s.ti > 0)         { b.className='ab ab-ti'; b.textContent='🏪 '+s.ti+' en tienda'; }
+    else if (s.do > 0)         { b.className='ab ab-do'; b.textContent='🚚 '+s.do+' a domicilio'; }
+    else                        { b.className='ab ab-pend'; b.textContent='? Sin asignar'; }
+  }
+
+  // colchon: show pending note + button states
+  if (id === 'col') {
+    const pend = document.getElementById('v1-col-pend');
+    if (pend) pend.style.display = (s.ti===0 && s.do===0) ? 'block' : 'none';
+    setOff('v1-col-ti-dec', s.ti === 0);
+    setOff('v1-col-ti-inc', s.do === 0);
+    setOff('v1-col-do-dec', s.do === 0);
+    setOff('v1-col-do-inc', s.ti === 0);
+  }
+
+  // base: show neg warning + button states
+  if (id === 'base') {
+    const warn = document.getElementById('v1-base-neg');
+    if (warn) warn.style.display = s.ti > 0 ? 'block' : 'none';
+    setOff('v1-base-ti-dec', s.ti === 0);
+    setOff('v1-base-ti-inc', s.do === 0);
+    setOff('v1-base-do-dec', s.do === 0);
+    setOff('v1-base-do-inc', s.ti === 0);
+  }
+
+  v1updateStatus();
+}
+
+function v1updateStatus() {
+  const s = v1s.col;
+  const pending = (s.ti === 0 && s.do === 0) ? 1 : 0;
+  const pill = document.getElementById('v1-pill');
+  const btn  = document.getElementById('v1-confirm');
+  if (pending === 0) {
+    if (pill) { pill.className = 'pill pill-ok'; pill.textContent = '✓ Todos asignados'; }
+    btn.className = 'confirm-btn active'; btn.textContent = 'Confirmar asignación';
+  } else {
+    if (pill) { pill.className = 'pill pill-warn'; pill.textContent = '⚠ 1 sin asignar'; }
+    btn.className = 'confirm-btn'; btn.textContent = 'Confirmar asignación · 1 sin asignar';
+  }
+}
+
+/* ════════════════════════════
+   VARIANTE 3 — state
+════════════════════════════ */
+// qty per card: key-col
+const v3q = { 'alm-ti': 2, 'col-ti': 2, 'col-do': 0, 'base-do': 2, 'base-ti': 0 };
+
+let v3dragging = null; // { key, col, el }
+let v3lockedDrag = false;
+
+const ghostEl = document.getElementById('ghost');
+document.addEventListener('dragover', e => {
+  ghostEl.style.left = (e.clientX + 16) + 'px';
+  ghostEl.style.top  = (e.clientY + 8) + 'px';
+});
+
+const CARD_META = {
+  alm:  { img:'Asignaciones/almohada-grid-tech-d-4.jpg',    name:'Almohada Grid Tech',    sku:'SKU: ALTP1001',  attrs:'Estándar · Suave · Cooling · 2 piezas',    avail:'Disp.: 24 en tienda 🏪 · No disponible 🚚',    avClass:'av-bo', locked:'ti' },
+  col:  { img:'Asignaciones/colchon-luuna-original.webp',   name:'Colchón Luuna Original', sku:'SKU: LU2002SC',  attrs:'Matrimonial · Suave · Cooling · 2 piezas', avail:'Disp.: 4 en tienda 🏪 · Envío a domicilio 🚚', avClass:'av-bo', locked:null },
+  base: { img:'Asignaciones/base-de-bambu.jpeg',            name:'Base de Bambú',          sku:'SKU: NB1301',    attrs:'Individual · 2 piezas',                   avail:'Disp.: 0 en tienda 🏪 · Envío a domicilio 🚚', avClass:'av-bo', locked:null },
+};
+
+function v3start(e, key, col) {
+  v3dragging = { key, col };
+  v3lockedDrag = false;
+  const card = document.getElementById('v3c-'+key+'-'+col);
+  if (card) card.classList.add('dragging');
+  ghostEl.textContent = CARD_META[key].name;
+  ghostEl.style.display = 'block';
+}
+
+function v3startLocked(e, key) {
+  // locked card: allow drag but reject any drop to wrong col
+  v3dragging = { key, col: 'ti' };
+  v3lockedDrag = true;
+  const card = document.getElementById('v3c-'+key+'-ti');
+  if (card) card.classList.add('dragging');
+  ghostEl.textContent = '🔒 ' + CARD_META[key].name + ' · solo tienda';
+  ghostEl.style.display = 'block';
+}
+
+function v3end(e) {
+  if (v3dragging) {
+    const { key, col } = v3dragging;
+    const card = document.getElementById('v3c-'+key+'-'+col);
+    if (card) card.classList.remove('dragging');
+  }
+  ghostEl.style.display = 'none';
+  v3dragging = null;
+  v3lockedDrag = false;
+  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+}
+
+function v3over(e, col) {
+  e.preventDefault();
+  document.getElementById('v3col-'+col).classList.add('dov-'+col);
+}
+
+function v3leave(e, col) {
+  const el = document.getElementById('v3col-'+col);
+  if (!el.contains(e.relatedTarget)) el.classList.remove('dov-'+col);
+}
+
+function v3drop(e, tgtCol) {
+  e.preventDefault();
+  ['ti','do'].forEach(c => document.getElementById('v3col-'+c).classList.remove('dov-'+c));
+  if (!v3dragging) return;
+
+  const { key, col: srcCol } = v3dragging;
+
+  // locked card: reject drop to wrong column
+  if (v3lockedDrag && tgtCol !== 'ti') {
+    v3end(e); return;
+  }
+
+  if (srcCol === tgtCol) return;
+
+  const srcCard = document.getElementById('v3c-'+key+'-'+srcCol);
+  if (!srcCard) return;
+
+  const srcQty = parseInt(srcCard.dataset.qty || 1);
+  const tgtZone = document.getElementById('v3z-'+tgtCol);
+  const existingTgt = document.getElementById('v3c-'+key+'-'+tgtCol);
+
+  if (existingTgt) {
+    // MERGE: add all qty to existing
+    const newQty = parseInt(existingTgt.dataset.qty || 1) + srcQty;
+    existingTgt.dataset.qty = newQty;
+    v3q[key+'-'+tgtCol] = newQty;
+    const qEl = document.getElementById('v3q-'+key+'-'+tgtCol);
+    if (qEl) qEl.textContent = newQty;
+    srcCard.remove();
+    v3q[key+'-'+srcCol] = 0;
+    // remove neg note if merged into do
+    if (tgtCol === 'do') {
+      const neg = existingTgt.querySelector('.pc-neg-note');
+      if (neg) neg.remove();
+      existingTgt.classList.remove('is-neg');
+    }
+  } else {
+    // MOVE: relocate card
+    const hint = document.getElementById('v3h-'+tgtCol);
+    tgtZone.insertBefore(srcCard, hint);
+
+    // update card state
+    srcCard.id = 'v3c-'+key+'-'+tgtCol;
+    srcCard.dataset.col = tgtCol;
+    srcCard.ondragstart = v3lockedDrag ? null : (ev) => v3start(ev, key, tgtCol);
+
+    // flip foot label
+    const lbl = srcCard.querySelector('.pc-foot-lbl');
+    if (lbl) lbl.textContent = tgtCol === 'ti' ? 'En tienda' : 'A domicilio';
+
+    // update qty display id
+    const oldQEl = srcCard.querySelector('.qv');
+    if (oldQEl) { oldQEl.id = 'v3q-'+key+'-'+tgtCol; }
+
+    // handle neg state for base going to tienda
+    const isNeg = (key === 'base' && tgtCol === 'ti');
+    if (isNeg) {
+      srcCard.classList.add('is-neg');
+      let neg = srcCard.querySelector('.pc-neg-note');
+      if (!neg) {
+        neg = document.createElement('div');
+        neg.className = 'pc-neg-note';
+        neg.textContent = '⚠ Venta en negativo — préstamo desde otra tienda';
+        srcCard.appendChild(neg);
+      }
+      neg.style.display = 'block';
+    } else {
+      srcCard.classList.remove('is-neg');
+      const neg = srcCard.querySelector('.pc-neg-note');
+      if (neg) neg.style.display = 'none';
+    }
+
+    v3q[key+'-'+tgtCol] = srcQty;
+    v3q[key+'-'+srcCol] = 0;
+
+    // update minus button
+    const minusBtn = srcCard.querySelector('.qb');
+    if (minusBtn) {
+      if (key === 'alm') { minusBtn.classList.add('off'); }
+      else { minusBtn.classList.remove('off'); minusBtn.onclick = (ev) => v3minus(ev, key, tgtCol); }
+    }
+  }
+
+  v3updateCounts();
+  v3updateHints();
+}
+
+function v3minus(e, key, col) {
+  e.stopPropagation();
+  const card = document.getElementById('v3c-'+key+'-'+col);
+  if (!card) return;
+  const qty = parseInt(card.dataset.qty || 1);
+  if (qty <= 0) return;
+
+  const otherCol = col === 'ti' ? 'do' : 'ti';
+  const isNegMove = (key === 'base' && otherCol === 'ti'); // base going to tienda = negativo
+
+  if (qty === 1) {
+    // Move entire card to other col
+    v3moveCard(key, col, otherCol, 1, isNegMove);
+  } else {
+    // Split: reduce this card by 1, create/merge 1 in other col
+    const newQty = qty - 1;
+    card.dataset.qty = newQty;
+    v3q[key+'-'+col] = newQty;
+    const qEl = document.getElementById('v3q-'+key+'-'+col);
+    if (qEl) qEl.textContent = newQty;
+
+    // Create or merge in other col
+    const existingOther = document.getElementById('v3c-'+key+'-'+otherCol);
+    if (existingOther) {
+      const oQty = parseInt(existingOther.dataset.qty || 0) + 1;
+      existingOther.dataset.qty = oQty;
+      v3q[key+'-'+otherCol] = oQty;
+      const oQEl = document.getElementById('v3q-'+key+'-'+otherCol);
+      if (oQEl) oQEl.textContent = oQty;
+    } else {
+      v3createCard(key, otherCol, 1, isNegMove);
+    }
+    v3updateCounts();
+    v3updateHints();
+  }
+}
+
+function v3moveCard(key, srcCol, tgtCol, qty, isNeg) {
+  const srcCard = document.getElementById('v3c-'+key+'-'+srcCol);
+  if (!srcCard) return;
+
+  const existingTgt = document.getElementById('v3c-'+key+'-'+tgtCol);
+  const tgtZone = document.getElementById('v3z-'+tgtCol);
+  const hint = document.getElementById('v3h-'+tgtCol);
+
+  if (existingTgt) {
+    // merge
+    const newQty = parseInt(existingTgt.dataset.qty || 0) + qty;
+    existingTgt.dataset.qty = newQty;
+    v3q[key+'-'+tgtCol] = newQty;
+    const qEl = document.getElementById('v3q-'+key+'-'+tgtCol);
+    if (qEl) qEl.textContent = newQty;
+    srcCard.remove();
+  } else {
+    // relocate
+    tgtZone.insertBefore(srcCard, hint);
+    srcCard.id = 'v3c-'+key+'-'+tgtCol;
+    srcCard.dataset.col = tgtCol;
+    srcCard.dataset.qty = qty;
+    srcCard.ondragstart = (ev) => v3start(ev, key, tgtCol);
+
+    const lbl = srcCard.querySelector('.pc-foot-lbl');
+    if (lbl) lbl.textContent = tgtCol === 'ti' ? 'En tienda' : 'A domicilio';
+
+    const qEl = srcCard.querySelector('.qv');
+    if (qEl) { qEl.id = 'v3q-'+key+'-'+tgtCol; qEl.textContent = qty; }
+
+    if (isNeg) {
+      srcCard.classList.add('is-neg');
+      let neg = srcCard.querySelector('.pc-neg-note');
+      if (!neg) { neg = document.createElement('div'); neg.className='pc-neg-note'; neg.textContent='⚠ Venta en negativo — préstamo desde otra tienda'; srcCard.appendChild(neg); }
+      neg.style.display = 'block';
+    } else {
+      srcCard.classList.remove('is-neg');
+      const neg = srcCard.querySelector('.pc-neg-note');
+      if (neg) neg.style.display = 'none';
+    }
+
+    // update minus btn
+    const minusBtn = srcCard.querySelector('.qb');
+    if (minusBtn && key !== 'alm') {
+      minusBtn.classList.remove('off');
+      minusBtn.onclick = (ev) => v3minus(ev, key, tgtCol);
+    }
+
+    v3q[key+'-'+tgtCol] = qty;
+  }
+
+  v3q[key+'-'+srcCol] = 0;
+  v3updateCounts();
+  v3updateHints();
+}
+
+function v3createCard(key, col, qty, isNeg) {
+  const m = CARD_META[key];
+  const lbl = col === 'ti' ? 'En tienda' : 'A domicilio';
+
+  const card = document.createElement('div');
+  card.className = 'pc' + (isNeg ? ' is-neg' : '');
+  card.id = 'v3c-'+key+'-'+col;
+  card.draggable = true;
+  card.dataset.key = key;
+  card.dataset.qty = qty;
+  card.dataset.col = col;
+  card.ondragstart = (e) => v3start(e, key, col);
+  card.ondragend   = (e) => v3end(e);
+
+  card.innerHTML = `
+    <div class="pc-body"><div class="pc-top">
+      <div class="pc-img">${m.img ? `<img src="${m.img}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;">` : m.emoji}</div>
+      <div class="pc-info">
+        <div class="pc-name">${m.name}</div>
+        <div class="pc-sku">${m.sku}</div>
+        <div class="pc-attrs">${m.attrs}</div>
+        <div class="pc-avail ${isNeg ? 'av-do' : m.avClass}">${isNeg ? 'Venta en negativo' : m.avail}</div>
+      </div>
+      <div class="drag-h">⠿</div>
+    </div></div>
+    <div class="pc-foot">
+      <span class="pc-foot-lbl">${lbl}</span>
+      <div class="pc-qty">
+        <button class="qb" onclick="v3minus(event,'${key}','${col}')">−</button>
+        <span class="qv" id="v3q-${key}-${col}">${qty}</span>
+        <button class="qb off">+</button>
+      </div>
+    </div>
+    ${isNeg ? '<div class="pc-neg-note">⚠ Venta en negativo — préstamo desde otra tienda</div>' : ''}
+  `;
+
+  const hint = document.getElementById('v3h-'+col);
+  document.getElementById('v3z-'+col).insertBefore(card, hint);
+  v3q[key+'-'+col] = qty;
+  v3updateCounts();
+  v3updateHints();
+}
+
+function v3updateCounts() {
+  ['ti','do'].forEach(col => {
+    const cards = document.getElementById('v3z-'+col).querySelectorAll('.pc');
+    document.getElementById('v3cnt-'+col).textContent = cards.length;
+  });
+}
+
+/* ════════════════════════════════════════
+   VARIANTES 4-6 · MULTI-ADDRESS DELIVERY
+════════════════════════════════════════ */
+const MA_ADDRS = ['dir1','dir2','dir3'];
+const MA_PRODS = { sab: { total: 2 }, bas: { total: 1 } };
+
+const maDist = {
+  v4: { sab: {dir1:2,dir2:0,dir3:0}, bas: {dir1:1,dir2:0,dir3:0} },
+  v5: { sab: {dir1:2,dir2:0,dir3:0}, bas: {dir1:1,dir2:0,dir3:0} },
+  v6: { sab: {dir1:2,dir2:0,dir3:0}, bas: {dir1:1,dir2:0,dir3:0} }
+};
+
+function maStep(vn, prod, addr, delta) {
+  const d = maDist[vn][prod];
+  if (delta > 0) {
+    const donor = MA_ADDRS.find(a => a !== addr && d[a] > 0);
+    if (!donor) return;
+    d[donor]--;
+    d[addr]++;
+  } else {
+    if (d[addr] <= 0) return;
+    const receiver = MA_ADDRS.find(a => a !== addr);
+    d[addr]--;
+    d[receiver]++;
+  }
+  maRender(vn);
+}
+
+function maRender(vn) {
+  const dist = maDist[vn];
+  for (const prod of ['sab','bas']) {
+    for (const addr of MA_ADDRS) {
+      const valEl = document.getElementById(`${vn}-${prod}-${addr}`);
+      if (!valEl) continue;
+      const val = dist[prod][addr];
+      valEl.textContent = val;
+      const stepper = valEl.parentElement;
+      const btns = stepper.querySelectorAll('.st-b');
+      if (btns[0]) btns[0].classList.toggle('off', val <= 0);
+      if (btns[1]) {
+        const hasDonor = MA_ADDRS.some(a => a !== addr && dist[prod][a] > 0);
+        btns[1].classList.toggle('off', !hasDonor);
+      }
+    }
+  }
+  if (vn === 'v4') {
+    for (const addr of MA_ADDRS) {
+      const tot = ['sab','bas'].reduce((s,p) => s + dist[p][addr], 0);
+      const b = document.getElementById(`v4-badge-${addr}`);
+      if (b) { b.textContent = `Productos: ${tot}`; b.className = `da-badge ${tot > 0 ? 'ok' : 'zero'}`; }
+    }
+  }
+  if (vn === 'v6') {
+    for (const addr of MA_ADDRS) {
+      const tot = ['sab','bas'].reduce((s,p) => s + dist[p][addr], 0);
+      const el = document.getElementById(`v6-tot-${addr}`);
+      if (el) { el.textContent = tot; el.className = `mc tot ${tot > 0 ? 'ok' : 'zero'}`; }
+    }
+  }
+  const allOk = MA_ADDRS.every(addr => ['sab','bas'].some(p => dist[p][addr] > 0));
+  const confirmBtn = document.getElementById(`${vn}-confirm`);
+  const errEl = document.getElementById(`${vn}-err`);
+  if (confirmBtn) confirmBtn.classList.toggle('off', !allOk);
+  if (errEl) errEl.style.display = allOk ? 'none' : '';
+}
+
+// Initialize button states on load
+['v4','v5','v6'].forEach(maRender);
+
+function v3updateHints() {
+  ['ti','do'].forEach(col => {
+    const cards = document.getElementById('v3z-'+col).querySelectorAll('.pc');
+    const hint  = document.getElementById('v3h-'+col);
+    if (hint) hint.style.display = cards.length === 0 ? 'flex' : 'none';
+  });
+}
+</script>
+</body>
+</html>

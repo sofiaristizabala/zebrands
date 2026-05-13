@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asignación de entrega · DS POS</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root {
+  --font:            var(--ds-font-family);
+  --bg-default:      var(--ds-bg-primary);
+  --bg-subtle:       var(--ds-bg-secondary);
+  --bg-brand:        var(--ds-blue-600);
+  --bg-brand-strong: var(--ds-blue-900);
+  --text-primary:    var(--ds-fg-primary);
+  --text-secondary:  var(--ds-grey-dark-500);
+  --text-disabled:   var(--ds-fg-disabled);
+  --text-inverted:   var(--ds-grey-light-50);
+  --text-link:       var(--ds-blue-600);
+  --border-subtle:   var(--ds-grey-light-200);
+  --border-strong:   var(--ds-fg-primary);
+  --r-sm: var(--ds-br-soft);
+  --r-md: var(--ds-br-medium);
+  --r-full: var(--ds-br-full);
+  --bw-s: var(--ds-bw-s);
+  --s-100: var(--ds-space-100);
+  --s-200: var(--ds-space-200);
+  --s-300: var(--ds-space-300);
+  --s-400: var(--ds-space-400);
+  --s-800: var(--ds-space-800);
+  --fs-s: var(--ds-font-size-body-s);
+  --fs-m: var(--ds-font-size-body-m);
+  --fs-l: var(--ds-font-size-body-l);
+  --fs-hl: var(--ds-font-size-heading-s);
+  --fs-hs: 18px;
+  --fs-hm: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg-subtle); color: var(--text-primary); }
+
+.topbar { background: var(--bg-brand-strong); color: var(--text-inverted); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 56px; }
+.tb-brand { font-size: var(--fs-hs); font-weight: 400; }
+.tb-store { font-size: var(--fs-l); color: var(--text-inverted); background: none; border: none; cursor: pointer; }
+.tb-user  { display: flex; align-items: center; gap: var(--s-300); font-size: var(--fs-l); font-weight: 500; }
+.tb-av    { width: 40px; height: 40px; border-radius: var(--r-full); background: #2D5FA6; display: flex; align-items: center; justify-content: center; font-size: var(--fs-s); font-weight: 700; }
+
+.subbar { background: var(--bg-default); display: flex; align-items: center; padding: 0 var(--s-800); height: 80px; box-shadow: 0 4px 5px rgba(0,0,0,.07); }
+.subbar-title { font-size: var(--fs-hl); font-weight: 500; }
+
+.page { padding: var(--s-800); max-width: 1100px; margin: 0 auto; }
+
+.intro { margin-bottom: 40px; }
+.intro-title { font-size: var(--fs-hm); font-weight: 500; margin-bottom: var(--s-100); }
+.intro-desc  { font-size: var(--fs-m); color: var(--text-secondary); line-height: 1.6; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-400); }
+
+.card {
+  background: var(--bg-default);
+  border: var(--bw-s) solid var(--border-subtle);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .15s, border-color .15s;
+}
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  border-color: #b6cdf1;
+}
+
+.card-body { padding: var(--s-400); flex: 1; }
+.card-badge { font-size: var(--fs-s); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--text-disabled); margin-bottom: var(--s-100); display: block; }
+.card-title { font-size: var(--fs-l); font-weight: 500; margin-bottom: var(--s-200); }
+.card-desc  { font-size: var(--fs-m); color: var(--text-secondary); line-height: 1.6; }
+
+.card-footer {
+  padding: var(--s-300) var(--s-400);
+  border-top: var(--bw-s) solid var(--border-subtle);
+  font-size: var(--fs-m);
+  color: var(--text-link);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--s-100);
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-brand">V2 · ZePOS</div>
+  <button class="tb-store">🏪 Tienda Altavista ↻</button>
+  <div class="tb-user"><div class="tb-av">AP</div><span>Hola Andrea Pérez</span></div>
+</div>
+<div class="subbar">
+  <div class="subbar-title">Asignación de entrega</div>
+</div>
+
+<div class="page">
+  <div class="intro">
+    <div class="intro-title">Propuestas de diseño</div>
+    <div class="intro-desc">Dos variantes del flujo de asignación de entrega. Selecciona una para revisarla.</div>
+  </div>
+
+  <div class="grid">
+
+    <a class="card" href="Variante-1.html">
+      <div class="card-body">
+        <span class="card-badge">Variante 1</span>
+        <div class="card-title">Distribución siempre visible por producto</div>
+        <div class="card-desc">Cada producto muestra sus controles de distribución desplegados. Los contadores se sincronizan automáticamente entre tienda y domicilio.</div>
+      </div>
+      <div class="card-footer">Ver propuesta →</div>
+    </a>
+
+    <a class="card" href="Variante-3.html">
+      <div class="card-body">
+        <span class="card-badge">Variante 3</span>
+        <div class="card-title">Drag & drop · 2 columnas · Todo pre-asignado</div>
+        <div class="card-desc">Vista de dos columnas con productos ya asignados. Se pueden mover arrastrando o usando el botón (−) para redistribuir piezas entre destinos.</div>
+      </div>
+      <div class="card-footer">Ver propuesta →</div>
+    </a>
+
+  </div>
+</div>
+
+</body>
+</html>
