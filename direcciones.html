@@ -130,6 +130,35 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 .btn-confirmar { flex: 2; height: 48px; border-radius: var(--r-md); border: none; background: var(--bg-brand-strong); color: var(--text-inverted); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; cursor: pointer; }
 .btn-confirmar:hover { background: #002d7a; }
 
+/* ── Distribution section ── */
+.distrib-section { display: none; }
+.distrib-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-300); margin-bottom: var(--s-400); }
+.distrib-title { font-size: var(--fs-hm); font-weight: 500; margin-bottom: 2px; }
+.distrib-sub   { font-size: var(--fs-m); color: var(--text-secondary); }
+.btn-back-sm { display: flex; align-items: center; gap: var(--s-100); height: 36px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-m); cursor: pointer; flex-shrink: 0; }
+.btn-back-sm:hover { background: var(--bg-subtle); }
+
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-300); align-items: start; margin-bottom: var(--s-400); }
+
+.dcol { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; }
+.dcol-head { padding: var(--s-200) var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: var(--s-200); }
+.dcol-addr { font-size: var(--fs-s); font-weight: 600; line-height: 1.3; }
+.dcol-cnt  { font-size: var(--fs-xs); font-weight: 600; background: var(--bg-subtle); border-radius: var(--r-full); padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
+.dcol-dz { padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-150); min-height: 180px; transition: background .1s, border .1s; }
+.dcol-dz.dov { background: var(--ds-bg-info-subtle); border-radius: var(--r-sm); }
+
+.dpc { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-sm); padding: var(--s-150) var(--s-200); cursor: grab; display: flex; align-items: center; gap: var(--s-150); user-select: none; transition: box-shadow .1s; }
+.dpc:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.dpc-img  { width: 32px; height: 32px; border-radius: 4px; overflow: hidden; flex-shrink: 0; background: var(--bg-subtle); }
+.dpc-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dpc-info { flex: 1; min-width: 0; }
+.dpc-name  { font-size: var(--fs-xs); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dpc-attrs { font-size: 11px; color: var(--text-secondary); }
+.dpc-qty   { font-size: var(--fs-xs); font-weight: 600; color: var(--text-secondary); flex-shrink: 0; }
+.dpc-grip  { color: var(--border-default); flex-shrink: 0; }
+
+#ghost-d { position: fixed; pointer-events: none; z-index: 9999; display: none; background: var(--bg-default); border: 1px solid var(--bg-brand); border-radius: var(--r-sm); padding: 6px 12px; font-size: var(--fs-s); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); transform: rotate(1.5deg) scale(1.02); white-space: nowrap; }
+
 /* ── Order summary (aside) ── */
 .order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); }
 .os-title { font-size: var(--fs-hs); font-weight: 500; margin-bottom: var(--s-100); }
@@ -190,6 +219,8 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
     <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
     <span>Asignaciones</span>
   </div>
+
+  <div id="ghost-d"></div>
 
   <div class="page-cols">
 
@@ -261,10 +292,26 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 
         <div class="addr-card-foot">
           <button class="btn-regresar" onclick="history.back()">Regresar</button>
-          <button class="btn-confirmar">Confirmar dirección</button>
+          <button class="btn-confirmar" onclick="confirmAddresses()">Confirmar dirección</button>
         </div>
 
       </div><!-- /addr-card -->
+
+      <!-- ── Distribución de productos ── -->
+      <div class="distrib-section" id="distrib-section">
+        <div class="distrib-head">
+          <div>
+            <div class="distrib-title">Distribución de productos</div>
+            <div class="distrib-sub">Arrastra cada producto a la dirección de envío correspondiente</div>
+          </div>
+          <button class="btn-back-sm" onclick="showAddrSelection()"><i data-lucide="arrow-left"></i> Cambiar direcciones</button>
+        </div>
+        <div class="cols3" id="distrib-cols"></div>
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn-confirmar" style="flex:none;width:240px;" onclick="location.href='index.html'">Confirmar distribución</button>
+        </div>
+      </div><!-- /distrib-section -->
+
     </div><!-- /columna principal -->
 
     <!-- ── Resumen de orden ── -->
@@ -389,6 +436,134 @@ function selectAddr(el) {
 function updateDisabledState() {
   const atMax = document.querySelectorAll('.addr-item.selected').length >= 3;
   document.querySelectorAll('.addr-item:not(.selected)').forEach(i => i.classList.toggle('disabled', atMax));
+}
+
+/* ── Distribution ── */
+const PRODUCTS = [
+  { id: 'p1', name: 'Colchón Luuna Original',      sku: 'LU2002SC',  qty: 2, attrs: 'Matrimonial · Suave · Cooling', img: '' },
+  { id: 'p2', name: 'Juego de Sábanas de Algodón', sku: 'LTSH1001',  qty: 3, attrs: 'Individual · Blanco',           img: 'Asignaciones/sabanas-algodon-individual.jpeg' },
+  { id: 'p3', name: 'Base de Bambú',               sku: 'NB1301',    qty: 2, attrs: 'Individual',                    img: '' },
+  { id: 'p4', name: 'Almohada Grid Tech',           sku: 'ALTP1001',  qty: 2, attrs: 'Estándar · Suave · Cooling',   img: '' },
+];
+
+function confirmAddresses() {
+  const selected = [...document.querySelectorAll('.addr-item.selected')];
+  if (!selected.length) return;
+  const addrs = selected.map(el => el.querySelector('.addr-name').textContent.trim());
+  document.querySelector('.addr-card').style.display = 'none';
+  const ds = document.getElementById('distrib-section');
+  ds.style.display = 'block';
+  buildDistribCols(addrs);
+  lucide.createIcons();
+}
+
+function showAddrSelection() {
+  document.querySelector('.addr-card').style.display = '';
+  document.getElementById('distrib-section').style.display = 'none';
+}
+
+function buildDistribCols(addrs) {
+  const container = document.getElementById('distrib-cols');
+  container.innerHTML = '';
+  container.style.gridTemplateColumns = `repeat(${addrs.length}, 1fr)`;
+
+  addrs.forEach((addr, i) => {
+    const col = document.createElement('div');
+    col.className = 'dcol';
+    col.innerHTML = `
+      <div class="dcol-head">
+        <div class="dcol-addr">${addr}</div>
+        <span class="dcol-cnt" id="cnt-${i}">0 productos</span>
+      </div>
+      <div class="dcol-dz" id="dz-${i}"></div>
+    `;
+    container.appendChild(col);
+  });
+
+  const firstDz = document.getElementById('dz-0');
+  PRODUCTS.forEach(p => firstDz.appendChild(createDCard(p)));
+
+  updateDistribCounts();
+  setupDrag();
+}
+
+function createDCard(p) {
+  const card = document.createElement('div');
+  card.className = 'dpc';
+  card.dataset.id = p.id;
+  const imgHtml = p.img
+    ? `<div class="dpc-img"><img src="${p.img}" alt=""></div>`
+    : `<div class="dpc-img"></div>`;
+  card.innerHTML = `
+    ${imgHtml}
+    <div class="dpc-info">
+      <div class="dpc-name">${p.name}</div>
+      <div class="dpc-attrs">${p.attrs}</div>
+    </div>
+    <span class="dpc-qty">×${p.qty}</span>
+    <span class="dpc-grip"><i data-lucide="grip-vertical"></i></span>
+  `;
+  return card;
+}
+
+function updateDistribCounts() {
+  document.querySelectorAll('.dcol-dz').forEach((dz, i) => {
+    const cnt = dz.querySelectorAll('.dpc').length;
+    const badge = document.getElementById(`cnt-${i}`);
+    if (badge) badge.textContent = cnt === 1 ? '1 producto' : `${cnt} productos`;
+  });
+}
+
+/* Drag & drop (Pointer Events API) */
+let _dragCard = null;
+const _ghost = document.getElementById('ghost-d');
+let _ox = 0, _oy = 0;
+
+function setupDrag() {
+  document.getElementById('distrib-cols').addEventListener('pointerdown', _startDrag);
+}
+
+function _startDrag(e) {
+  const card = e.target.closest('.dpc');
+  if (!card) return;
+  e.preventDefault();
+  _dragCard = card;
+  const r = card.getBoundingClientRect();
+  _ox = e.clientX - r.left;
+  _oy = e.clientY - r.top;
+  _ghost.textContent = card.querySelector('.dpc-name').textContent;
+  _ghost.style.display = 'block';
+  _ghost.style.left = (e.clientX - _ox) + 'px';
+  _ghost.style.top  = (e.clientY - _oy) + 'px';
+  card.style.opacity = '0.4';
+  card.setPointerCapture(e.pointerId);
+  card.addEventListener('pointermove', _moveDrag);
+  card.addEventListener('pointerup',   _endDrag);
+}
+
+function _moveDrag(e) {
+  _ghost.style.left = (e.clientX - _ox) + 'px';
+  _ghost.style.top  = (e.clientY - _oy) + 'px';
+  document.querySelectorAll('.dcol-dz').forEach(dz => dz.classList.remove('dov'));
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const dz = el && el.closest('.dcol-dz');
+  if (dz) dz.classList.add('dov');
+}
+
+function _endDrag(e) {
+  _ghost.style.display = 'none';
+  _dragCard.style.opacity = '';
+  document.querySelectorAll('.dcol-dz').forEach(dz => dz.classList.remove('dov'));
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const dz = el && el.closest('.dcol-dz');
+  if (dz && dz !== _dragCard.parentNode) {
+    dz.appendChild(_dragCard);
+    updateDistribCounts();
+    lucide.createIcons({ el: dz });
+  }
+  _dragCard.removeEventListener('pointermove', _moveDrag);
+  _dragCard.removeEventListener('pointerup',   _endDrag);
+  _dragCard = null;
 }
 </script>
 </body>
