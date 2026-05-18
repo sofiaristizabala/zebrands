@@ -127,11 +127,13 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 .addr-card-foot { padding: var(--s-400); border-top: var(--bw-s) solid var(--border-subtle); display: flex; gap: var(--s-300); }
 .btn-regresar { flex: 1; height: 48px; border-radius: var(--r-md); border: var(--bw-s) solid var(--border-strong); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; color: var(--text-primary); cursor: pointer; }
 .btn-regresar:hover { background: var(--bg-subtle); }
-.btn-confirmar { flex: 2; height: 48px; border-radius: var(--r-md); border: none; background: var(--bg-brand-strong); color: var(--text-inverted); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; cursor: pointer; }
+.btn-confirmar { flex: 1; height: 48px; border-radius: var(--r-md); border: none; background: var(--bg-brand-strong); color: var(--text-inverted); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; cursor: pointer; }
 .btn-confirmar:hover { background: #002d7a; }
 
 /* ── Distribution section ── */
 .distrib-section { display: none; }
+.variant-body { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; }
+.variant-body-inner { padding: var(--s-400); }
 .distrib-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-300); margin-bottom: var(--s-400); }
 .distrib-title { font-size: var(--fs-hm); font-weight: 500; margin-bottom: 2px; }
 .distrib-sub   { font-size: var(--fs-m); color: var(--text-secondary); }
@@ -144,20 +146,34 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 .dcol-head { padding: var(--s-200) var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: var(--s-200); }
 .dcol-addr { font-size: var(--fs-s); font-weight: 600; line-height: 1.3; }
 .dcol-cnt  { font-size: var(--fs-xs); font-weight: 600; background: var(--bg-subtle); border-radius: var(--r-full); padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
-.dcol-dz { padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-150); min-height: 180px; transition: background .1s, border .1s; }
-.dcol-dz.dov { background: var(--ds-bg-info-subtle); border-radius: var(--r-sm); }
+.dcol-dz { padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-200); min-height: 80px; transition: background .1s; }
+.dcol-dz.dov { background: #EFF6FF; outline: 2px dashed var(--bg-brand); border-radius: var(--r-sm); }
+.drag-ghost { position: fixed; pointer-events: none; z-index: 9999; display: none; background: var(--bg-default); border: 1px solid var(--bg-brand); border-radius: var(--r-sm); padding: 6px 14px; font-size: var(--fs-s); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); white-space: nowrap; }
 
-.dpc { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-sm); padding: var(--s-150) var(--s-200); cursor: grab; display: flex; align-items: center; gap: var(--s-150); user-select: none; transition: box-shadow .1s; }
-.dpc:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-.dpc-img  { width: 32px; height: 32px; border-radius: 4px; overflow: hidden; flex-shrink: 0; background: var(--bg-subtle); }
-.dpc-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.dpc-info { flex: 1; min-width: 0; }
-.dpc-name  { font-size: var(--fs-xs); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dpc-attrs { font-size: 11px; color: var(--text-secondary); }
-.dpc-qty   { font-size: var(--fs-xs); font-weight: 600; color: var(--text-secondary); flex-shrink: 0; }
-.dpc-grip  { color: var(--border-default); flex-shrink: 0; }
+/* Product cards inside distribution columns (same as v1-card) */
+.v1-card { border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.v1-card-head { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); cursor: grab; }
+.v1-card-head:active { cursor: grabbing; }
+.v1-img  { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--bg-subtle); flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.v1-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.v1-info { flex: 1; min-width: 0; }
+.v1-name  { font-size: var(--fs-m); font-weight: 500; }
+.v1-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
+.v1-expand { padding: var(--s-300); background: var(--bg-subtle); }
+.v1-row { display: flex; align-items: center; gap: var(--s-300); }
+.v1-lbl { font-size: var(--fs-m); color: var(--text-secondary); flex-shrink: 0; }
 
-#ghost-d { position: fixed; pointer-events: none; z-index: 9999; display: none; background: var(--bg-default); border: 1px solid var(--bg-brand); border-radius: var(--r-sm); padding: 6px 12px; font-size: var(--fs-s); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); transform: rotate(1.5deg) scale(1.02); white-space: nowrap; }
+/* Qty selector */
+.qty-sel { display: flex; align-items: center; height: 36px; border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
+.qs-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 18px; color: var(--text-primary); font-weight: 300; transition: background .12s; }
+.qs-btn:hover:not(.off) { background: var(--border-subtle); }
+.qs-btn.off { opacity: .25; cursor: default; pointer-events: none; }
+.qs-val { width: 32px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: var(--bg-default); }
+
+/* Badges */
+.ab { font-size: var(--fs-s); font-weight: 500; padding: 2px var(--s-200); border-radius: var(--r-sm); white-space: nowrap; display: inline-flex; align-items: center; flex-shrink: 0; }
+.ab-assigned { background: #EFF6FF; color: var(--bg-brand); border: 1px solid #BFDBFE; }
+.ab-zero     { background: var(--bg-subtle); color: var(--text-secondary); border: var(--bw-s) solid var(--border-subtle); }
 
 /* ── Order summary (aside) ── */
 .order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); }
@@ -219,8 +235,6 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
     <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
     <span>Asignaciones</span>
   </div>
-
-  <div id="ghost-d"></div>
 
   <div class="page-cols">
 
@@ -304,11 +318,15 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
             <div class="distrib-title">Distribución de productos</div>
             <div class="distrib-sub">Arrastra cada producto a la dirección de envío correspondiente</div>
           </div>
-          <button class="btn-back-sm" onclick="showAddrSelection()"><i data-lucide="arrow-left"></i> Cambiar direcciones</button>
         </div>
-        <div class="cols3" id="distrib-cols"></div>
-        <div style="display:flex;justify-content:flex-end;">
-          <button class="btn-confirmar" style="flex:none;width:240px;" onclick="location.href='index.html'">Confirmar distribución</button>
+        <div class="variant-body">
+          <div class="variant-body-inner">
+            <div class="cols3" id="distrib-cols"></div>
+          </div>
+          <div class="addr-card-foot">
+            <button class="btn-regresar" onclick="showAddrSelection()">Cambiar direcciones</button>
+            <button class="btn-confirmar" onclick="location.href='index.html'">Confirmar distribución</button>
+          </div>
         </div>
       </div><!-- /distrib-section -->
 
@@ -393,6 +411,7 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
   </div><!-- /page-cols -->
 </div><!-- /page -->
 
+<div id="ghost-d" class="drag-ghost"></div>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
 lucide.createIcons();
@@ -440,21 +459,21 @@ function updateDisabledState() {
 
 /* ── Distribution ── */
 const PRODUCTS = [
-  { id: 'p1', name: 'Colchón Luuna Original',      sku: 'LU2002SC',  qty: 2, attrs: 'Matrimonial · Suave · Cooling', img: '' },
-  { id: 'p2', name: 'Juego de Sábanas de Algodón', sku: 'LTSH1001',  qty: 3, attrs: 'Individual · Blanco',           img: 'Asignaciones/sabanas-algodon-individual.jpeg' },
-  { id: 'p3', name: 'Base de Bambú',               sku: 'NB1301',    qty: 2, attrs: 'Individual',                    img: '' },
-  { id: 'p4', name: 'Almohada Grid Tech',           sku: 'ALTP1001',  qty: 2, attrs: 'Estándar · Suave · Cooling',   img: '' },
+  { id: 'p1', name: 'Colchón Luuna Original',      qty: 2, attrs: 'Matrimonial · Suave · Cooling', img: '' },
+  { id: 'p2', name: 'Juego de Sábanas de Algodón', qty: 3, attrs: 'Individual · Blanco',           img: 'Asignaciones/sabanas-algodon-individual.jpeg' },
+  { id: 'p3', name: 'Base de Bambú',               qty: 2, attrs: 'Individual',                    img: '' },
+  { id: 'p4', name: 'Almohada Grid Tech',           qty: 2, attrs: 'Estándar · Suave · Cooling',   img: '' },
 ];
+
+let distribQty = {};
 
 function confirmAddresses() {
   const selected = [...document.querySelectorAll('.addr-item.selected')];
   if (!selected.length) return;
   const addrs = selected.map(el => el.querySelector('.addr-name').textContent.trim());
   document.querySelector('.addr-card').style.display = 'none';
-  const ds = document.getElementById('distrib-section');
-  ds.style.display = 'block';
+  document.getElementById('distrib-section').style.display = 'block';
   buildDistribCols(addrs);
-  lucide.createIcons();
 }
 
 function showAddrSelection() {
@@ -463,6 +482,11 @@ function showAddrSelection() {
 }
 
 function buildDistribCols(addrs) {
+  PRODUCTS.forEach(p => {
+    distribQty[p.id] = {};
+    addrs.forEach((_, i) => { distribQty[p.id][i] = i === 0 ? p.qty : 0; });
+  });
+
   const container = document.getElementById('distrib-cols');
   container.innerHTML = '';
   container.style.gridTemplateColumns = `repeat(${addrs.length}, 1fr)`;
@@ -473,97 +497,197 @@ function buildDistribCols(addrs) {
     col.innerHTML = `
       <div class="dcol-head">
         <div class="dcol-addr">${addr}</div>
-        <span class="dcol-cnt" id="cnt-${i}">0 productos</span>
+        <span class="dcol-cnt" id="cnt-${i}"></span>
       </div>
       <div class="dcol-dz" id="dz-${i}"></div>
     `;
     container.appendChild(col);
+    const dz = col.querySelector('.dcol-dz');
+    PRODUCTS.forEach(p => { if (distribQty[p.id][i] > 0) dz.appendChild(createDCard(p, i)); });
   });
 
-  const firstDz = document.getElementById('dz-0');
-  PRODUCTS.forEach(p => firstDz.appendChild(createDCard(p)));
-
-  updateDistribCounts();
+  updateColCounts();
   setupDrag();
 }
 
-function createDCard(p) {
+function createDCard(p, colIdx) {
+  const qty = distribQty[p.id][colIdx];
+  const plusOff = qty >= p.qty; // disabled only when this col has ALL units
+  const imgInner = p.img ? `<img src="${p.img}" alt="">` : '';
   const card = document.createElement('div');
-  card.className = 'dpc';
-  card.dataset.id = p.id;
-  const imgHtml = p.img
-    ? `<div class="dpc-img"><img src="${p.img}" alt=""></div>`
-    : `<div class="dpc-img"></div>`;
+  card.className = 'v1-card';
+  card.dataset.pid = p.id;
+  card.dataset.col = colIdx;
   card.innerHTML = `
-    ${imgHtml}
-    <div class="dpc-info">
-      <div class="dpc-name">${p.name}</div>
-      <div class="dpc-attrs">${p.attrs}</div>
+    <div class="v1-card-head">
+      <div class="v1-img">${imgInner}</div>
+      <div class="v1-info">
+        <div class="v1-name">${p.name}</div>
+        <div class="v1-attrs">${p.attrs}</div>
+      </div>
+      <span class="ab ab-assigned" id="ab-${p.id}-${colIdx}">${qty} pieza${qty !== 1 ? 's' : ''}</span>
     </div>
-    <span class="dpc-qty">×${p.qty}</span>
-    <span class="dpc-grip"><i data-lucide="grip-vertical"></i></span>
+    <div class="v1-expand">
+      <div class="v1-row">
+        <span class="v1-lbl">Cantidad</span>
+        <div class="qty-sel">
+          <button class="qs-btn" id="qd-${p.id}-${colIdx}" onclick="changeQty('${p.id}', ${colIdx}, -1)">−</button>
+          <span class="qs-val" id="sq-${p.id}-${colIdx}">${qty}</span>
+          <button class="qs-btn${plusOff ? ' off' : ''}" id="qi-${p.id}-${colIdx}" onclick="changeQty('${p.id}', ${colIdx}, +1)">+</button>
+        </div>
+      </div>
+    </div>
   `;
   return card;
 }
 
-function updateDistribCounts() {
-  document.querySelectorAll('.dcol-dz').forEach((dz, i) => {
-    const cnt = dz.querySelectorAll('.dpc').length;
-    const badge = document.getElementById(`cnt-${i}`);
-    if (badge) badge.textContent = cnt === 1 ? '1 producto' : `${cnt} productos`;
-  });
+function changeQty(pid, colIdx, delta) {
+  const p = PRODUCTS.find(x => x.id === pid);
+  const numCols = Object.keys(distribQty[pid]).length;
+
+  if (delta < 0) {
+    // Transfer 1 unit to next column (circular)
+    const nextCol = (colIdx + 1) % numCols;
+    distribQty[pid][colIdx]--;
+    distribQty[pid][nextCol]++;
+    refreshCard(pid, colIdx);
+    refreshCard(pid, nextCol);
+  } else {
+    // Take 1 unit from the column with the most units (excluding current)
+    let srcCol = -1, srcMax = 0;
+    for (let i = 0; i < numCols; i++) {
+      if (i !== colIdx && distribQty[pid][i] > srcMax) { srcMax = distribQty[pid][i]; srcCol = i; }
+    }
+    if (srcCol === -1) return;
+    distribQty[pid][colIdx]++;
+    distribQty[pid][srcCol]--;
+    refreshCard(pid, colIdx);
+    refreshCard(pid, srcCol);
+  }
+
+  updateColCounts();
 }
 
-/* Drag & drop (Pointer Events API) */
-let _dragCard = null;
-const _ghost = document.getElementById('ghost-d');
-let _ox = 0, _oy = 0;
+function refreshCard(pid, colIdx) {
+  const qty = distribQty[pid][colIdx];
+  const dz  = document.getElementById(`dz-${colIdx}`);
+  if (!dz) return;
+  const existing = dz.querySelector(`[data-pid="${pid}"]`);
+
+  if (qty === 0) {
+    if (existing) existing.remove();
+    return;
+  }
+  if (!existing) {
+    dz.appendChild(createDCard(PRODUCTS.find(x => x.id === pid), colIdx));
+    return;
+  }
+  // Update in-place
+  const p = PRODUCTS.find(x => x.id === pid);
+  const qtyEl  = document.getElementById(`sq-${pid}-${colIdx}`);
+  const badge   = document.getElementById(`ab-${pid}-${colIdx}`);
+  const incBtn  = document.getElementById(`qi-${pid}-${colIdx}`);
+  if (qtyEl)  qtyEl.textContent = qty;
+  if (badge)  { badge.textContent = `${qty} pieza${qty !== 1 ? 's' : ''}`; }
+  if (incBtn) incBtn.classList.toggle('off', qty >= p.qty);
+}
+
+/* ── Drag & drop ── */
+let _drag = null, _ox = 0, _oy = 0;
+const ghost = document.getElementById('ghost-d');
 
 function setupDrag() {
-  document.getElementById('distrib-cols').addEventListener('pointerdown', _startDrag);
+  document.getElementById('distrib-cols').addEventListener('pointerdown', onDragDown);
 }
 
-function _startDrag(e) {
-  const card = e.target.closest('.dpc');
+function onDragDown(e) {
+  const head = e.target.closest('.v1-card-head');
+  if (!head) return;
+  const card = head.closest('.v1-card');
   if (!card) return;
   e.preventDefault();
-  _dragCard = card;
+  const pid    = card.dataset.pid;
+  const colIdx = parseInt(card.dataset.col);
   const r = card.getBoundingClientRect();
   _ox = e.clientX - r.left;
   _oy = e.clientY - r.top;
-  _ghost.textContent = card.querySelector('.dpc-name').textContent;
-  _ghost.style.display = 'block';
-  _ghost.style.left = (e.clientX - _ox) + 'px';
-  _ghost.style.top  = (e.clientY - _oy) + 'px';
+  _drag = { card, pid, colIdx };
+  ghost.textContent = card.querySelector('.v1-name').textContent;
+  ghost.style.display = 'block';
+  ghost.style.left = (e.clientX - _ox) + 'px';
+  ghost.style.top  = (e.clientY - _oy) + 'px';
   card.style.opacity = '0.4';
-  card.setPointerCapture(e.pointerId);
-  card.addEventListener('pointermove', _moveDrag);
-  card.addEventListener('pointerup',   _endDrag);
+  head.setPointerCapture(e.pointerId);
+  head.addEventListener('pointermove', onDragMove);
+  head.addEventListener('pointerup',   onDragUp);
 }
 
-function _moveDrag(e) {
-  _ghost.style.left = (e.clientX - _ox) + 'px';
-  _ghost.style.top  = (e.clientY - _oy) + 'px';
+function onDragMove(e) {
+  ghost.style.left = (e.clientX - _ox) + 'px';
+  ghost.style.top  = (e.clientY - _oy) + 'px';
   document.querySelectorAll('.dcol-dz').forEach(dz => dz.classList.remove('dov'));
   const el = document.elementFromPoint(e.clientX, e.clientY);
   const dz = el && el.closest('.dcol-dz');
   if (dz) dz.classList.add('dov');
 }
 
-function _endDrag(e) {
-  _ghost.style.display = 'none';
-  _dragCard.style.opacity = '';
+function onDragUp(e) {
+  const head = e.currentTarget;
+  head.removeEventListener('pointermove', onDragMove);
+  head.removeEventListener('pointerup',   onDragUp);
+  ghost.style.display = 'none';
   document.querySelectorAll('.dcol-dz').forEach(dz => dz.classList.remove('dov'));
+
+  if (!_drag) return;
+  _drag.card.style.opacity = '';
+
   const el = document.elementFromPoint(e.clientX, e.clientY);
-  const dz = el && el.closest('.dcol-dz');
-  if (dz && dz !== _dragCard.parentNode) {
-    dz.appendChild(_dragCard);
-    updateDistribCounts();
-    lucide.createIcons({ el: dz });
+  const tgtDz = el && el.closest('.dcol-dz');
+  if (tgtDz) {
+    const tgtColIdx = parseInt(tgtDz.id.replace('dz-', ''));
+    if (tgtColIdx !== _drag.colIdx) {
+      const { card, pid, colIdx: src } = _drag;
+      const srcQty = distribQty[pid][src];
+
+      distribQty[pid][src] = 0;
+      distribQty[pid][tgtColIdx] += srcQty;
+
+      // Remove from source
+      card.remove();
+
+      // Merge into existing card or create new one
+      const existing = tgtDz.querySelector(`[data-pid="${pid}"]`);
+      if (existing) {
+        const newQty = distribQty[pid][tgtColIdx];
+        document.getElementById(`sq-${pid}-${tgtColIdx}`).textContent = newQty;
+        const badge = document.getElementById(`ab-${pid}-${tgtColIdx}`);
+        if (badge) { badge.textContent = `${newQty} pieza${newQty !== 1 ? 's' : ''}`; badge.className = 'ab ab-assigned'; }
+        const dec = document.getElementById(`qd-${pid}-${tgtColIdx}`);
+        if (dec) dec.classList.toggle('off', newQty <= 1);
+      } else {
+        tgtDz.appendChild(createDCard(PRODUCTS.find(p => p.id === pid), tgtColIdx));
+      }
+
+      // Recheck + buttons across all cols for this product
+      const total = Object.values(distribQty[pid]).reduce((a,b) => a+b, 0);
+      const atMax = total >= PRODUCTS.find(p => p.id === pid).qty;
+      Object.keys(distribQty[pid]).forEach(i => {
+        const inc = document.getElementById(`qi-${pid}-${i}`);
+        if (inc) inc.classList.toggle('off', atMax);
+      });
+
+      updateColCounts();
+    }
   }
-  _dragCard.removeEventListener('pointermove', _moveDrag);
-  _dragCard.removeEventListener('pointerup',   _endDrag);
-  _dragCard = null;
+  _drag = null;
+}
+
+function updateColCounts() {
+  document.querySelectorAll('.dcol-dz').forEach((_, i) => {
+    const total = PRODUCTS.reduce((sum, p) => sum + (distribQty[p.id]?.[i] ?? 0), 0);
+    const badge = document.getElementById(`cnt-${i}`);
+    if (badge) badge.textContent = total === 1 ? '1 pieza' : `${total} piezas`;
+  });
 }
 </script>
 </body>
