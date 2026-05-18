@@ -36,6 +36,7 @@
   --fs-hm: 20px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+svg.lucide { display: inline; width: 1em; height: 1em; vertical-align: -0.12em; flex-shrink: 0; }
 body { font-family: var(--font); background: var(--bg-subtle); color: var(--text-primary); }
 
 .topbar { background: var(--bg-brand-strong); color: var(--text-inverted); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 56px; }
@@ -92,7 +93,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 
 <div class="topbar">
   <div class="tb-brand">V2 · ZePOS</div>
-  <button class="tb-store">🏪 Tienda Altavista ↻</button>
+  <button class="tb-store"><i data-lucide="store"></i> Tienda Altavista <i data-lucide="refresh-cw"></i></button>
   <div class="tb-user"><div class="tb-av">AP</div><span>Hola Andrea Pérez</span></div>
 </div>
 <div class="subbar">
@@ -107,26 +108,29 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 
   <div class="grid">
 
-    <a class="card" href="Variante-1.html">
+    <a class="card" href="catalogo.html?v=1">
       <div class="card-body">
         <span class="card-badge">Variante 1</span>
         <div class="card-title">Distribución siempre visible por producto</div>
         <div class="card-desc">Cada producto muestra sus controles de distribución desplegados. Los contadores se sincronizan automáticamente entre tienda y domicilio.</div>
       </div>
-      <div class="card-footer">Ver propuesta →</div>
+      <div class="card-footer">Ver propuesta <i data-lucide="arrow-right"></i></div>
     </a>
 
-    <a class="card" href="Variante-3.html">
+    <a class="card" href="catalogo.html?v=3">
       <div class="card-body">
         <span class="card-badge">Variante 3</span>
         <div class="card-title">Drag & drop · 2 columnas · Todo pre-asignado</div>
         <div class="card-desc">Vista de dos columnas con productos ya asignados. Se pueden mover arrastrando o usando el botón (−) para redistribuir piezas entre destinos.</div>
       </div>
-      <div class="card-footer">Ver propuesta →</div>
+      <div class="card-footer">Ver propuesta <i data-lucide="arrow-right"></i></div>
     </a>
 
   </div>
 </div>
 
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>

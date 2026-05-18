@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo · DS POS</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root {
+  --font:            var(--ds-font-family);
+  --bg-default:      var(--ds-bg-primary);
+  --bg-subtle:       var(--ds-bg-secondary);
+  --bg-brand:        var(--ds-blue-600);
+  --bg-brand-strong: var(--ds-blue-900);
+  --text-primary:    var(--ds-fg-primary);
+  --text-secondary:  var(--ds-grey-dark-500);
+  --text-disabled:   var(--ds-fg-disabled);
+  --text-inverted:   var(--ds-grey-light-50);
+  --text-success:    var(--ds-fg-success);
+  --border-subtle:   var(--ds-grey-light-200);
+  --border-strong:   var(--ds-fg-primary);
+  --r-sm: var(--ds-br-soft);
+  --r-md: var(--ds-br-medium);
+  --r-full: var(--ds-br-full);
+  --bw-s: var(--ds-bw-s);
+  --s-050: var(--ds-space-050);
+  --s-100: var(--ds-space-100);
+  --s-150: var(--ds-space-150);
+  --s-200: var(--ds-space-200);
+  --s-300: var(--ds-space-300);
+  --s-400: var(--ds-space-400);
+  --s-800: var(--ds-space-800);
+  --fs-xs: var(--ds-font-size-body-xs);
+  --fs-s:  var(--ds-font-size-body-s);
+  --fs-m:  var(--ds-font-size-body-m);
+  --fs-l:  var(--ds-font-size-body-l);
+  --fs-hl: var(--ds-font-size-heading-s);
+  --fs-hs: 18px;
+  --fs-hm: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+svg.lucide { display: inline; width: 1em; height: 1em; vertical-align: -0.12em; flex-shrink: 0; }
+body { font-family: var(--font); color: var(--text-primary); overflow: hidden; height: 100vh; }
+
+/* ── Catalog background ── */
+.catalog-bg {
+  position: fixed;
+  inset: 0;
+  background: url('Asignaciones/catalogo imag.jpg') left top / cover no-repeat;
+  z-index: 0;
+}
+
+/* ── Cart drawer ── */
+.cart-drawer {
+  position: fixed;
+  right: 0; top: 0;
+  height: 100vh;
+  width: 400px;
+  z-index: 10;
+  background: var(--bg-default);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,.18);
+  overflow: hidden;
+}
+
+.drawer-header { background: var(--bg-brand-strong); color: var(--text-inverted); padding: 0 var(--s-400); height: 56px; display: flex; align-items: center; gap: var(--s-300); flex-shrink: 0; }
+.drawer-back { background: none; border: none; color: var(--text-inverted); font-size: 20px; cursor: pointer; padding: 0; line-height: 1; display: flex; align-items: center; }
+.drawer-title { font-size: var(--fs-hs); font-weight: 400; }
+
+.drawer-body { flex: 1; overflow-y: auto; }
+
+.drawer-customer { padding: var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); display: flex; align-items: center; gap: var(--s-300); }
+.dc-av { width: 40px; height: 40px; border-radius: var(--r-full); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.dc-info { flex: 1; min-width: 0; }
+.dc-name { font-size: var(--fs-m); font-weight: 500; }
+.dc-id   { font-size: var(--fs-s); color: var(--text-secondary); }
+.dc-actions { display: flex; gap: var(--s-200); }
+.dc-icon { width: 32px; height: 32px; border-radius: var(--r-sm); border: var(--bw-s) solid var(--border-subtle); background: var(--bg-default); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; color: var(--text-secondary); }
+
+.cart-items { padding: var(--s-300) var(--s-400); display: flex; flex-direction: column; gap: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); }
+
+.ci { display: flex; flex-direction: column; gap: var(--s-200); padding-bottom: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.ci:last-child { border-bottom: none; padding-bottom: 0; }
+.ci-top { display: flex; gap: var(--s-300); align-items: flex-start; }
+.ci-img { width: 48px; height: 48px; border-radius: var(--r-sm); background: var(--bg-subtle); overflow: hidden; flex-shrink: 0; }
+.ci-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ci-info { flex: 1; min-width: 0; }
+.ci-name  { font-size: var(--fs-m); font-weight: 500; display: flex; align-items: center; gap: var(--s-150); }
+.ci-name-edit { color: var(--text-secondary); font-size: 13px; cursor: pointer; }
+.ci-sku   { font-size: var(--fs-s); color: var(--text-secondary); }
+.ci-attrs { font-size: var(--fs-s); color: var(--text-secondary); }
+.ci-avail { font-size: var(--fs-s); margin-top: 2px; }
+.ci-avail-ti { color: var(--text-success); }
+.ci-avail-do { color: var(--ds-blue-600); }
+.ci-del { color: var(--ds-blue-400); font-size: 18px; cursor: pointer; padding: 2px; flex-shrink: 0; }
+
+.ci-bottom { display: flex; align-items: center; justify-content: space-between; }
+.ci-qty { display: flex; align-items: center; height: 36px; border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; }
+.ci-qty-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 16px; font-weight: 300; color: var(--text-primary); }
+.ci-qty-val { width: 28px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: var(--bg-default); }
+.ci-price { text-align: right; }
+.ci-badge { display: inline-block; background: #FEF3C7; color: #B45309; font-size: var(--fs-xs); font-weight: 600; padding: 1px var(--s-150); border-radius: 4px; margin-bottom: 2px; }
+.ci-price-old { font-size: var(--fs-s); color: var(--text-disabled); text-decoration: line-through; }
+.ci-price-new { font-size: var(--fs-l); font-weight: 600; color: var(--ds-blue-600); }
+
+.cart-summary { padding: var(--s-400); }
+.cs-coupon { display: flex; gap: var(--s-100); margin-bottom: var(--s-300); }
+.cs-coupon input { flex: 1; height: 44px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-secondary); background: var(--bg-default); outline: none; }
+.cs-coupon-btn { height: 44px; padding: 0 var(--s-300); border: none; font-family: var(--font); font-size: var(--fs-m); color: var(--text-disabled); background: none; cursor: default; white-space: nowrap; }
+
+.cs-rows { display: flex; flex-direction: column; gap: var(--s-200); padding-bottom: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); margin-bottom: var(--s-300); }
+.cs-row  { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-m); }
+.cs-row-val { font-weight: 500; }
+.cs-row-val.saving { color: #EF3F3F; }
+.cs-row-val.free   { color: var(--text-secondary); }
+.cs-credit-btn { height: 32px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-s); font-weight: 500; background: var(--bg-default); cursor: pointer; }
+
+.cs-total-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: var(--s-100); }
+.cs-total-lbl { font-size: var(--fs-l); font-weight: 500; color: var(--ds-blue-600); }
+.cs-total-val { font-size: var(--fs-hm); font-weight: 700; color: var(--ds-blue-600); }
+.cs-monthly   { font-size: var(--fs-xs); color: var(--text-secondary); line-height: 1.5; margin-bottom: var(--s-400); }
+
+.drawer-footer { padding: var(--s-400); border-top: var(--bw-s) solid var(--border-subtle); flex-shrink: 0; }
+.total-pagar-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--s-300); }
+.tp-lbl { font-size: var(--fs-l); font-weight: 500; }
+.tp-val { font-size: var(--fs-hm); font-weight: 700; }
+.cta-btn { width: 100%; height: 52px; border-radius: var(--r-md); background: var(--bg-brand-strong); color: var(--text-inverted); border: none; font-family: var(--font); font-size: var(--fs-l); font-weight: 500; cursor: pointer; }
+.cta-btn:hover { background: #002d7a; }
+</style>
+</head>
+<body>
+
+<div class="catalog-bg"></div>
+
+<div class="cart-drawer">
+  <div class="drawer-header">
+    <button class="drawer-back" onclick="location.href='index.html'"><i data-lucide="arrow-left"></i></button>
+    <div class="drawer-title">Carrito de compras</div>
+  </div>
+
+  <div class="drawer-body">
+
+    <div class="drawer-customer">
+      <div class="dc-av"><i data-lucide="user"></i></div>
+      <div class="dc-info">
+        <div class="dc-name">Camila Cabello</div>
+        <div class="dc-id">QTN-2404149648bf42</div>
+      </div>
+      <div class="dc-actions">
+        <div class="dc-icon"><i data-lucide="tag"></i></div>
+        <div class="dc-icon"><i data-lucide="download"></i></div>
+      </div>
+    </div>
+
+    <div class="cart-items">
+
+      <div class="ci">
+        <div class="ci-top">
+          <div class="ci-img"><img src="Asignaciones/almohada-grid-tech-d-4.jpg" alt="Almohada Grid Tech"></div>
+          <div class="ci-info">
+            <div class="ci-name">Almohada Grid Tech <span class="ci-name-edit"><i data-lucide="pencil"></i></span></div>
+            <div class="ci-sku">SKU: ALTP1001</div>
+            <div class="ci-attrs">Estándar · Suave · Cooling</div>
+            <div class="ci-avail"><span class="ci-avail-ti">24 en tienda <i data-lucide="store"></i></span></div>
+          </div>
+          <span class="ci-del"><i data-lucide="trash-2"></i></span>
+        </div>
+        <div class="ci-bottom">
+          <div class="ci-qty">
+            <button class="ci-qty-btn">−</button>
+            <span class="ci-qty-val">2</span>
+            <button class="ci-qty-btn">+</button>
+          </div>
+          <div class="ci-price">
+            <div class="ci-price-new">$3,668</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ci">
+        <div class="ci-top">
+          <div class="ci-img"><img src="Asignaciones/base-de-bambu.jpeg" alt="Base de Bambú"></div>
+          <div class="ci-info">
+            <div class="ci-name">Base de Bambú <span class="ci-name-edit"><i data-lucide="pencil"></i></span></div>
+            <div class="ci-sku">SKU: NB1301</div>
+            <div class="ci-attrs">Individual</div>
+            <div class="ci-avail"><span class="ci-avail-do">Envío a domicilio <i data-lucide="truck"></i></span></div>
+          </div>
+          <span class="ci-del"><i data-lucide="trash-2"></i></span>
+        </div>
+        <div class="ci-bottom">
+          <div class="ci-qty">
+            <button class="ci-qty-btn">−</button>
+            <span class="ci-qty-val">2</span>
+            <button class="ci-qty-btn">+</button>
+          </div>
+          <div class="ci-price">
+            <div class="ci-price-new">$7,998</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ci">
+        <div class="ci-top">
+          <div class="ci-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original"></div>
+          <div class="ci-info">
+            <div class="ci-name">Colchón Luuna Original <span class="ci-name-edit"><i data-lucide="pencil"></i></span></div>
+            <div class="ci-sku">SKU: LU2002SC</div>
+            <div class="ci-attrs">Matrimonial · Suave · Cooling</div>
+            <div class="ci-avail"><span class="ci-avail-ti">4 en tienda <i data-lucide="store"></i></span> · <span class="ci-avail-do">Envío a domicilio <i data-lucide="truck"></i></span></div>
+          </div>
+          <span class="ci-del"><i data-lucide="trash-2"></i></span>
+        </div>
+        <div class="ci-bottom">
+          <div class="ci-qty">
+            <button class="ci-qty-btn">−</button>
+            <span class="ci-qty-val">2</span>
+            <button class="ci-qty-btn">+</button>
+          </div>
+          <div class="ci-price">
+            <span class="ci-badge">25% adicional</span>
+            <div class="ci-price-old">$25,999</div>
+            <div class="ci-price-new">$12,999</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ci">
+        <div class="ci-top">
+          <div class="ci-img"><img src="Asignaciones/sabanas-algodon-individual.jpeg" alt="Juego de Sábanas de Algodón"></div>
+          <div class="ci-info">
+            <div class="ci-name">Juego de Sábanas de Algodón <span class="ci-name-edit"><i data-lucide="pencil"></i></span></div>
+            <div class="ci-sku">SKU: LTSH1001</div>
+            <div class="ci-attrs">Individual · Blanco</div>
+            <div class="ci-avail"><span class="ci-avail-ti">50 en tienda <i data-lucide="store"></i></span> · <span class="ci-avail-do">Envío a domicilio <i data-lucide="truck"></i></span></div>
+          </div>
+          <span class="ci-del"><i data-lucide="trash-2"></i></span>
+        </div>
+        <div class="ci-bottom">
+          <div class="ci-qty">
+            <button class="ci-qty-btn">−</button>
+            <span class="ci-qty-val">3</span>
+            <button class="ci-qty-btn">+</button>
+          </div>
+          <div class="ci-price">
+            <div class="ci-price-new">$2,097</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cart-items -->
+
+    <div class="cart-summary">
+      <div class="cs-coupon">
+        <input placeholder="Ingresa tu cupón o código">
+        <button class="cs-coupon-btn">Aplicar</button>
+      </div>
+
+      <div class="cs-rows">
+        <div class="cs-row">
+          <span>Subtotal</span>
+          <span class="cs-row-val">$41,037</span>
+        </div>
+        <div class="cs-row">
+          <span>Ahorro</span>
+          <span class="cs-row-val saving">-$20,860</span>
+        </div>
+        <div class="cs-row">
+          <span>Créditos de regalo</span>
+          <button class="cs-credit-btn">Aplicar $500</button>
+        </div>
+        <div class="cs-row">
+          <span>Envío</span>
+          <span class="cs-row-val free">GRATIS</span>
+        </div>
+      </div>
+
+      <div class="cs-total-row">
+        <span class="cs-total-lbl">Total</span>
+        <span class="cs-total-val">$19,677</span>
+      </div>
+      <div class="cs-monthly">Pago mensual disponible &nbsp; $1,638.75/mes por 24 MSI<br>*Exclusivo Citibanamex</div>
+    </div>
+
+  </div><!-- /drawer-body -->
+
+  <div class="drawer-footer">
+    <div class="total-pagar-row">
+      <span class="tp-lbl">Total a pagar</span>
+      <span class="tp-val">$19,677</span>
+    </div>
+    <button class="cta-btn" id="cta-continuar">Continuar con entrega</button>
+  </div>
+
+</div><!-- /cart-drawer -->
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+lucide.createIcons();
+const _v = new URLSearchParams(location.search).get('v');
+document.getElementById('cta-continuar').onclick = () => {
+  location.href = _v === '3' ? 'Variante-3.html' : 'Variante-1.html';
+};
+</script>
+</body>
+</html>

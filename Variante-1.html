@@ -60,6 +60,7 @@
   --lh-hm: 24px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+svg.lucide { display: inline; width: 1em; height: 1em; vertical-align: -0.12em; flex-shrink: 0; }
 body { font-family: var(--font); background: var(--bg-subtle); color: var(--text-primary); }
 
 .topbar { background: var(--bg-brand-strong); color: var(--text-inverted); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 56px; }
@@ -76,6 +77,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 
 .page { padding: var(--s-400) var(--s-800); max-width: 1280px; margin: 0 auto; }
 .page-cols { display: grid; grid-template-columns: 1fr 300px; gap: var(--s-400); align-items: start; }
+.page-cols > div, .page-cols > aside { min-width: 0; }
 
 .order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); position: sticky; top: var(--s-400); }
 .os-title { font-size: var(--fs-hs); font-weight: 500; margin-bottom: var(--s-100); }
@@ -166,42 +168,53 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 .v1-row { display: flex; align-items: center; gap: var(--s-300); margin-bottom: var(--s-150); }
 .v1-lbl { font-size: var(--fs-m); color: var(--text-primary); width: 140px; flex-shrink: 0; }
 .v1-of  { font-size: var(--fs-s); color: var(--text-disabled); }
+
+.quick-actions { display: flex; gap: var(--s-300); margin-bottom: var(--s-400); }
+.quick-btn { flex: 1; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); font-weight: 500; border: var(--bw-s) solid var(--border-default); background: var(--bg-default); color: var(--text-primary); cursor: pointer; transition: all .2s; }
+.quick-btn:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+.quick-btn.primary { background: var(--bg-brand); color: var(--text-inverted); border-color: var(--bg-brand); }
+.quick-btn.primary:hover { background: #002d7a; }
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="tb-brand">V2 · ZePOS</div>
-  <button class="tb-store">🏪 Tienda Altavista ↻</button>
+  <button class="tb-store"><i data-lucide="store"></i> Tienda Altavista <i data-lucide="refresh-cw"></i></button>
   <div class="tb-user"><div class="tb-av">AP</div><span>Hola Andrea Pérez</span></div>
 </div>
 <div class="subbar">
   <div class="subbar-title">Asignación de entrega</div>
   <div class="subbar-right">
-    <button class="btn-outline">➕ Nueva venta</button>
-    <button class="btn-outline">Camila Cabello... ▾</button>
-    <button class="btn-outline">🛒</button>
+    <button class="btn-outline"><i data-lucide="plus"></i> Nueva venta</button>
+    <button class="btn-outline">Camila Cabello... <i data-lucide="chevron-down"></i></button>
+    <button class="btn-outline"><i data-lucide="shopping-cart"></i></button>
   </div>
 </div>
 
 <div class="page">
-<div class="breadcrumb"><a href="index.html">← Propuestas</a> <span style="color:var(--text-secondary)">›</span> Variante 1</div>
+<div class="breadcrumb"><a href="index.html"><i data-lucide="arrow-left"></i> Propuestas</a> <i data-lucide="chevron-right" style="color:var(--text-secondary);width:14px;height:14px"></i> Variante 1</div>
+
+<span class="variant-badge">Variante 1</span>
+<div class="variant-title">Distribución siempre visible por producto</div>
+<div class="variant-desc">
+  Cada producto muestra sus controles de distribución desplegados. El (+) en un destino descuenta automáticamente del otro. Reglas: Almohada solo puede ir a tienda · Colchón se mueve libremente · Base de bambú solo a domicilio, y si se mueve a tienda aparece alerta de venta en negativo.
+</div>
 
 <div class="page-cols">
 <div><!-- columna principal -->
-<div class="variant">
-  <span class="variant-badge">Variante 1</span>
-  <div class="variant-title">Distribución siempre visible por producto</div>
-  <div class="variant-desc">
-    Cada producto muestra sus controles de distribución desplegados. El (+) en un destino descuenta automáticamente del otro. Reglas: Almohada solo puede ir a tienda · Colchón se mueve libremente · Base de bambú solo a domicilio, y si se mueve a tienda aparece alerta de venta en negativo.
-  </div>
-  <div class="variant-body">
+<div class="variant-body">
 
     <div class="ph">
       <div>
         <div class="ph-title">¿Cómo entregamos cada producto?</div>
-        <div class="ph-sub">6 piezas · 3 productos</div>
+        <div class="ph-sub">9 piezas · 4 productos</div>
       </div>
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-btn" onclick="v1allToTienda()"><i data-lucide="store"></i> Entregar todo en tienda</button>
+      <button class="quick-btn" onclick="v1allToDomicilio()"><i data-lucide="truck"></i> Enviar todo a domicilio</button>
     </div>
 
     <div class="v1-list">
@@ -210,16 +223,17 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
         <div class="v1-card-head">
           <div class="v1-img"><img src="Asignaciones/almohada-grid-tech-d-4.jpg" alt="Almohada Grid Tech" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <div class="v1-info">
-            <div class="v1-name">Almohada Grid Tech · SKU: ALTP1001</div>
+            <div class="v1-name">Almohada Grid Tech</div>
+            <div class="v1-attrs">SKU: ALTP1001</div>
             <div class="v1-attrs">Estándar · Suave · Cooling · 2 piezas</div>
-            <div class="v1-avail av-bo">Disponibilidad: 24 en tienda 🏪 · No disponible 🚚</div>
+            <div class="v1-avail av-bo">Disponibilidad: 24 en tienda <i data-lucide="store"></i> · No disponible <i data-lucide="truck"></i></div>
           </div>
-          <span class="ab ab-ti" id="v1b-alm">🏪 2 en tienda</span>
+          <span class="ab ab-ti" id="v1b-alm"><i data-lucide="store"></i> 2 en tienda</span>
         </div>
         <div class="v1-expand">
           <div class="v1-expand-title">Distribución — 2 piezas</div>
           <div class="v1-row">
-            <span class="v1-lbl">🏪 En tienda</span>
+            <span class="v1-lbl"><i data-lucide="store"></i> En tienda</span>
             <div class="qty-sel ti">
               <button class="qs-btn off">−</button>
               <span class="qs-val ti" id="v1-alm-ti">2</span>
@@ -232,51 +246,19 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 
       <div class="v1-card">
         <div class="v1-card-head">
-          <div class="v1-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
-          <div class="v1-info">
-            <div class="v1-name">Colchón Luuna Original · SKU: LU2002SC</div>
-            <div class="v1-attrs">Matrimonial · Suave · Cooling · 2 piezas</div>
-            <div class="v1-avail av-bo">Disponibilidad: 4 en tienda 🏪 · Envío a domicilio 🚚</div>
-          </div>
-          <span class="ab ab-ti" id="v1b-col">🏪 2 en tienda</span>
-        </div>
-        <div class="v1-expand">
-          <div class="v1-expand-title">Distribución — 2 piezas</div>
-          <div class="v1-row">
-            <span class="v1-lbl">🏪 En tienda</span>
-            <div class="qty-sel ti">
-              <button id="v1-col-ti-dec" class="qs-btn" onclick="v1move('col','ti','do')">−</button>
-              <span class="qs-val ti" id="v1-col-ti">2</span>
-              <button id="v1-col-ti-inc" class="qs-btn off" onclick="v1move('col','do','ti')">+</button>
-            </div>
-            <span class="v1-of">de 2 piezas</span>
-          </div>
-          <div class="v1-row">
-            <span class="v1-lbl">🚚 A domicilio</span>
-            <div class="qty-sel do">
-              <button id="v1-col-do-dec" class="qs-btn off" onclick="v1move('col','do','ti')">−</button>
-              <span class="qs-val do" id="v1-col-do">0</span>
-              <button id="v1-col-do-inc" class="qs-btn" onclick="v1move('col','ti','do')">+</button>
-            </div>
-          </div>
-          <div class="note note-err" id="v1-col-pend" style="display:none">⚠ Asigna al menos 1 pieza para continuar</div>
-        </div>
-      </div>
-
-      <div class="v1-card">
-        <div class="v1-card-head">
           <div class="v1-img"><img src="Asignaciones/base-de-bambu.jpeg" alt="Base de Bambú" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <div class="v1-info">
-            <div class="v1-name">Base de Bambú · SKU: NB1301</div>
+            <div class="v1-name">Base de Bambú</div>
+            <div class="v1-attrs">SKU: NB1301</div>
             <div class="v1-attrs">Individual · 2 piezas</div>
-            <div class="v1-avail av-bo">Disponibilidad: 0 en tienda 🏪 · Envío a domicilio 🚚</div>
+            <div class="v1-avail av-bo">Disponibilidad: 0 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i></div>
           </div>
-          <span class="ab ab-do" id="v1b-base">🚚 2 a domicilio</span>
+          <span class="ab ab-do" id="v1b-base"><i data-lucide="truck"></i> 2 a domicilio</span>
         </div>
         <div class="v1-expand">
           <div class="v1-expand-title">Distribución — 2 piezas</div>
           <div class="v1-row">
-            <span class="v1-lbl">🏪 En tienda</span>
+            <span class="v1-lbl"><i data-lucide="store"></i> En tienda</span>
             <div class="qty-sel neg">
               <button id="v1-base-ti-dec" class="qs-btn off" onclick="v1move('base','ti','do')">−</button>
               <span class="qs-val neg" id="v1-base-ti">0</span>
@@ -285,7 +267,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
             <span class="v1-of">venta en negativo</span>
           </div>
           <div class="v1-row">
-            <span class="v1-lbl">🚚 A domicilio</span>
+            <span class="v1-lbl"><i data-lucide="truck"></i> A domicilio</span>
             <div class="qty-sel do">
               <button id="v1-base-do-dec" class="qs-btn" onclick="v1move('base','do','ti')">−</button>
               <span class="qs-val do" id="v1-base-do">2</span>
@@ -293,15 +275,81 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
             </div>
           </div>
           <div class="note note-warn" id="v1-base-neg" style="display:none">
-            ⚠ Venta en negativo — esta pieza se gestionará como préstamo desde otra tienda
+            <i data-lucide="triangle-alert"></i> Venta en negativo — esta pieza se gestionará como préstamo desde otra tienda
+          </div>
+        </div>
+      </div>
+
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/colchon-luuna-original.webp" alt="Colchón Luuna Original" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Colchón Luuna Original</div>
+            <div class="v1-attrs">SKU: LU2002SC</div>
+            <div class="v1-attrs">Matrimonial · Suave · Cooling · 2 piezas</div>
+            <div class="v1-avail av-bo">Disponibilidad: 4 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i></div>
+          </div>
+          <span class="ab ab-ti" id="v1b-col"><i data-lucide="store"></i> 2 en tienda</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 2 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl"><i data-lucide="store"></i> En tienda</span>
+            <div class="qty-sel ti">
+              <button id="v1-col-ti-dec" class="qs-btn" onclick="v1move('col','ti','do')">−</button>
+              <span class="qs-val ti" id="v1-col-ti">2</span>
+              <button id="v1-col-ti-inc" class="qs-btn off" onclick="v1move('col','do','ti')">+</button>
+            </div>
+            <span class="v1-of">de 2 piezas</span>
+          </div>
+          <div class="v1-row">
+            <span class="v1-lbl"><i data-lucide="truck"></i> A domicilio</span>
+            <div class="qty-sel do">
+              <button id="v1-col-do-dec" class="qs-btn off" onclick="v1move('col','do','ti')">−</button>
+              <span class="qs-val do" id="v1-col-do">0</span>
+              <button id="v1-col-do-inc" class="qs-btn" onclick="v1move('col','ti','do')">+</button>
+            </div>
+          </div>
+          <div class="note note-err" id="v1-col-pend" style="display:none"><i data-lucide="triangle-alert"></i> Asigna al menos 1 pieza para continuar</div>
+        </div>
+      </div>
+      <div class="v1-card">
+        <div class="v1-card-head">
+          <div class="v1-img"><img src="Asignaciones/sabanas-algodon-individual.jpeg" alt="Juego de Sábanas de Algodón" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="v1-info">
+            <div class="v1-name">Juego de Sábanas de Algodón</div>
+            <div class="v1-attrs">SKU: LTSH2001</div>
+            <div class="v1-attrs">Individual · Blanco · 3 piezas</div>
+            <div class="v1-avail av-bo">Disponibilidad: 30 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i></div>
+          </div>
+          <span class="ab ab-ti" id="v1b-sabq"><i data-lucide="store"></i> 2 en tienda</span>
+        </div>
+        <div class="v1-expand">
+          <div class="v1-expand-title">Distribución — 3 piezas</div>
+          <div class="v1-row">
+            <span class="v1-lbl"><i data-lucide="store"></i> En tienda</span>
+            <div class="qty-sel ti">
+              <button id="v1-sabq-ti-dec" class="qs-btn" onclick="v1move('sabq','ti','do')">−</button>
+              <span class="qs-val ti" id="v1-sabq-ti">3</span>
+              <button id="v1-sabq-ti-inc" class="qs-btn off" onclick="v1move('sabq','do','ti')">+</button>
+            </div>
+            <span class="v1-of">de 3 piezas</span>
+          </div>
+          <div class="v1-row">
+            <span class="v1-lbl"><i data-lucide="truck"></i> A domicilio</span>
+            <div class="qty-sel do">
+              <button id="v1-sabq-do-dec" class="qs-btn off" onclick="v1move('sabq','do','ti')">−</button>
+              <span class="qs-val do" id="v1-sabq-do">0</span>
+              <button id="v1-sabq-do-inc" class="qs-btn" onclick="v1move('sabq','ti','do')">+</button>
+            </div>
           </div>
         </div>
       </div>
 
     </div>
+
     <button class="confirm-btn active" id="v1-confirm">Confirmar asignación</button>
   </div>
-</div>
 </div><!-- /columna principal -->
 
 <!-- ── RESUMEN DE ORDEN ── -->
@@ -368,6 +416,7 @@ const v1s = {
   alm:  { ti:2, do:0, total:2, onlyTi:true,  onlyDo:false },
   col:  { ti:2, do:0, total:2, onlyTi:false, onlyDo:false },
   base: { ti:0, do:2, total:2, onlyTi:false, onlyDo:true  },
+  sabq: { ti:3, do:0, total:3, onlyTi:false, onlyDo:false },
 };
 
 function v1move(id, from, to) {
@@ -392,10 +441,11 @@ function v1render(id) {
 
   const b = document.getElementById('v1b-'+id);
   if (b) {
-    if (s.ti > 0 && s.do > 0) { b.className='ab ab-sp'; b.textContent='🏪 '+s.ti+' · 🚚 '+s.do; }
-    else if (s.ti > 0)         { b.className='ab ab-ti'; b.textContent='🏪 '+s.ti+' en tienda'; }
-    else if (s.do > 0)         { b.className='ab ab-do'; b.textContent='🚚 '+s.do+' a domicilio'; }
+    if (s.ti > 0 && s.do > 0) { b.className='ab ab-sp'; b.innerHTML='<i data-lucide="store"></i> '+s.ti+' · <i data-lucide="truck"></i> '+s.do; }
+    else if (s.ti > 0)         { b.className='ab ab-ti'; b.innerHTML='<i data-lucide="store"></i> '+s.ti+' en tienda'; }
+    else if (s.do > 0)         { b.className='ab ab-do'; b.innerHTML='<i data-lucide="truck"></i> '+s.do+' a domicilio'; }
     else                        { b.className='ab ab-pend'; b.textContent='? Sin asignar'; }
+    lucide.createIcons({ el: b });
   }
 
   if (id === 'col') {
@@ -405,6 +455,12 @@ function v1render(id) {
     setOff('v1-col-ti-inc', s.do === 0);
     setOff('v1-col-do-dec', s.do === 0);
     setOff('v1-col-do-inc', s.ti === 0);
+  }
+  if (id === 'sabq') {
+    setOff('v1-sabq-ti-dec', s.ti === 0);
+    setOff('v1-sabq-ti-inc', s.do === 0);
+    setOff('v1-sabq-do-dec', s.do === 0);
+    setOff('v1-sabq-do-inc', s.ti === 0);
   }
   if (id === 'base') {
     const warn = document.getElementById('v1-base-neg');
@@ -423,13 +479,29 @@ function v1updateStatus() {
   const pill = document.getElementById('v1-pill');
   const btn  = document.getElementById('v1-confirm');
   if (pending === 0) {
-    if (pill) { pill.className = 'pill pill-ok'; pill.textContent = '✓ Todos asignados'; }
+    if (pill) { pill.className = 'pill pill-ok'; pill.innerHTML = '<i data-lucide="check"></i> Todos asignados'; lucide.createIcons({ el: pill }); }
     btn.className = 'confirm-btn active'; btn.textContent = 'Confirmar asignación';
   } else {
-    if (pill) { pill.className = 'pill pill-warn'; pill.textContent = '⚠ 1 sin asignar'; }
+    if (pill) { pill.className = 'pill pill-warn'; pill.innerHTML = '<i data-lucide="triangle-alert"></i> 1 sin asignar'; lucide.createIcons({ el: pill }); }
     btn.className = 'confirm-btn'; btn.textContent = 'Confirmar asignación · 1 sin asignar';
   }
 }
+
+function v1allToTienda() {
+  ['col', 'sabq'].forEach(id => {
+    const s = v1s[id];
+    if (s.do > 0) { s.ti += s.do; s.do = 0; v1render(id); }
+  });
+}
+
+function v1allToDomicilio() {
+  ['col', 'sabq'].forEach(id => {
+    const s = v1s[id];
+    if (s.ti > 0) { s.do += s.ti; s.ti = 0; v1render(id); }
+  });
+}
 </script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
