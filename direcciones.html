@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seleccionar dirección · DS POS</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root {
+  --font:            var(--ds-font-family);
+  --bg-default:      var(--ds-bg-primary);
+  --bg-subtle:       var(--ds-bg-secondary);
+  --bg-brand:        var(--ds-blue-600);
+  --bg-brand-strong: var(--ds-blue-900);
+  --bg-disabled:     var(--ds-bg-secondary);
+  --text-primary:    var(--ds-fg-primary);
+  --text-secondary:  var(--ds-grey-dark-500);
+  --text-disabled:   var(--ds-fg-disabled);
+  --text-inverted:   var(--ds-grey-light-50);
+  --text-success:    var(--ds-fg-success);
+  --text-warning:    var(--ds-fg-warning);
+  --border-subtle:   var(--ds-grey-light-200);
+  --border-strong:   var(--ds-fg-primary);
+  --r-sm:   var(--ds-br-soft);
+  --r-md:   var(--ds-br-medium);
+  --r-full: var(--ds-br-full);
+  --bw-s:   var(--ds-bw-s);
+  --s-050: var(--ds-space-050);
+  --s-100: var(--ds-space-100);
+  --s-150: var(--ds-space-150);
+  --s-200: var(--ds-space-200);
+  --s-300: var(--ds-space-300);
+  --s-400: var(--ds-space-400);
+  --s-800: var(--ds-space-800);
+  --fs-xs: var(--ds-font-size-body-xs);
+  --fs-s:  var(--ds-font-size-body-s);
+  --fs-m:  var(--ds-font-size-body-m);
+  --fs-l:  var(--ds-font-size-body-l);
+  --fs-hl: var(--ds-font-size-heading-s);
+  --fs-hs: 18px;
+  --fs-hm: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+svg.lucide { display: inline; width: 1em; height: 1em; vertical-align: -0.12em; flex-shrink: 0; }
+body { font-family: var(--font); background: var(--bg-subtle); color: var(--text-primary); }
+
+/* ── Topbar ── */
+.topbar { background: var(--bg-brand-strong); color: var(--text-inverted); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 56px; }
+.tb-brand { font-size: var(--fs-hs); font-weight: 400; }
+.tb-store { font-size: var(--fs-l); color: var(--text-inverted); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.tb-user  { display: flex; align-items: center; gap: var(--s-300); font-size: var(--fs-l); font-weight: 500; }
+.tb-av    { width: 40px; height: 40px; border-radius: var(--r-full); background: #2D5FA6; display: flex; align-items: center; justify-content: center; font-size: var(--fs-s); font-weight: 700; }
+.tb-exit  { background: none; border: none; color: var(--text-inverted); cursor: pointer; display: flex; align-items: center; padding: 0; }
+
+/* ── Subbar ── */
+.subbar { background: var(--bg-default); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--s-800); height: 80px; box-shadow: 0 4px 5px rgba(0,0,0,.07); }
+.subbar-title { font-size: var(--fs-hl); font-weight: 500; }
+.subbar-right { display: flex; gap: var(--s-300); align-items: center; }
+.btn-outline { display: flex; align-items: center; gap: var(--s-150); height: 44px; padding: var(--s-200) var(--s-400); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); color: var(--text-primary); cursor: pointer; white-space: nowrap; }
+.btn-outline:hover { background: var(--bg-subtle); }
+.btn-cart-wrap { position: relative; }
+.btn-cart-badge { position: absolute; top: -7px; right: -7px; background: var(--bg-brand); color: #fff; border-radius: var(--r-full); width: 20px; height: 20px; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+/* ── Page ── */
+.page { padding: var(--s-400) var(--s-800); max-width: 1280px; margin: 0 auto; }
+.page-cols { display: grid; grid-template-columns: 1fr 300px; gap: var(--s-400); align-items: start; }
+.page-cols > div, .page-cols > aside { min-width: 0; }
+
+.breadcrumb { display: flex; align-items: center; gap: var(--s-100); font-size: var(--fs-m); color: var(--text-secondary); margin-bottom: var(--s-400); }
+.breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+.breadcrumb a:hover { color: var(--text-primary); }
+.breadcrumb span { color: var(--text-primary); font-weight: 500; }
+
+/* ── Address card ── */
+.addr-card { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; }
+
+.addr-card-head { padding: var(--s-400); border-bottom: var(--bw-s) solid var(--border-subtle); }
+.addr-card-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-100); }
+.addr-card-title { font-size: var(--fs-hm); font-weight: 500; }
+.addr-card-sub { font-size: var(--fs-m); color: var(--text-secondary); }
+
+/* Toggle */
+.toggle { display: flex; align-items: center; gap: var(--s-200); cursor: pointer; user-select: none; }
+.toggle input { display: none; }
+.toggle-track { width: 44px; height: 24px; background: var(--ds-grey-light-300); border-radius: 12px; position: relative; transition: background .2s; flex-shrink: 0; }
+.toggle input:checked ~ .toggle-track { background: var(--bg-brand); }
+.toggle-thumb { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #fff; top: 2px; left: 2px; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); pointer-events: none; }
+.toggle input:checked ~ .toggle-track .toggle-thumb { transform: translateX(20px); }
+.toggle-lbl { font-size: var(--fs-m); color: var(--text-primary); font-weight: 500; }
+
+/* Info banner (multi-mode) */
+.addr-info-banner { display: none; align-items: flex-start; justify-content: space-between; gap: var(--s-300); background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--r-md); padding: var(--s-300) var(--s-400); margin-bottom: var(--s-200); }
+.aib-text { font-size: var(--fs-m); color: #1E40AF; line-height: 1.5; }
+.aib-text strong { display: block; font-weight: 600; margin-bottom: 2px; }
+.aib-link { font-size: var(--fs-m); color: var(--bg-brand); font-weight: 600; text-decoration: none; white-space: nowrap; flex-shrink: 0; padding-top: 2px; }
+.aib-link:hover { text-decoration: underline; }
+
+/* Multi-mode: radio → checkbox */
+body.multi-mode .addr-radio { border-radius: 4px; }
+body.multi-mode .addr-item.selected .addr-radio { background: var(--bg-brand); border-color: var(--bg-brand); }
+body.multi-mode .addr-radio-dot { display: none !important; }
+body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg); display: block; margin-top: -2px; }
+
+/* Address list */
+.addr-list { padding: var(--s-300) var(--s-400); display: flex; flex-direction: column; gap: var(--s-200); }
+
+.addr-item { display: flex; align-items: flex-start; gap: var(--s-300); padding: var(--s-300) var(--s-400); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); cursor: pointer; transition: border-color .15s; position: relative; }
+.addr-item:hover { border-color: var(--bg-brand); }
+.addr-item.selected { border: 2px solid var(--bg-brand); background: #f0f5ff; }
+.addr-item.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+.addr-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-subtle); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; transition: border-color .15s; }
+.addr-item.selected .addr-radio { border-color: var(--bg-brand); }
+.addr-radio-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bg-brand); display: none; }
+.addr-item.selected .addr-radio-dot { display: block; }
+
+.addr-info { flex: 1; min-width: 0; }
+.addr-name   { font-size: var(--fs-m); font-weight: 500; margin-bottom: 2px; }
+.addr-detail { font-size: var(--fs-s); color: var(--text-secondary); line-height: 1.5; }
+
+.addr-badge { flex-shrink: 0; font-size: var(--fs-xs); font-weight: 500; background: #EDE9FE; color: #6D28D9; padding: 2px 10px; border-radius: var(--r-full); white-space: nowrap; align-self: center; }
+
+.addr-add { display: flex; align-items: center; gap: var(--s-200); padding: var(--s-300) var(--s-400); color: var(--bg-brand); font-size: var(--fs-m); font-weight: 500; cursor: pointer; border: var(--bw-s) dashed var(--border-subtle); border-radius: var(--r-md); transition: border-color .15s, background .15s; }
+.addr-add:hover { border-color: var(--bg-brand); background: #f0f5ff; }
+
+/* Card footer */
+.addr-card-foot { padding: var(--s-400); border-top: var(--bw-s) solid var(--border-subtle); display: flex; gap: var(--s-300); }
+.btn-regresar { flex: 1; height: 48px; border-radius: var(--r-md); border: var(--bw-s) solid var(--border-strong); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; color: var(--text-primary); cursor: pointer; }
+.btn-regresar:hover { background: var(--bg-subtle); }
+.btn-confirmar { flex: 2; height: 48px; border-radius: var(--r-md); border: none; background: var(--bg-brand-strong); color: var(--text-inverted); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; cursor: pointer; }
+.btn-confirmar:hover { background: #002d7a; }
+
+/* ── Order summary (aside) ── */
+.order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); }
+.os-title { font-size: var(--fs-hs); font-weight: 500; margin-bottom: var(--s-100); }
+.os-id    { font-size: var(--fs-s); color: var(--text-secondary); margin-bottom: var(--s-400); }
+
+.os-items { display: flex; flex-direction: column; gap: var(--s-300); padding-bottom: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); margin-bottom: var(--s-300); }
+.os-item { display: flex; flex-direction: column; gap: 2px; }
+.os-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-200); }
+.os-item-name  { font-size: var(--fs-m); font-weight: 500; }
+.os-item-price { font-size: var(--fs-m); font-weight: 500; color: var(--text-secondary); flex-shrink: 0; }
+.os-item-attrs { font-size: var(--fs-s); color: var(--text-secondary); }
+.os-item-ok    { font-size: var(--fs-s); color: var(--text-success); }
+
+.os-coupon { display: flex; gap: var(--s-100); margin-bottom: var(--s-300); }
+.os-coupon input { flex: 1; height: 40px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); color: var(--text-secondary); background: var(--bg-default); outline: none; }
+.os-coupon-btn { height: 40px; padding: 0 var(--s-300); border: none; font-family: var(--font); font-size: var(--fs-m); color: var(--text-disabled); background: none; cursor: default; white-space: nowrap; }
+
+.os-rows { display: flex; flex-direction: column; gap: var(--s-150); padding-bottom: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); margin-bottom: var(--s-300); }
+.os-row  { display: flex; justify-content: space-between; font-size: var(--fs-m); }
+.os-row-val.saving { color: #EF3F3F; font-weight: 500; }
+.os-row-val.free   { color: var(--text-secondary); }
+.os-credit-btn { height: 30px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-s); font-weight: 500; background: var(--bg-default); cursor: pointer; }
+
+.os-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--s-100); }
+.os-total-lbl { font-size: var(--fs-l); font-weight: 500; color: var(--bg-brand); }
+.os-total-val { font-size: var(--fs-hm); font-weight: 700; color: var(--bg-brand); }
+.os-monthly   { font-size: var(--fs-xs); color: var(--text-secondary); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-brand">V2 · ZePOS</div>
+  <button class="tb-store"><i data-lucide="store"></i> Tienda Altavista <i data-lucide="refresh-cw"></i></button>
+  <div class="tb-user">
+    <div class="tb-av">AP</div>
+    <span>Hola Andrea Pérez</span>
+    <button class="tb-exit"><i data-lucide="log-out"></i></button>
+  </div>
+</div>
+
+<div class="subbar">
+  <div class="subbar-title">Asignación de entrega</div>
+  <div class="subbar-right">
+    <button class="btn-outline"><i data-lucide="plus"></i> Nueva venta</button>
+    <button class="btn-outline">Camila Cabello... <i data-lucide="chevron-down"></i></button>
+    <div class="btn-cart-wrap">
+      <button class="btn-outline"><i data-lucide="shopping-cart"></i></button>
+      <span class="btn-cart-badge">8</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="breadcrumb">
+    <a href="catalogo.html">Catálogo</a>
+    <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
+    <span>Asignaciones</span>
+  </div>
+
+  <div class="page-cols">
+
+    <!-- ── Columna principal ── -->
+    <div>
+      <div class="addr-card">
+
+        <div class="addr-card-head">
+          <div class="addr-card-title-row">
+            <div class="addr-card-title">Seleccionar direcciones de envío</div>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              <span class="toggle-lbl">Varias direcciones</span>
+            </label>
+          </div>
+          <div class="addr-card-sub" id="addr-subtitle">Elige una dirección para el envío de tus productos</div>
+        </div>
+
+        <div class="addr-list">
+
+          <div class="addr-info-banner" id="multi-banner">
+            <div class="aib-text">
+              <strong>Has activado el envío a múltiples direcciones.</strong>
+              Ahora podrás asignar productos a más de una dirección.
+            </div>
+            <a class="aib-link" href="#">Ver cómo funciona</a>
+          </div>
+
+          <div class="addr-item selected" onclick="selectAddr(this)">
+            <div class="addr-radio"><div class="addr-radio-dot"></div></div>
+            <div class="addr-info">
+              <div class="addr-name">Balsamina lote 29</div>
+              <div class="addr-detail">Balsamina 29, San Clemente Sur, Álvaro Obregón, 01740 Ciudad de México, CDMX</div>
+            </div>
+            <span class="addr-badge">Usada recientemente</span>
+          </div>
+
+          <div class="addr-item" onclick="selectAddr(this)">
+            <div class="addr-radio"><div class="addr-radio-dot"></div></div>
+            <div class="addr-info">
+              <div class="addr-name">Av Morelos 174</div>
+              <div class="addr-detail">Av Morelos 174, San Cristóbal Centro, 55000 Ecatepec de Morelos, Méx., México</div>
+            </div>
+          </div>
+
+          <div class="addr-item" onclick="selectAddr(this)">
+            <div class="addr-radio"><div class="addr-radio-dot"></div></div>
+            <div class="addr-info">
+              <div class="addr-name">Xochicalco 2203</div>
+              <div class="addr-detail">Xochicalco 2203 — Narvarte Poniente, Benito Juárez, Ciudad de México</div>
+            </div>
+          </div>
+
+          <div class="addr-item" onclick="selectAddr(this)">
+            <div class="addr-radio"><div class="addr-radio-dot"></div></div>
+            <div class="addr-info">
+              <div class="addr-name">Xochicalco 1111</div>
+              <div class="addr-detail">Xochicalco 1111 — Narvarte Poniente, Benito Juárez, Ciudad de México</div>
+            </div>
+          </div>
+
+          <div class="addr-add">
+            <i data-lucide="plus-circle"></i>
+            Agregar nueva dirección
+          </div>
+
+        </div><!-- /addr-list -->
+
+        <div class="addr-card-foot">
+          <button class="btn-regresar" onclick="history.back()">Regresar</button>
+          <button class="btn-confirmar">Confirmar dirección</button>
+        </div>
+
+      </div><!-- /addr-card -->
+    </div><!-- /columna principal -->
+
+    <!-- ── Resumen de orden ── -->
+    <aside class="order-summary">
+      <div class="os-title">Resumen de la orden</div>
+      <div class="os-id">QTN-2404149648bf42</div>
+
+      <div class="os-items">
+
+        <div class="os-item">
+          <div class="os-item-top">
+            <div class="os-item-name">Colchón Luuna Original</div>
+            <div class="os-item-price">$25,998</div>
+          </div>
+          <div class="os-item-attrs">Matrimonial · Suave · Cooling</div>
+          <div class="os-item-ok">Productos asignados: 2</div>
+        </div>
+
+        <div class="os-item">
+          <div class="os-item-top">
+            <div class="os-item-name">Juego de Sábanas de Algodón</div>
+            <div class="os-item-price">$2,097</div>
+          </div>
+          <div class="os-item-attrs">Individual · Blanco</div>
+          <div class="os-item-ok">Productos asignados: 3</div>
+        </div>
+
+        <div class="os-item">
+          <div class="os-item-top">
+            <div class="os-item-name">Base de Bambú</div>
+            <div class="os-item-price">$7,998</div>
+          </div>
+          <div class="os-item-attrs">Individual</div>
+          <div class="os-item-ok">Productos asignados: 2</div>
+        </div>
+
+        <div class="os-item">
+          <div class="os-item-top">
+            <div class="os-item-name">Almohada Grid Tech</div>
+            <div class="os-item-price">$3,668</div>
+          </div>
+          <div class="os-item-attrs">Estándar · Suave · Cooling</div>
+          <div class="os-item-ok">Productos asignados: 2</div>
+        </div>
+
+      </div><!-- /os-items -->
+
+      <div class="os-coupon">
+        <input placeholder="Ingresa tu cupón o código">
+        <button class="os-coupon-btn">Aplicar</button>
+      </div>
+
+      <div class="os-rows">
+        <div class="os-row">
+          <span>Subtotal</span>
+          <span class="os-row-val">$41,037</span>
+        </div>
+        <div class="os-row">
+          <span>Ahorro</span>
+          <span class="os-row-val saving">-$20,860</span>
+        </div>
+        <div class="os-row">
+          <span>Créditos de regalo</span>
+          <button class="os-credit-btn">Aplicar $500</button>
+        </div>
+        <div class="os-row">
+          <span>Envío</span>
+          <span class="os-row-val free">GRATIS</span>
+        </div>
+      </div>
+
+      <div class="os-total-row">
+        <span class="os-total-lbl">Total</span>
+        <span class="os-total-val">$19,677</span>
+      </div>
+      <div class="os-monthly">Pago mensual disponible &nbsp; $1,638.75/mes por 24 MSI<br>*Exclusivo Citibanamex</div>
+    </aside>
+
+  </div><!-- /page-cols -->
+</div><!-- /page -->
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+lucide.createIcons();
+
+const toggleInput = document.querySelector('.toggle input');
+const banner      = document.getElementById('multi-banner');
+const subtitle    = document.getElementById('addr-subtitle');
+
+toggleInput.addEventListener('change', function () {
+  const isMulti = this.checked;
+  document.body.classList.toggle('multi-mode', isMulti);
+  banner.style.display = isMulti ? 'flex' : 'none';
+  subtitle.textContent = isMulti
+    ? 'Elige varias direcciones para el envío de tus productos'
+    : 'Elige una dirección para el envío de tus productos';
+  if (!isMulti) {
+    const selected = document.querySelectorAll('.addr-item.selected');
+    selected.forEach((item, i) => { if (i > 0) item.classList.remove('selected'); });
+    document.querySelectorAll('.addr-item').forEach(i => i.classList.remove('disabled'));
+  } else {
+    updateDisabledState();
+  }
+});
+
+function selectAddr(el) {
+  const isMulti = document.querySelector('.toggle input').checked;
+  if (isMulti) {
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+    } else {
+      const count = document.querySelectorAll('.addr-item.selected').length;
+      if (count < 3) el.classList.add('selected');
+    }
+    updateDisabledState();
+  } else {
+    document.querySelectorAll('.addr-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+}
+
+function updateDisabledState() {
+  const atMax = document.querySelectorAll('.addr-item.selected').length >= 3;
+  document.querySelectorAll('.addr-item:not(.selected)').forEach(i => i.classList.toggle('disabled', atMax));
+}
+</script>
+</body>
+</html>
