@@ -528,7 +528,7 @@ function v3doDrop(key, srcCol, tgtCol) {
     if (isNeg) {
       srcCard.classList.add('is-neg');
       let neg = srcCard.querySelector('.pc-neg-note');
-      if (!neg) { neg = document.createElement('div'); neg.className = 'pc-neg-note'; neg.textContent = '<i data-lucide="triangle-alert"></i> Venta en negativo — préstamo desde otra tienda'; srcCard.appendChild(neg); }
+      if (!neg) { neg = document.createElement('div'); neg.className = 'pc-neg-note'; neg.innerHTML = '<i data-lucide="triangle-alert"></i> Venta en negativo — préstamo desde otra tienda'; lucide.createIcons({ el: neg }); srcCard.appendChild(neg); }
       neg.style.display = 'block';
     } else {
       srcCard.classList.remove('is-neg');
