@@ -125,10 +125,10 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 
 /* Card footer */
 .addr-card-foot { padding: var(--s-400); border-top: var(--bw-s) solid var(--border-subtle); display: flex; gap: var(--s-300); }
-.btn-regresar { flex: 1; height: 48px; border-radius: var(--r-md); border: var(--bw-s) solid var(--border-strong); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; color: var(--text-primary); cursor: pointer; }
-.btn-regresar:hover { background: var(--bg-subtle); }
-.btn-confirmar { flex: 1; height: 48px; border-radius: var(--r-md); border: none; background: var(--bg-brand-strong); color: var(--text-inverted); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; cursor: pointer; }
-.btn-confirmar:hover { background: #002d7a; }
+.btn-regresar { flex: 1; height: 48px; border-radius: var(--r-md); border: var(--bw-s) solid var(--border-subtle); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; color: var(--text-disabled); cursor: not-allowed; opacity: 0.5; }
+.btn-confirmar { flex: 1; height: 48px; border-radius: var(--r-md); border: none; background: var(--bg-disabled); color: var(--text-disabled); font-family: var(--font); font-size: var(--fs-l); font-weight: 500; cursor: not-allowed; transition: background .2s; }
+.btn-confirmar.active { background: var(--bg-brand-strong); color: var(--text-inverted); cursor: pointer; }
+.btn-confirmar.active:hover { background: #002d7a; }
 
 /* ── Distribution section ── */
 .distrib-section { display: none; }
@@ -230,12 +230,6 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 
 <div class="page">
 
-  <div class="breadcrumb">
-    <a href="catalogo.html">Catálogo</a>
-    <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
-    <span>Asignaciones</span>
-  </div>
-
   <div class="page-cols">
 
     <!-- ── Columna principal ── -->
@@ -305,8 +299,8 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
         </div><!-- /addr-list -->
 
         <div class="addr-card-foot">
-          <button class="btn-regresar" onclick="history.back()">Regresar</button>
-          <button class="btn-confirmar" onclick="confirmAddresses()">Confirmar dirección</button>
+          <button class="btn-regresar" disabled>Regresar</button>
+          <button class="btn-confirmar" id="btn-confirmar-dir" onclick="confirmAddresses()">Confirmar dirección</button>
         </div>
 
       </div><!-- /addr-card -->
@@ -455,6 +449,13 @@ function selectAddr(el) {
 function updateDisabledState() {
   const atMax = document.querySelectorAll('.addr-item.selected').length >= 3;
   document.querySelectorAll('.addr-item:not(.selected)').forEach(i => i.classList.toggle('disabled', atMax));
+  updateConfirmBtn();
+}
+
+function updateConfirmBtn() {
+  const count = document.querySelectorAll('.addr-item.selected').length;
+  const btn = document.getElementById('btn-confirmar-dir');
+  if (btn) btn.classList.toggle('active', count === 3);
 }
 
 /* ── Distribution ── */
