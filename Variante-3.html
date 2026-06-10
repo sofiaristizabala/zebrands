@@ -29,9 +29,9 @@
   --war-bg: var(--ds-bg-warning-subtle);      --war-br: var(--ds-border-warning-subtle);
   --err-bg: var(--ds-bg-error-subtle);        --err-br: var(--ds-border-error-subtle);
   --inf-bg: var(--ds-bg-info-subtle);         --inf-br: var(--ds-border-info-subtle);
-  --inf-tx: var(--ds-fg-info-strong);
-  --acc-ti: var(--ds-lila-100);               --acc-ti-br: var(--ds-lila-300);
-  --acc-do: var(--ds-bg-info-subtle);         --acc-do-br: var(--ds-border-info-subtle);
+  --inf-tx: var(--ds-fg-primary);
+  --acc-ti: #fff;                             --acc-ti-br: var(--ds-grey-light-200);
+  --acc-do: #fff;                             --acc-do-br: var(--ds-grey-light-200);
   --acc-ng: var(--ds-bg-warning-subtle);      --acc-ng-br: var(--ds-border-warning-subtle);
   --r-sm:   var(--ds-br-soft);
   --r-md:   var(--ds-br-medium);
@@ -127,19 +127,15 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 
 .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-300); align-items: stretch; }
 
-.col { border-radius: var(--r-md); border: var(--bw-m) solid transparent; min-height: 240px; display: flex; flex-direction: column; transition: border-color .15s, background .15s; }
-.col-ti { background: var(--acc-ti); border-color: var(--acc-ti-br); }
-.col-do { background: var(--acc-do); border-color: var(--acc-do-br); }
-.col.dov-ti { border-style: dashed; border-color: var(--ds-lila-400); background: var(--ds-lila-200); }
-.col.dov-do { border-style: dashed; border-color: var(--inf-br); background: #E4EBF3; }
+.col { border-radius: var(--r-md); border: 1px solid var(--ds-grey-light-200); min-height: 240px; display: flex; flex-direction: column; transition: border-color .15s, background .15s; }
+.col-ti { background: #fff; }
+.col-do { background: #fff; }
+.col.dov-ti { border-style: dashed; border-color: var(--bg-brand); background: #EFF6FF; }
+.col.dov-do { border-style: dashed; border-color: var(--bg-brand); background: #EFF6FF; }
 
-.col-head { padding: var(--s-300) var(--s-400) var(--s-200); display: flex; align-items: center; justify-content: space-between; border-bottom: var(--bw-s) solid transparent; }
-.col-ti .col-head { border-color: var(--acc-ti-br); }
-.col-do .col-head { border-color: var(--acc-do-br); }
-.col-title-wrap { display: flex; align-items: center; gap: var(--s-150); font-size: var(--fs-m); font-weight: 500; }
-.col-cnt { font-size: var(--fs-s); font-weight: 500; padding: 2px var(--s-200); border-radius: var(--r-sm); }
-.col-ti .col-cnt { background: var(--acc-ti-br); color: var(--ds-lila-700); }
-.col-do .col-cnt { background: var(--acc-do-br); color: var(--inf-tx); }
+.col-head { padding: var(--s-300) var(--s-400) var(--s-200); display: flex; align-items: center; justify-content: space-between; border-bottom: var(--bw-s) solid var(--ds-grey-light-200); background: var(--ds-lila-100); border-radius: var(--r-md) var(--r-md) 0 0; }
+.col-title-wrap { display: flex; align-items: center; gap: var(--s-150); font-size: var(--fs-m); font-weight: 500; color: var(--ds-fg-primary); }
+.col-cnt { font-size: var(--fs-s); font-weight: 500; padding: 4px var(--s-300); border-radius: var(--r-md); background: var(--ds-lila-300); color: var(--ds-fg-primary); white-space: nowrap; }
 
 .dz { flex: 1; padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-200); min-height: 160px; }
 .dz-hint { display: flex; align-items: center; justify-content: center; height: 60px; border: var(--bw-m) dashed var(--border-subtle); border-radius: var(--r-md); font-size: var(--fs-m); color: var(--text-disabled); }
@@ -165,10 +161,13 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 .pc-sku   { font-size: var(--fs-s); color: var(--text-secondary); }
 .pc-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
 .pc-avail { font-size: var(--fs-xs); margin-top: 3px; font-weight: 500; }
-.av-ti { color: var(--text-success); }
-.av-do { color: var(--inf-tx); }
-.av-bo { color: var(--text-secondary); }
-.drag-h { color: var(--border-default); font-size: 14px; flex-shrink: 0; cursor: grab; padding-top: 2px; }
+.av-lbl   { display: block; color: var(--ds-fg-primary); margin-bottom: 2px; }
+.av-row   { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.av-sep   { color: var(--ds-fg-disabled); }
+.av-store { color: var(--ds-fg-success); }
+.av-ship  { color: var(--ds-fg-brand); }
+.av-none  { color: var(--ds-fg-disabled); }
+.drag-h { color: var(--ds-grey-light-200); font-size: 14px; flex-shrink: 0; cursor: grab; padding-top: 2px; }
 
 .pc-foot { display: flex; align-items: center; justify-content: space-between; padding: var(--s-150) var(--s-300); border-top: var(--bw-s) solid var(--border-subtle); background: var(--bg-subtle); border-radius: 0 0 var(--r-md) var(--r-md); }
 .col-ti .pc-foot { border-top-color: var(--acc-ti-br); background: var(--acc-ti); }
@@ -184,7 +183,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 .qb:hover:not(.off) { background: var(--border-subtle); }
 .qb.off { opacity: .2; cursor: default; pointer-events: none; }
 .qv { width: 32px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: var(--bg-default); color: var(--text-primary); }
-.col-ti .qv { color: var(--ds-lila-700); }
+.col-ti .qv { color: var(--inf-tx); }
 .col-do .qv { color: var(--inf-tx); }
 .pc.is-neg .qv { color: var(--text-warning); }
 
@@ -194,17 +193,22 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 .col-ti .col-action { border-top-color: var(--acc-ti-br); }
 .col-do .col-action { border-top-color: var(--acc-do-br); }
 .col-btn { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); font-weight: 500; border: none; cursor: pointer; }
-.col-ti .col-btn { background: var(--ds-lila-700); color: #fff; }
-.col-ti .col-btn:hover { background: var(--ds-lila-800); }
+.col-ti .col-btn { background: var(--bg-brand); color: var(--text-inverted); }
+.col-ti .col-btn:hover { background: #002d7a; }
 .col-do .col-btn { background: var(--bg-brand); color: var(--text-inverted); }
 .col-do .col-btn:hover { background: #002d7a; }
-.col-btn-sec { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); font-weight: 500; cursor: pointer; background: transparent; }
-.col-ti .col-btn-sec { border: var(--bw-s) solid var(--ds-lila-700); color: var(--ds-lila-700); }
-.col-ti .col-btn-sec:hover { background: rgba(82,82,145,.08); }
+.col-btn-sec { width: 100%; height: 44px; border-radius: var(--r-md); font-family: var(--font); font-size: var(--fs-m); font-weight: 500; cursor: pointer; background: #fff; }
+.col-ti .col-btn-sec { border: var(--bw-s) solid var(--bg-brand); color: var(--bg-brand); }
+.col-ti .col-btn-sec:hover { background: rgba(0,71,187,.08); }
 .col-do .col-btn-sec { border: var(--bw-s) solid var(--bg-brand); color: var(--bg-brand); }
 .col-do .col-btn-sec:hover { background: rgba(0,71,187,.08); }
 
 #ghost { position: fixed; pointer-events: none; z-index: 9999; display: none; background: var(--bg-default); border: var(--bw-s) solid #0047BB; border-radius: var(--r-md); padding: var(--s-200) var(--s-300); font-size: var(--fs-m); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); transform: rotate(1.5deg) scale(1.02); max-width: 220px; white-space: nowrap; }
+
+@media (orientation: portrait) and (max-width: 1024px) {
+  .order-summary { display: none; }
+  .page-cols { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -234,14 +238,14 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
 
     <div class="ph">
       <div class="ph-title">¿Cómo entregamos cada producto?</div>
-      <div class="ph-sub">9 piezas · 4 productos · Pre-asignados</div>
+      <div class="ph-sub">9 unidades · 4 productos</div>
     </div>
     <div class="cols2">
 
       <div class="col col-ti" id="v3col-ti">
         <div class="col-head">
           <div class="col-title-wrap"><i data-lucide="store"></i> <span>Entrega en tienda</span></div>
-          <span class="col-cnt" id="v3cnt-ti">7</span>
+          <span class="col-cnt" id="v3cnt-ti">7 unidades</span>
         </div>
         <div class="dz" id="v3z-ti">
 
@@ -252,8 +256,8 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
               <div class="pc-info">
                 <div class="pc-name">Almohada Grid Tech</div>
                 <div class="pc-sku">SKU: ALTP1001</div>
-                <div class="pc-attrs">Estándar · Suave · Cooling · 2 piezas</div>
-                <div class="pc-avail av-bo">Disp.: 24 en tienda <i data-lucide="store"></i> · No disponible <i data-lucide="truck"></i></div>
+                <div class="pc-attrs">Estándar · Suave · Cooling · 2 unidades</div>
+                <div class="pc-avail"><span class="av-lbl">Disponibilidad:</span><div class="av-row"><span class="av-store">24 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-none">No disponible <i data-lucide="truck"></i></span></div></div>
               </div>
               <div class="drag-h" style="visibility:hidden"><i data-lucide="grip-vertical"></i></div>
             </div></div>
@@ -274,8 +278,8 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
               <div class="pc-info">
                 <div class="pc-name">Colchón Luuna Original</div>
                 <div class="pc-sku">SKU: LU2002SC</div>
-                <div class="pc-attrs">Matrimonial · Suave · Cooling · 2 piezas</div>
-                <div class="pc-avail av-bo">Disp.: 4 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i></div>
+                <div class="pc-attrs">Matrimonial · Suave · Cooling · 2 unidades</div>
+                <div class="pc-avail"><span class="av-lbl">Disponibilidad:</span><div class="av-row"><span class="av-store">4 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-ship">Envío a domicilio <i data-lucide="truck"></i></span></div></div>
               </div>
               <div class="drag-h"><i data-lucide="grip-vertical"></i></div>
             </div></div>
@@ -296,8 +300,8 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
               <div class="pc-info">
                 <div class="pc-name">Juego de Sábanas de Algodón</div>
                 <div class="pc-sku">SKU: LTSH1001</div>
-                <div class="pc-attrs">Individual · Blanco · 3 piezas</div>
-                <div class="pc-avail av-bo">Disp.: 50 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i></div>
+                <div class="pc-attrs">Individual · Blanco · 3 unidades</div>
+                <div class="pc-avail"><span class="av-lbl">Disponibilidad:</span><div class="av-row"><span class="av-store">50 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-ship">Envío a domicilio <i data-lucide="truck"></i></span></div></div>
               </div>
               <div class="drag-h"><i data-lucide="grip-vertical"></i></div>
             </div></div>
@@ -321,7 +325,7 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
       <div class="col col-do" id="v3col-do">
         <div class="col-head">
           <div class="col-title-wrap"><i data-lucide="truck"></i> <span>Envío a domicilio</span></div>
-          <span class="col-cnt" id="v3cnt-do">2</span>
+          <span class="col-cnt" id="v3cnt-do">2 unidades</span>
         </div>
         <div class="dz" id="v3z-do">
 
@@ -332,8 +336,8 @@ body { font-family: var(--font); background: var(--bg-subtle); color: var(--text
               <div class="pc-info">
                 <div class="pc-name">Base de Bambú</div>
                 <div class="pc-sku">SKU: NB1301</div>
-                <div class="pc-attrs">Individual · 2 piezas</div>
-                <div class="pc-avail av-bo">Disp.: 0 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i></div>
+                <div class="pc-attrs">Individual · 2 unidades</div>
+                <div class="pc-avail"><span class="av-lbl">Disponibilidad:</span><div class="av-row"><span class="av-none">0 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-ship">Envío a domicilio <i data-lucide="truck"></i></span></div></div>
               </div>
               <div class="drag-h"><i data-lucide="grip-vertical"></i></div>
             </div></div>
@@ -431,10 +435,10 @@ let v3dragging = null;
 const ghostEl = document.getElementById('ghost');
 
 const CARD_META = {
-  alm:  { img:'Asignaciones/almohada-grid-tech-d-4.jpg',    name:'Almohada Grid Tech',    sku:'SKU: ALTP1001',  attrs:'Estándar · Suave · Cooling · 2 piezas',    avail:'Disp.: 24 en tienda <i data-lucide="store"></i> · No disponible <i data-lucide="truck"></i>',    avClass:'av-bo', locked:'ti' },
-  col:  { img:'Asignaciones/colchon-luuna-original.webp',   name:'Colchón Luuna Original', sku:'SKU: LU2002SC',  attrs:'Matrimonial · Suave · Cooling · 2 piezas', avail:'Disp.: 4 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i>', avClass:'av-bo', locked:null },
-  base: { img:'Asignaciones/base-de-bambu.jpeg',            name:'Base de Bambú',          sku:'SKU: NB1301',    attrs:'Individual · 2 piezas',                   avail:'Disp.: 0 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i>', avClass:'av-bo', locked:null },
-  sab:  { img:'Asignaciones/sabanas-algodon-individual.jpeg', name:'Juego de Sábanas de Algodón', sku:'SKU: LTSH1001', attrs:'Individual · Blanco · 3 piezas', avail:'Disp.: 50 en tienda <i data-lucide="store"></i> · Envío a domicilio <i data-lucide="truck"></i>', avClass:'av-bo', locked:null },
+  alm:  { img:'Asignaciones/almohada-grid-tech-d-4.jpg',    name:'Almohada Grid Tech',    sku:'SKU: ALTP1001',  attrs:'Estándar · Suave · Cooling · 2 unidades',    avail:'<span class="av-store">24 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-none">No disponible <i data-lucide="truck"></i></span>', locked:'ti' },
+  col:  { img:'Asignaciones/colchon-luuna-original.webp',   name:'Colchón Luuna Original', sku:'SKU: LU2002SC',  attrs:'Matrimonial · Suave · Cooling · 2 unidades', avail:'<span class="av-store">4 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-ship">Envío a domicilio <i data-lucide="truck"></i></span>', locked:null },
+  base: { img:'Asignaciones/base-de-bambu.jpeg',            name:'Base de Bambú',          sku:'SKU: NB1301',    attrs:'Individual · 2 unidades',                   avail:'<span class="av-none">0 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-ship">Envío a domicilio <i data-lucide="truck"></i></span>', locked:null },
+  sab:  { img:'Asignaciones/sabanas-algodon-individual.jpeg', name:'Juego de Sábanas de Algodón', sku:'SKU: LTSH1001', attrs:'Individual · Blanco · 3 unidades', avail:'<span class="av-store">50 en tienda <i data-lucide="store"></i></span><span class="av-sep">|</span><span class="av-ship">Envío a domicilio <i data-lucide="truck"></i></span>', locked:null },
 };
 
 // ── Pointer Events drag — funciona en mouse y touch sin librería ──
@@ -639,7 +643,7 @@ function v3createCard(key, col, qty, isNeg) {
         <div class="pc-name">${m.name}</div>
         <div class="pc-sku">${m.sku}</div>
         <div class="pc-attrs">${m.attrs}</div>
-        <div class="pc-avail ${isNeg ? 'av-do' : m.avClass}">${isNeg ? 'Venta en negativo' : m.avail}</div>
+        <div class="pc-avail">${isNeg ? '<span class="av-none">Venta en negativo</span>' : '<span class="av-lbl">Disponibilidad:</span><div class="av-row">' + m.avail + '</div>'}</div>
       </div>
       <div class="drag-h"><i data-lucide="grip-vertical"></i></div>
     </div></div>
@@ -680,7 +684,7 @@ function v3updateCounts() {
     const cards = document.getElementById('v3z-'+col).querySelectorAll('.pc');
     let total = 0;
     cards.forEach(c => total += parseInt(c.dataset.qty || 1));
-    document.getElementById('v3cnt-'+col).textContent = total;
+    document.getElementById('v3cnt-'+col).textContent = total === 1 ? '1 unidad' : `${total} unidades`;
   });
 }
 
@@ -693,6 +697,7 @@ function v3updateHints() {
 }
 </script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script>lucide.createIcons();</script>
+<script>lucide.createIcons();
+document.addEventListener('contextmenu', e => { if (e.target.closest('.pc')) e.preventDefault(); });</script>
 </body>
 </html>

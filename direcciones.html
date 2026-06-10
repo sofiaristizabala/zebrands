@@ -13,6 +13,10 @@
   --bg-brand:        var(--ds-blue-600);
   --bg-brand-strong: var(--ds-blue-900);
   --bg-disabled:     var(--ds-bg-secondary);
+  --inf-tx:          var(--ds-fg-info-strong);
+  --inf-br:          var(--ds-border-info-subtle);
+  --acc-col:         var(--ds-bg-info-subtle);
+  --acc-col-br:      var(--ds-border-info-subtle);
   --text-primary:    var(--ds-fg-primary);
   --text-secondary:  var(--ds-grey-dark-500);
   --text-disabled:   var(--ds-fg-disabled);
@@ -140,40 +144,39 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 .btn-back-sm { display: flex; align-items: center; gap: var(--s-100); height: 36px; padding: 0 var(--s-300); border: var(--bw-s) solid var(--border-strong); border-radius: var(--r-md); background: var(--bg-default); font-family: var(--font); font-size: var(--fs-m); cursor: pointer; flex-shrink: 0; }
 .btn-back-sm:hover { background: var(--bg-subtle); }
 
-.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-300); align-items: start; margin-bottom: var(--s-400); }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-300); align-items: stretch; margin-bottom: var(--s-400); }
 
-.dcol { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; }
-.dcol-head { padding: var(--s-200) var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: var(--s-200); }
-.dcol-addr { font-size: var(--fs-s); font-weight: 600; line-height: 1.3; }
-.dcol-cnt  { font-size: var(--fs-xs); font-weight: 600; background: var(--bg-subtle); border-radius: var(--r-full); padding: 2px 8px; white-space: nowrap; flex-shrink: 0; }
-.dcol-dz { padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-200); min-height: 80px; transition: background .1s; }
-.dcol-dz.dov { background: #EFF6FF; outline: 2px dashed var(--bg-brand); border-radius: var(--r-sm); }
-.drag-ghost { position: fixed; pointer-events: none; z-index: 9999; display: none; background: var(--bg-default); border: 1px solid var(--bg-brand); border-radius: var(--r-sm); padding: 6px 14px; font-size: var(--fs-s); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); white-space: nowrap; }
+/* Columns */
+.col { border-radius: var(--r-md); border: 1px solid var(--border-subtle); background: #fff; display: flex; flex-direction: column; transition: border-color .15s, background .15s; }
+.col.dov { border-style: dashed; border-color: var(--bg-brand); background: #EFF6FF; }
+.col-head { padding: var(--s-300) var(--s-400) var(--s-200); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); background: var(--ds-lila-100); border-radius: var(--r-md) var(--r-md) 0 0; }
+.col-title { font-size: var(--fs-m); font-weight: 500; color: var(--ds-fg-primary); }
+.col-cnt { font-size: var(--fs-s); font-weight: 500; padding: 4px var(--s-300); border-radius: var(--r-md); background: var(--ds-lila-300); color: var(--ds-fg-primary); white-space: nowrap; }
+.dz { flex: 1; padding: var(--s-200); display: flex; flex-direction: column; gap: var(--s-200); min-height: 160px; }
+.dz-hint { display: flex; align-items: center; justify-content: center; height: 60px; border: 1px dashed var(--border-subtle); border-radius: var(--r-md); font-size: var(--fs-m); color: var(--text-disabled); }
 
-/* Product cards inside distribution columns (same as v1-card) */
-.v1-card { border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
-.v1-card-head { display: flex; align-items: center; gap: var(--s-300); padding: var(--s-300); border-bottom: var(--bw-s) solid var(--border-subtle); cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
-.v1-card-head:active { cursor: grabbing; }
-.v1-img  { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--bg-subtle); flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.v1-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.v1-info { flex: 1; min-width: 0; }
-.v1-name  { font-size: var(--fs-m); font-weight: 500; }
-.v1-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
-.v1-expand { padding: var(--s-300); background: var(--bg-subtle); }
-.v1-row { display: flex; align-items: center; gap: var(--s-300); }
-.v1-lbl { font-size: var(--fs-m); color: var(--text-secondary); flex-shrink: 0; }
+/* Product cards */
+.pc { background: #fff; border-radius: var(--r-md); border: 1px solid var(--border-subtle); cursor: grab; user-select: none; touch-action: none; }
+.pc:active { cursor: grabbing; }
+.pc-body { padding: var(--s-200) var(--s-300); }
+.pc-top  { display: flex; align-items: flex-start; gap: var(--s-200); }
+.pc-img  { width: 36px; height: 36px; border-radius: var(--r-sm); background: var(--bg-subtle); flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.pc-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pc-info { flex: 1; min-width: 0; }
+.pc-name  { font-size: var(--fs-m); font-weight: 500; }
+.pc-sku   { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 1px; }
+.pc-attrs { font-size: var(--fs-s); color: var(--text-secondary); margin-top: 2px; }
+.drag-h   { flex-shrink: 0; display: flex; align-items: center; color: var(--ds-grey-light-200); cursor: grab; }
+.drag-h svg { width: 16px; height: 16px; }
+.pc-foot { display: flex; align-items: center; justify-content: space-between; padding: var(--s-150) var(--s-300); border-top: 1px solid var(--border-subtle); background: var(--ds-grey-light-50); border-radius: 0 0 var(--r-md) var(--r-md); }
+.pc-foot-lbl { font-size: var(--fs-s); color: var(--text-secondary); }
+.pc-qty { display: flex; align-items: center; height: 36px; border: 1px solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: #fff; }
+.qb { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 16px; color: var(--text-primary); font-weight: 300; transition: background .12s; }
+.qb:hover:not(.off) { background: var(--border-subtle); }
+.qb.off { opacity: .2; cursor: default; pointer-events: none; }
+.qv { width: 32px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: #fff; color: var(--text-primary); }
 
-/* Qty selector */
-.qty-sel { display: flex; align-items: center; height: 36px; border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; background: var(--bg-default); }
-.qs-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--bg-subtle); border: none; cursor: pointer; font-size: 18px; color: var(--text-primary); font-weight: 300; transition: background .12s; }
-.qs-btn:hover:not(.off) { background: var(--border-subtle); }
-.qs-btn.off { opacity: .25; cursor: default; pointer-events: none; }
-.qs-val { width: 32px; text-align: center; font-size: var(--fs-m); font-weight: 600; background: var(--bg-default); }
-
-/* Badges */
-.ab { font-size: var(--fs-s); font-weight: 500; padding: 2px var(--s-200); border-radius: var(--r-sm); white-space: nowrap; display: inline-flex; align-items: center; flex-shrink: 0; }
-.ab-assigned { background: #EFF6FF; color: var(--bg-brand); border: 1px solid #BFDBFE; }
-.ab-zero     { background: var(--bg-subtle); color: var(--text-secondary); border: var(--bw-s) solid var(--border-subtle); }
+.drag-ghost { position: fixed; pointer-events: none; z-index: 9999; display: none; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-200) var(--s-300); font-size: var(--fs-m); font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,.14); transform: rotate(1.5deg) scale(1.02); white-space: nowrap; }
 
 /* ── Order summary (aside) ── */
 .order-summary { background: var(--bg-default); border: var(--bw-s) solid var(--border-subtle); border-radius: var(--r-md); padding: var(--s-400); }
@@ -327,7 +330,7 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
     </div><!-- /columna principal -->
 
     <!-- ── Resumen de orden ── -->
-    <aside class="order-summary">
+    <aside class="order-summary" id="order-summary">
       <div class="os-title">Resumen de la orden</div>
       <div class="os-id">QTN-2404149648bf42</div>
 
@@ -409,6 +412,7 @@ body.multi-mode .addr-item.selected .addr-radio::after { content: ''; width: 5px
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
 lucide.createIcons();
+document.addEventListener('contextmenu', e => { if (e.target.closest('.pc')) e.preventDefault(); });
 
 const toggleInput = document.querySelector('.toggle input');
 const banner      = document.getElementById('multi-banner');
@@ -460,9 +464,9 @@ function updateConfirmBtn() {
 
 /* ── Distribution ── */
 const PRODUCTS = [
-  { id: 'p1', name: 'Colchón Luuna Original',      qty: 2, attrs: 'Matrimonial · Suave · Cooling', img: 'Asignaciones/colchon-luuna-original.webp' },
-  { id: 'p2', name: 'Juego de Sábanas de Algodón', qty: 3, attrs: 'Individual · Blanco',           img: 'Asignaciones/sabanas-algodon-individual.jpeg' },
-  { id: 'p3', name: 'Base de Bambú',               qty: 2, attrs: 'Individual',                    img: 'Asignaciones/base-de-bambu.jpeg' },
+  { id: 'p1', name: 'Colchón Luuna Original',      qty: 2, attrs: 'Matrimonial · Suave · Cooling', sku: 'SKU: LU2002SC',  img: 'Asignaciones/colchon-luuna-original.webp' },
+  { id: 'p2', name: 'Juego de Sábanas de Algodón', qty: 3, attrs: 'Individual · Blanco',           sku: 'SKU: LTSH1001', img: 'Asignaciones/sabanas-algodon-individual.jpeg' },
+  { id: 'p3', name: 'Base de Bambú',               qty: 2, attrs: 'Individual',                    sku: 'SKU: NB1301',   img: 'Asignaciones/base-de-bambu.jpeg' },
 ];
 
 let distribQty = {};
@@ -473,12 +477,16 @@ function confirmAddresses() {
   const addrs = selected.map(el => el.querySelector('.addr-name').textContent.trim());
   document.querySelector('.addr-card').style.display = 'none';
   document.getElementById('distrib-section').style.display = 'block';
+  document.getElementById('order-summary').style.display = 'none';
+  document.querySelector('.page-cols').style.gridTemplateColumns = '1fr';
   buildDistribCols(addrs);
 }
 
 function showAddrSelection() {
   document.querySelector('.addr-card').style.display = '';
   document.getElementById('distrib-section').style.display = 'none';
+  document.getElementById('order-summary').style.display = '';
+  document.querySelector('.page-cols').style.gridTemplateColumns = '';
 }
 
 function buildDistribCols(addrs) {
@@ -493,16 +501,18 @@ function buildDistribCols(addrs) {
 
   addrs.forEach((addr, i) => {
     const col = document.createElement('div');
-    col.className = 'dcol';
+    col.className = 'col';
     col.innerHTML = `
-      <div class="dcol-head">
-        <div class="dcol-addr">${addr}</div>
-        <span class="dcol-cnt" id="cnt-${i}"></span>
+      <div class="col-head">
+        <div class="col-title">${addr}</div>
+        <span class="col-cnt" id="cnt-${i}"></span>
       </div>
-      <div class="dcol-dz" id="dz-${i}"></div>
+      <div class="dz" id="dz-${i}">
+        <div class="dz-hint" id="hint-${i}">Arrastra aquí</div>
+      </div>
     `;
     container.appendChild(col);
-    const dz = col.querySelector('.dcol-dz');
+    const dz = col.querySelector('.dz');
     PRODUCTS.forEach(p => { if (distribQty[p.id][i] > 0) dz.appendChild(createDCard(p, i)); });
   });
 
@@ -515,26 +525,27 @@ function createDCard(p, colIdx) {
   const plusOff = qty >= p.qty; // disabled only when this col has ALL units
   const imgInner = p.img ? `<img src="${p.img}" alt="">` : '';
   const card = document.createElement('div');
-  card.className = 'v1-card';
+  card.className = 'pc';
   card.dataset.pid = p.id;
   card.dataset.col = colIdx;
   card.innerHTML = `
-    <div class="v1-card-head">
-      <div class="v1-img">${imgInner}</div>
-      <div class="v1-info">
-        <div class="v1-name">${p.name}</div>
-        <div class="v1-attrs">${p.attrs}</div>
-      </div>
-      <span class="ab ab-assigned" id="ab-${p.id}-${colIdx}">${qty} pieza${qty !== 1 ? 's' : ''}</span>
-    </div>
-    <div class="v1-expand">
-      <div class="v1-row">
-        <span class="v1-lbl">Cantidad</span>
-        <div class="qty-sel">
-          <button class="qs-btn" id="qd-${p.id}-${colIdx}" onclick="changeQty('${p.id}', ${colIdx}, -1)">−</button>
-          <span class="qs-val" id="sq-${p.id}-${colIdx}">${qty}</span>
-          <button class="qs-btn${plusOff ? ' off' : ''}" id="qi-${p.id}-${colIdx}" onclick="changeQty('${p.id}', ${colIdx}, +1)">+</button>
+    <div class="pc-body">
+      <div class="pc-top">
+        <div class="pc-img">${imgInner}</div>
+        <div class="pc-info">
+          <div class="pc-name">${p.name}</div>
+          <div class="pc-sku">${p.sku}</div>
+          <div class="pc-attrs">${p.attrs}</div>
         </div>
+        <div class="drag-h"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
+      </div>
+    </div>
+    <div class="pc-foot">
+      <span class="pc-foot-lbl">Cantidad</span>
+      <div class="pc-qty">
+        <button class="qb" id="qd-${p.id}-${colIdx}" onclick="changeQty('${p.id}', ${colIdx}, -1)">−</button>
+        <span class="qv" id="sq-${p.id}-${colIdx}">${qty}</span>
+        <button class="qb${plusOff ? ' off' : ''}" id="qi-${p.id}-${colIdx}" onclick="changeQty('${p.id}', ${colIdx}, +1)">+</button>
       </div>
     </div>
   `;
@@ -584,12 +595,13 @@ function refreshCard(pid, colIdx) {
   }
   // Update in-place
   const p = PRODUCTS.find(x => x.id === pid);
-  const qtyEl  = document.getElementById(`sq-${pid}-${colIdx}`);
-  const badge   = document.getElementById(`ab-${pid}-${colIdx}`);
-  const incBtn  = document.getElementById(`qi-${pid}-${colIdx}`);
+  const qtyEl = document.getElementById(`sq-${pid}-${colIdx}`);
+  const incBtn = document.getElementById(`qi-${pid}-${colIdx}`);
   if (qtyEl)  qtyEl.textContent = qty;
-  if (badge)  { badge.textContent = `${qty} pieza${qty !== 1 ? 's' : ''}`; }
   if (incBtn) incBtn.classList.toggle('off', qty >= p.qty);
+  // show/hide the drop hint
+  const hint = document.getElementById(`hint-${colIdx}`);
+  if (hint) hint.style.display = dz.querySelectorAll('.pc').length > 0 ? 'none' : '';
 }
 
 /* ── Drag & drop ── */
@@ -601,9 +613,8 @@ function setupDrag() {
 }
 
 function onDragDown(e) {
-  const head = e.target.closest('.v1-card-head');
-  if (!head) return;
-  const card = head.closest('.v1-card');
+  if (e.target.closest('.qb')) return;
+  const card = e.target.closest('.pc');
   if (!card) return;
   e.preventDefault();
   const pid    = card.dataset.pid;
@@ -612,63 +623,67 @@ function onDragDown(e) {
   _ox = e.clientX - r.left;
   _oy = e.clientY - r.top;
   _drag = { card, pid, colIdx };
-  ghost.textContent = card.querySelector('.v1-name').textContent;
+  ghost.textContent = card.querySelector('.pc-name').textContent;
   ghost.style.display = 'block';
   ghost.style.left = (e.clientX - _ox) + 'px';
   ghost.style.top  = (e.clientY - _oy) + 'px';
   card.style.opacity = '0.4';
-  head.setPointerCapture(e.pointerId);
-  head.addEventListener('pointermove', onDragMove);
-  head.addEventListener('pointerup',   onDragUp);
+  card.setPointerCapture(e.pointerId);
+  card.addEventListener('pointermove', onDragMove);
+  card.addEventListener('pointerup',   onDragUp);
 }
 
 function onDragMove(e) {
   ghost.style.left = (e.clientX - _ox) + 'px';
   ghost.style.top  = (e.clientY - _oy) + 'px';
-  document.querySelectorAll('.dcol-dz').forEach(dz => dz.classList.remove('dov'));
+  document.querySelectorAll('.dz').forEach(dz => dz.classList.remove('dov'));
   const el = document.elementFromPoint(e.clientX, e.clientY);
-  const dz = el && el.closest('.dcol-dz');
+  const dz = el && el.closest('.dz');
   if (dz) dz.classList.add('dov');
 }
 
 function onDragUp(e) {
-  const head = e.currentTarget;
-  head.removeEventListener('pointermove', onDragMove);
-  head.removeEventListener('pointerup',   onDragUp);
+  const card = e.currentTarget;
+  card.removeEventListener('pointermove', onDragMove);
+  card.removeEventListener('pointerup',   onDragUp);
   ghost.style.display = 'none';
-  document.querySelectorAll('.dcol-dz').forEach(dz => dz.classList.remove('dov'));
+  document.querySelectorAll('.dz').forEach(dz => dz.classList.remove('dov'));
 
   if (!_drag) return;
   _drag.card.style.opacity = '';
 
   const el = document.elementFromPoint(e.clientX, e.clientY);
-  const tgtDz = el && el.closest('.dcol-dz');
+  const tgtDz = el && el.closest('.dz');
   if (tgtDz) {
     const tgtColIdx = parseInt(tgtDz.id.replace('dz-', ''));
     if (tgtColIdx !== _drag.colIdx) {
-      const { card, pid, colIdx: src } = _drag;
+      const { card: dragCard, pid, colIdx: src } = _drag;
       const srcQty = distribQty[pid][src];
 
       distribQty[pid][src] = 0;
       distribQty[pid][tgtColIdx] += srcQty;
 
-      // Remove from source
-      card.remove();
+      dragCard.remove();
+      // show hint in source if now empty
+      const srcHint = document.getElementById(`hint-${src}`);
+      const srcDz = document.getElementById(`dz-${src}`);
+      if (srcHint && srcDz) srcHint.style.display = srcDz.querySelectorAll('.pc').length === 0 ? '' : 'none';
 
       // Merge into existing card or create new one
       const existing = tgtDz.querySelector(`[data-pid="${pid}"]`);
       if (existing) {
         const newQty = distribQty[pid][tgtColIdx];
         document.getElementById(`sq-${pid}-${tgtColIdx}`).textContent = newQty;
-        const badge = document.getElementById(`ab-${pid}-${tgtColIdx}`);
-        if (badge) { badge.textContent = `${newQty} pieza${newQty !== 1 ? 's' : ''}`; badge.className = 'ab ab-assigned'; }
         const dec = document.getElementById(`qd-${pid}-${tgtColIdx}`);
         if (dec) dec.classList.toggle('off', newQty <= 1);
       } else {
         tgtDz.appendChild(createDCard(PRODUCTS.find(p => p.id === pid), tgtColIdx));
       }
+      // hide hint in target
+      const tgtHint = document.getElementById(`hint-${tgtColIdx}`);
+      if (tgtHint) tgtHint.style.display = 'none';
 
-      // Recheck + buttons across all cols for this product
+      // Recheck + buttons
       const total = Object.values(distribQty[pid]).reduce((a,b) => a+b, 0);
       const atMax = total >= PRODUCTS.find(p => p.id === pid).qty;
       Object.keys(distribQty[pid]).forEach(i => {
@@ -683,10 +698,12 @@ function onDragUp(e) {
 }
 
 function updateColCounts() {
-  document.querySelectorAll('.dcol-dz').forEach((_, i) => {
+  document.querySelectorAll('.dz').forEach((dz, i) => {
     const total = PRODUCTS.reduce((sum, p) => sum + (distribQty[p.id]?.[i] ?? 0), 0);
     const badge = document.getElementById(`cnt-${i}`);
-    if (badge) badge.textContent = total === 1 ? '1 pieza' : `${total} piezas`;
+    if (badge) badge.textContent = total === 1 ? '1 unidad' : `${total} unidades`;
+    const hint = document.getElementById(`hint-${i}`);
+    if (hint) hint.style.display = dz.querySelectorAll('.pc').length > 0 ? 'none' : '';
   });
 }
 </script>
